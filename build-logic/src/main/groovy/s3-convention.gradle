@@ -1,0 +1,4 @@
+dependencies {
+    implementation project(":library-s3")
+    testImplementation(testFixtures(project(":library-s3")))
+}

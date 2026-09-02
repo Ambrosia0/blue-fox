@@ -1,0 +1,41 @@
+name: Tests
+
+run-name: Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    container: 
+      image: gradle:jdk25-noble
+      options: --privileged --user root /var/run/docker.sock:/var/run/docker.sock
+      env: 
+        TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
+        TESTCONTAINERS_RYUK_DISABLED: true
+        DOCKER_BUILDKIT: 1
+        COMPOSE_DOCKER_CLI_BUILD: 1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Making executable
+        run: chmod +x gradlew
+
+      - name: Building keycloak with kafka events
+        run: docker build -t ghcr.io/ambrosia0/keycloak-kafka ./infra/keycloak
+
+      - name: Building postgres with RUM-index
+        run: docker build -t ghcr.io/ambrosia0/postgres-18-rum ./infra/postgres
+
+      - name: Testing
+        run: ./gradlew test --no-parallel
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Building frontend
+        run: docker build -t frontend-app ./frontend

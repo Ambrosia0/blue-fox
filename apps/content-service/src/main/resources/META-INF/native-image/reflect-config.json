@@ -1,0 +1,32 @@
+[
+    {
+        "name": "org.apache.kafka.common.serialization.StringSerializer",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredFields": true
+    },
+    {
+        "name": "org.apache.kafka.common.serialization.ByteArraySerializer",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredFields": true
+    },
+    {
+        "name": "org.apache.kafka.common.serialization.StringDeserializer",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredFields": true
+    },
+    {
+        "name": "org.apache.kafka.common.serialization.ByteArrayDeserializer",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredFields": true
+    },
+    {
+        "name": "org.apache.kafka.streams.processor.internals.NoOpProcessorWrapper",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredFields": true
+    }
+]

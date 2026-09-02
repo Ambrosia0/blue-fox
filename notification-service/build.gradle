@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'io.quarkus'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'org.apache.camel.quarkus:camel-quarkus-protobuf'
+    implementation "io.grpc:grpc-protobuf:1.82.0"
+    implementation 'com.google.protobuf:protobuf-java-util:4.35.1'
+    implementation enforcedPlatform("${quarkusPlatformGroupId}:quarkus-camel-bom:${quarkusPlatformVersion}")
+    implementation 'io.quarkus:quarkus-container-image-jib'
+    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    implementation 'io.quarkus:quarkus-rest'
+    implementation 'io.quarkus:quarkus-rest-jackson'
+    implementation 'io.quarkus:quarkus-messaging-kafka'
+    implementation 'io.quarkus:quarkus-scheduler'
+    implementation 'io.quarkus:quarkus-oidc'
+    implementation 'io.quarkus:quarkus-arc'
+    implementation 'io.quarkus:quarkus-minikube'
+    testImplementation 'io.quarkus:quarkus-test-security'
+    testImplementation 'io.quarkus:quarkus-junit5-mockito'
+    testImplementation 'io.quarkus:quarkus-junit'
+    testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'io.quarkus:quarkus-test-security-oidc'
+    testImplementation 'io.smallrye.reactive:smallrye-reactive-messaging-in-memory'
+}
+
+group = 'org.ambrosia'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs(
+                "build/classes/java/quarkus-generated-sources/grpc"
+            )
+        }
+    }
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-parameters'
+}
+
+compileTestJava {
+    options.encoding = 'UTF-8'
+}

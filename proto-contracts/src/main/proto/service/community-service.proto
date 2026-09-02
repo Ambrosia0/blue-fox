@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ambrosia.community_service.grpc";
+
+message ScopeCheckRequest {
+    string user_id = 1;
+    string scope = 2;
+    uint64 community_id = 3;
+}
+message ScopeCheckResponse {
+    bool is_allowed = 1;
+}
+
+service CommunityService {
+    rpc IsUserAllowed(ScopeCheckRequest) returns (ScopeCheckResponse);
+}

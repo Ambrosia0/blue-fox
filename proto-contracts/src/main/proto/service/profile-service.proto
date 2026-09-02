@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ambrosia.profile_service.grpc";
+
+message UserExistenceRequest {
+    string user_id = 1;
+}
+message UserExistenceResponse {
+    bool is_exist = 1;
+}
+
+message UsersExistenceRequest {
+    repeated string user_id = 1;
+}
+
+message UserBlacklistResponse {
+    repeated bytes user_id = 1;
+}
+
+message UserBlacklistRequest {
+    bytes user_id = 1;
+}
+
+service ProfileService {
+    rpc IsUserExist(UserExistenceRequest) returns (UserExistenceResponse);
+    rpc IsUsersExist(UsersExistenceRequest) returns (UserExistenceResponse);
+    rpc GetUserBlacklist(UserBlacklistRequest) returns (UserBlacklistResponse);
+}

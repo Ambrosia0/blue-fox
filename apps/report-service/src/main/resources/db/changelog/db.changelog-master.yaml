@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-init-schema
+      author: me
+      changes:
+        - sqlFile:
+            path: db/sql/001-init.sql
+  - changeSet:
+      id: 002-reason-data
+      author: me
+      changes:
+        - sqlFile:
+            path: db/sql/002-reason-data.sql

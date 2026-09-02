@@ -1,0 +1,46 @@
+name: CI
+
+run-name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        name: Setup java 25
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: 'gradle'
+      - run: java --version
+
+      - name: Making executable
+        run: chmod +x gradlew
+
+      - name: Building keycloak with kafka events
+        run: docker build -t ghcr.io/ambrosia0/keycloak-kafka:v1 ./infra/keycloak
+
+      - name: Building postgres with RUM-index
+        run: docker build -t ghcr.io/ambrosia0/postgres-18-rum:v1 ./infra/postgres
+
+      - name: Testing
+        run: ./gradlew test
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      
+      - name: Building frontend
+        run: docker build -t frontend-app ./frontend

@@ -1,0 +1,1 @@
+CREATE INDEX idx_username_tree ON service_user(username);

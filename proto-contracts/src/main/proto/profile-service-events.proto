@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ambrosia.profile_service.kafka_events";
+
+import "google/protobuf/timestamp.proto";
+import "content-service-events.proto";
+import "comment-service-events.proto";
+import "notification-service-events.proto";
+
+message UserInformation {
+    string id = 1;
+    string username = 2;
+    string avatar_id = 3;
+}
+
+message UserAggregation {
+    optional UserInformation user = 1;
+    oneof payload {
+        PostCreated post = 2;
+        CommentCreated comment = 3;
+    }
+}
+
+message NotificationMetadata {
+    repeated string to_notify = 1;
+    optional string key = 2;
+}
+
+message UserFollowAggregation {
+    string user_id = 1;
+    int32 delta = 2;
+}
+
+message UserCreated {
+    string id = 1;
+    string username = 2;
+    string first_name = 3;
+    string last_name = 4;
+    optional string avatar_id = 5;
+}
+
+message UserEvent {
+    string event_id = 1;
+    oneof payload {
+        UserCreated created = 2;
+    }
+}

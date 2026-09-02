@@ -1,0 +1,6 @@
+INSERT INTO report_reason(code) VALUES
+('SEXUAL_CONTENT'),
+('VIOLENCE'),
+('COPYRIGHT'),
+('HARASSMENT'),
+('OTHER');

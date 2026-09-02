@@ -1,0 +1,2 @@
+com.ambrosia.outbox.autoconfigure.KafkaOutboxAutoConfiguration
+com.ambrosia.outbox.autoconfigure.SearchIndexOutboxAutoConfiguration

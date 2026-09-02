@@ -1,0 +1,28 @@
+pluginManagement {
+    includeBuild('build-logic')
+}
+
+rootProject.name = 'blue-fox'
+
+include(
+    "comment-service", 
+    "content-service",
+    "community-service",
+    "profile-service",
+    "report-service",
+    "api-gateway",
+    "library-core",
+    "library-s3",
+    "kafka-outbox",
+    "proto-contracts"
+)
+
+project(":api-gateway").projectDir = file('apps/api-gateway')
+project(":comment-service").projectDir = file('apps/comment-service')
+project(":community-service").projectDir = file('apps/community-service')
+project(":content-service").projectDir = file('apps/content-service')
+project(":profile-service").projectDir = file('apps/profile-service')
+project(":report-service").projectDir = file('apps/report-service')
+project(":library-core").projectDir = file('libs/library-core')
+project(":library-s3").projectDir = file('libs/library-s3')
+project(":kafka-outbox").projectDir = file('libs/kafka-outbox')

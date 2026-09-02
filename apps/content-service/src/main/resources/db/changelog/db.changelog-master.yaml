@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: init-schema
+      author: me
+      changes:
+        - sqlFile:
+            path: db/sql/001-init.sql
+  - changeSet:
+      id: init-indices
+      author: me
+      changes:
+        - sqlFile:
+            path: db/sql/002-indices.sql
+  - changeSet:
+      id: init-triggers
+      author: me
+      changes:
+        - sqlFile:
+            path: db/sql/003-triggers.sql
+            endDelimiter: //
+  - include:
+      id: kafka-outbox
+      author: me
+      file: db/changelog/kafka-outbox.yaml
+  - include:
+      id: search-index-outbox
+      author: me
+      file: db/changelog/search-index-outbox.yaml

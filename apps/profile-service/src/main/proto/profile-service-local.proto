@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ambrosia.profile_service.kafka_events";
+
+import "profile-service-events.proto";
+
+message OutboxEvent {
+    oneof payload {
+        UserEvent user_event = 1;
+    }
+}

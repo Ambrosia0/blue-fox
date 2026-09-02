@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "app.keycloak.auth-key-rotation-time",
+  "type": "java.lang.String",
+  "description": "A description for 'app.keycloak.auth-key-rotation-time'"
+}]}

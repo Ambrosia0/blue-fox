@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: "kafka-outbox"
+      author: me
+      changes:
+        - sqlFile:
+            path: db/sql/kafka-outbox.sql

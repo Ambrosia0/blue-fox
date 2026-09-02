@@ -1,0 +1,206 @@
+{
+    "posts":{
+        "empty":{
+            "authorId":{
+                "title": "No posts found",
+                "message": "This user hasn't published any posts yet. Their posts will appear here once they create them."
+            },
+            "popular":{
+                "title": "No popular posts yet",
+                "subtitle": "Popular content will appear here once the community starts engaging."
+            },
+            "best":{
+                "title": "No top posts yet",
+                "subtitle": "The best community posts will appear here."
+            },
+            "latest":{
+                "title": "No recent posts",
+                "subtitle": "The latest community posts will appear here."
+            },
+            "relevancy":{
+                "title": "No relevant posts found",
+                "subtitle": "We couldn't find any posts matching your criteria right now."
+            },
+            "personalized":{
+                "title": "No personalized recommendations",
+                "subtitle": "We'll suggest posts based on your interests soon."
+            },
+            "default":{
+                "title": "No posts to display",
+                "subtitle": "Posts will appear here soon."
+            }
+        },
+        "search":{
+            "type": {
+                "relevancy": "Relevancy",
+                "popular": "Popular",
+                "best": "Best",
+                "latest": "Latest",
+                "personalized": "Personalized"
+            },
+            "controls":{
+                "type": "Type",
+                "sort": "Sort"
+            },
+            "field": {
+                "date": "By date",
+                "score": "By score"
+            },
+            "direction": {
+                "asc": "Ascending",
+                "desc": "Descending"
+            }
+        }
+    },
+    "menu":{
+        "popular": "Popular",
+        "latest": "Latest",
+        "communities": "Communities",
+        "personal": "My feed"
+    },
+    "profile":{
+        "about": "About",
+        "profile": "Profile",
+        "follows": "Follows",
+        "noDescription": "No description",
+        "registered": "Registered",
+        "registrationDate": "Registration date",
+        "tabs":{
+            "posts": "Posts",
+            "drafts": "Drafts"
+        },
+        "draft":{
+            "untitled": "Untitled",
+            "lastUpdated": "Last updated",
+            "editPost": "Edit post",
+            "deletePost": "Delete post",
+            "sectionTitle": "Drafts",
+            "createNew": "New",
+            "createTooltip": "Create draft",
+            "emptyTitle": "No drafts",
+            "emptyMessage": "Create your first draft by clicking the \"New\" button",
+            "emptyButton": "Create draft",
+            "createTitle": "New draft",
+            "titleLabel": "Title",
+            "titleHelper": "Enter draft title",
+            "titleError": "Minimum title length is 5 characters",
+            "createButton": "Create",
+            "deleteTitle": "Delete draft",
+            "deleteConfirm": "Are you sure you want to delete draft",
+            "deleteWarning": "This action cannot be undone",
+            "cancelButton": "Cancel",
+            "deleteButton": "Delete",
+            "draftCount": "{{count}} {{count, select, 1{draft} 2{drafts} 5{drafts} other{drafts}}}"
+        }
+    },
+    "actions":{
+        "create": "Create",
+        "edit": "Edit",
+        "delete": "Delete",
+        "close": "Close"
+    },
+    "postMenu":{
+        "options": "Options",
+        "hide": "Hide"
+    },
+    "login": "Login",
+    "createNew": "Create new",
+    "report":{
+        "report": "Report",
+        "reportDialog":{
+            "title": "Report",
+            "description": "If you believe this content violates our community guidelines, please select a reason and describe the issue.",
+            "reasonLabel": "Reason",
+            "reasonPlaceholder": "Please select a reason",
+            "descriptionLabel": "Problem description",
+            "descriptionPlaceholder": "Describe the problem...",
+            "reasonRequired": "Please select a reason",
+            "descriptionRequired": "Please describe the problem",
+            "cancel": "Cancel",
+            "submit": "Submit",
+            "success": "Report submitted successfully",
+            "error": "Error submitting report"
+        }
+    },
+    "search":{
+        "placeholder": "Enter query (#tag) (@user)",
+        "results": "Search results",
+        "request": "Query",
+        "noResults": "Nothing found",
+        "loading": "Searching...",
+        "users":"Input text to search users...",
+        "tabs":{
+            "users": "Users",
+            "communities": "Communities",
+            "posts": "Posts"
+        },
+        "userSubtitle": "User",
+        "communitySubtitle": "Community",
+        "members": "members",
+        "postSubtitle": "Post",
+        "likes": "likes",
+        "noTitle": "No title",
+        "size-constraint": "Search text must contain at least 3 characters"
+    },
+    "community":{
+        "title": "Communities",
+        "followers": "followers",
+        "join": "Join",
+        "about": "About",
+        "posts": "Posts",
+        "notFound": "Community not found",
+        "noCommunities": "No communities found",
+        "searchPlaceholder": "Search communities...",
+        "noMore": "No more communities",
+        "empty": "No communities yet",
+        "createCommunity": "Create Community",
+        "createTitle": "Create New Community",
+        "editCommunity": "Edit Community",
+        "communityName": "Community Name",
+        "communityNamePlaceholder": "Enter community name",
+        "descriptionPlaceholder": "Describe your community...",
+        "rules": "Rules",
+        "rulesPlaceholder": "No rules have been added yet.",
+        "isPrivate": "Private Community",
+        "privateDescription": "Private communities require approval to join",
+        "tags": "Tags",
+        "tagsPlaceholder": "Add tags (e.g., gaming, tech)",
+        "moderators": "Moderators",
+        "save": "Save",
+        "cancel": "Cancel",
+        "deleteCommunity": "Delete Community",
+        "confirmDelete": "Are you sure you want to delete this community?",
+        "members": "members",
+        "created": "Created",
+        "scopes": {
+            "POST_DELETE": "Delete posts",
+            "COMMENT_DELETE": "Delete comments",
+            "USER_BAN": "Ban users",
+            "USER_UNBAN": "Unban users",
+            "FOLLOW_MANAGE": "Manage follow requests"
+        }
+    },
+    "settings":{
+        "title": "Settings",
+        "save": "Save",
+        "saving": "Saving...",
+        "general":{
+            "title": "General",
+            "language": "Language"
+        },
+        "privacy":{
+            "title": "Privacy",
+            "description": "Manage your privacy preferences and control who can see your information.",
+            "displayEmail": "Display my email publicly",
+            "displayActivity": "Display activity publicly"
+        },
+        "notifications":{
+            "title": "Notifications",
+            "description": "Configure your notification preferences to stay updated on activities that matter to you."
+        },
+        "messages":{
+            "success": "Settings saved successfully",
+            "error": "Failed to save settings"
+        }
+    }
+}

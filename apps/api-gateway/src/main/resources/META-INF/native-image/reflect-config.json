@@ -1,0 +1,12 @@
+[
+    {
+        "name": "org.hibernate.validator.internal.util.logging.Log_$logger",
+        "allDeclaredConstructors": true
+    },
+    {
+        "name": "org.hibernate.validator.internal.util.logging.Messages_$bundle",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredFields": true
+    }
+]

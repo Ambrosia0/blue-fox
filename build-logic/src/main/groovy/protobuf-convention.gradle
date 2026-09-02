@@ -1,0 +1,35 @@
+plugins{
+    id 'com.google.protobuf'
+}
+
+dependencies {
+    implementation platform("org.springframework.grpc:spring-grpc-dependencies:${springGrpc}")
+    implementation 'org.springframework.grpc:spring-grpc-spring-boot-starter'
+    testImplementation "org.springframework.grpc:spring-grpc-test"
+    modules {
+        module("io.grpc:grpc-netty") {
+            replacedBy("io.grpc:grpc-netty-shaded", "Use Netty shaded instead of regular Netty")
+        }
+    }
+}
+
+sourceSets {
+    main {
+        proto {
+            srcDir project(':proto-contracts').file('src/main/proto')
+        }
+    }
+}
+
+protobuf {
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcCodeGen}"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}

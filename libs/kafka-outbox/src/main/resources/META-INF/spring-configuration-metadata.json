@@ -1,0 +1,13 @@
+{
+    "properties": [
+    {
+        "name": "app.outbox.kafka.poll-interval",
+        "type": "java.lang.Long",
+        "description": "Poll interval for kafka outbox relay"
+    },
+    {
+        "name": "app.outbox.elasticsearch.poll-interval",
+        "type": "java.lang.Long",
+        "description": "Poll interval for elasticsearch outbox relay"
+    }
+]}

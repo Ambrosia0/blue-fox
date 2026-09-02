@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: reportdb
+  namespace: blog
+spec:
+  selector:
+    app: report-service-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: report-service-postgres
+  labels:
+    app: report-service-postgres
+  namespace: blog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: report-service-postgres
+  template:
+    metadata:
+      labels:
+        app: report-service-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:18
+        ports:
+        - containerPort: 5432
+          name: postgres
+        env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: report-db
+                key: username
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: report-db
+                key: url
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: report-db
+                key: password
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/18/data
+            name: postgres-data
+      volumes:
+        - name: postgres-data
+          emptyDir: {}

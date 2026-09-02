@@ -1,0 +1,20 @@
+{
+    "analysis": {
+        "tokenizer": {
+            "title_edge_tokenizer": {
+                "type": "edge_ngram",
+                "min_gram": 2,
+                "max_gram": 20,
+                "token_chars": ["letter", "digit"]
+            }
+        },
+        "analyzer": {
+            "title_ngram": {
+                "tokenizer": "title_edge_tokenizer",
+                "filter": [
+                    "lowercase"
+                ]
+            }
+        }
+    }
+}

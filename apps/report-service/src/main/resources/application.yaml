@@ -1,0 +1,57 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+spring:
+ autoconfigure:
+    exclude:
+    - com.ambrosia.common.autoconfigure.S3RelatedAutoConfiguration
+ threads:
+  virtual:
+    enabled: true
+ application:
+  name: report-service
+ liquibase:
+    enabled: true
+    
+ datasource:
+  url: ${DB_URL:unset}
+  username: ${DB_USER:unset}
+  password: ${DB_PASSWORD:unset}
+  hikari:
+    connection-timeout: 20000
+    initialization-fail-timeout: 5000
+ data:
+  redis:
+   url: ${REDIS_URL:unset}
+ security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OIDC_ISSUER_URL:unset}
+ kafka:
+   bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:unset}
+   listener:
+    ack-mode: batch
+   producer:
+     key-serializer: org.apache.kafka.common.serialization.StringSerializer
+     value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+   consumer:
+     groupId: report-service
+     properties:
+      spring.json.trusted.packages: "*"
+      spring.json.use.type.headers: false
+     key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+     value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+app:
+ default:
+  number-of-partitions: 3
+  preview-image-limit: 1
+  preview-char-limit: 200
+---
+spring:
+  config:
+    activate:
+      on-profile:
+      - test
+  liquibase:
+    enabled: true

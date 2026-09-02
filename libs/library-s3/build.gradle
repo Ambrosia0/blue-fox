@@ -1,0 +1,9 @@
+plugins {
+    id 'library-convention'
+}
+
+dependencies {
+    api "io.awspring.cloud:spring-cloud-aws-starter-s3:${awsS3}"
+    api 'org.springframework.boot:spring-boot-starter-validation'
+    api 'org.springframework.boot:spring-boot-starter-web'
+}

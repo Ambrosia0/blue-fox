@@ -1,0 +1,6 @@
+INSERT INTO scope(id, scope_type) VALUES 
+(1, 'POST_DELETE'), 
+(2, 'COMMENT_DELETE'),
+(3, 'USER_BAN'),
+(4, 'USER_UNBAN'),
+(5, 'FOLLOW_MANAGE');

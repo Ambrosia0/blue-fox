@@ -1,0 +1,15 @@
+# databaseChangeLog:
+#   - changeSet:
+#       id: 999-test-data
+#       author: me
+#       context: test
+#       changes:
+#         - sqlFile:
+#             path: db/sql/999-test-data.sql
+#   - changeSet:
+#       id: 999-test-data
+#       author: me
+#       context: dev
+#       changes:
+#         - sqlFile:
+#             path: db/sql/999-test-data.sql

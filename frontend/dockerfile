@@ -1,0 +1,26 @@
+FROM node:25-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN npm install -g pnpm@latest-10
+COPY . /app
+WORKDIR /app
+
+FROM base AS deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+
+FROM base AS build
+RUN rm -rf node_modules
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+RUN pnpm --filter=@apps/frontend-service build
+# RUN --mount=type=cache,id=pnpm,target=/pnpm/store \ 
+#     pnpm deploy --filter=@apps/frontend-service --prod out
+
+FROM gcr.io/distroless/nodejs24-debian13
+EXPOSE 3000
+WORKDIR /app/server
+COPY --from=build /app/apps/frontend-service/dist ./dist
+COPY --from=build /app/apps/frontend-service/.env ./dist/server
+# COPY --from=build /app/out ./
+
+CMD ["./dist/server/server.js", "--env-file=./dist/server/.env" ]

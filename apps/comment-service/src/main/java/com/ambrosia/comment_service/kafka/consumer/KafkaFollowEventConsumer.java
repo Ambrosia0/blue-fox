@@ -1,0 +1,46 @@
+package com.ambrosia.comment_service.kafka.consumer;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
+
+import com.ambrosia.comment_service.community.repository.CommunityFollowProjectionRepository;
+import com.ambrosia.community_service.kafka_events.CommunityFollowEvent;
+import com.ambrosia.library_core.dto.Topics;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Component
+public class KafkaFollowEventConsumer {
+    private final CommunityFollowProjectionRepository communityFollowProjectionRepository;
+
+    @KafkaListener(
+        topics = Topics.COMMUNITY_FOLLOW_EVENT,
+        groupId = "comment-service",
+        errorHandler = "serializationErrorHandler",
+        batch = "true"
+    )
+    public void consume(List<ConsumerRecord<String, byte[]>> message){
+        var parsedMessage = message.stream()
+            .collect(Collectors.toMap(
+                    ConsumerRecord::key, 
+                    record -> {
+                        try {
+                            return CommunityFollowEvent.parseFrom(record.value());
+                        } catch (Exception e) {
+                            throw new RuntimeException("Invalid body format!");
+                        }
+                    },
+                    (oldVal, newVal) -> newVal
+                )
+            );
+        var batches = parsedMessage.values()
+            .stream()
+            .collect(Collectors.partitioningBy(CommunityFollowEvent::getFollowed));
+        communityFollowProjectionRepository.batchModify(batches.get(true), batches.get(false));
+    }
+}

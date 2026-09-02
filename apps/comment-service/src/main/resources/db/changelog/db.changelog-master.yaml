@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: init-schema
+      author: me
+      changes:
+        - sqlFile:
+            path: db/sql/001-init.sql
+  - changeSet:
+      id: init-triggers
+      author: me
+      changes:
+        - sqlFile:
+            path: db/sql/002-triggers.sql
+            endDelimiter: //
+  - changeSet:
+      id: init-indices
+      author: me
+      changes:
+        - sqlFile:
+            path: db/sql/003-indices.sql

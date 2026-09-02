@@ -1,0 +1,44 @@
+plugins{
+	id 'org.springframework.boot' version "${springBootVersion}" apply false
+	id 'io.spring.dependency-management' version "${springDependencyManagement}" apply false
+    id 'com.google.protobuf' version "${googleProtobufPlugin}" apply false
+    id 'org.graalvm.buildtools.native' version "${graalVmPluginVer}" apply false
+}
+
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+subprojects{
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+
+    if(project.hasProperty("native")){
+        apply plugin: "org.graalvm.buildtools.native"
+    }
+
+    plugins.withId('org.springframework.boot'){
+        tasks.named('bootBuildImage'){
+            imageName = "ghcr.io/Ambrosia0/${project.name}:${project.version}"
+            if(project.hasProperty("native")){
+                builder = "paketobuildpacks/builder-jammy-tiny"
+                environment["BP_NATIVE_IMAGE"] = "true"
+                environment["BP_DEBUG_ENABLED"] = "false"
+                environment["BP_JVM_TYPE"] = "native"
+                environment["BP_DISABLE_SBOM"] = "true"
+                environment["BP_NATIVE_IMAGE_BUILD_ARGUMENTS"] = '--no-fallback --initialize-at-run-time=sun.security.util.Password$ConsoleHolder,liquibase,org.apache.kafka,org.rocksdb,com.google.protobuf --initialize-at-build-time=org.jboss.logging'
+
+                if(project.hasProperty("compress")){
+                    environment["BP_JVM_BUILD_ARGUMENTS"]="-Dspring.profiles.active=dev"
+                    environment["BP_BINARY_COMPRESSION_METHOD"] = "upx"
+                    environment["BP_BINARY_COMPRESSION_LEVEL"] = "7"
+                }
+            }
+        }
+    }
+}

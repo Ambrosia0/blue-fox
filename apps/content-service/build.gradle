@@ -1,0 +1,27 @@
+plugins {
+    id 'service-convention'
+	id 'protobuf-convention'
+	id 's3-convention'
+}
+
+version = '0.0.1-SNAPSHOT'
+
+dependencies {
+	implementation project(':kafka-outbox')
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation "org.springframework.boot:spring-boot-starter-kafka"
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation "org.springframework.boot:spring-boot-starter-liquibase"
+	implementation "org.apache.kafka:kafka-streams"
+	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+	implementation "com.github.pemistahl:lingua:${lingua}"
+	runtimeOnly 'org.postgresql:postgresql'
+	testImplementation 'org.springframework.boot:spring-boot-data-jdbc-test'
+	testImplementation 'org.springframework.boot:spring-boot-webmvc-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+}

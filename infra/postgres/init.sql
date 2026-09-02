@@ -1,0 +1,6 @@
+CREATE DATABASE keycloakdb;
+CREATE DATABASE profiledb;
+CREATE DATABASE reportdb;
+CREATE DATABASE contentdb;
+CREATE DATABASE commentdb;
+CREATE DATABASE communitydb;

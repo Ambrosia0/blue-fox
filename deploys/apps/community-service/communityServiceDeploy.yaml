@@ -1,0 +1,113 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: community-service
+  namespace: blog
+spec:
+  type: ClusterIP
+  selector:
+    app: community-service
+  ports:
+    - protocol: TCP
+      port: 80
+      name: http
+      targetPort: 8080
+    - protocol : TCP
+      name: grpc
+      port: 9090
+      targetPort: 9090
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: community-service
+  labels:
+    app: community-service
+  namespace: blog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: community-service
+  template:
+    metadata:
+      labels:
+        app: community-service
+    spec:
+      containers:
+      - name: community-service
+        image: ghcr.io/Ambrosia0/community-service:0.0.1-SNAPSHOT
+        ports:
+          - containerPort: 8080
+          - containerPort: 9090
+        env:
+          - name: JAVA_OPTS
+            value: ""
+          - name: S3_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: s3-config
+                key: access-key
+          - name: S3_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: s3-config
+                key: secret-key
+          - name: S3_BUCKET
+            valueFrom:
+              configMapKeyRef:
+                name: s3-config
+                key: public-bucket
+          - name: S3_ENDPOINT
+            valueFrom:
+              configMapKeyRef:
+                name: s3-config
+                key: endpoint
+          - name: S3_PRESIGN_ENDPOINT
+            valueFrom:
+              configMapKeyRef:
+                name: s3-config
+                key: override-presign-endpoint
+                optional: true
+          - name: OIDC_ISSUER_URL
+            valueFrom:
+              configMapKeyRef:
+                name: oidc-config
+                key: oidc-issuer-url
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: comment-db
+                key: username
+          - name: DB_URL
+            valueFrom:
+              secretKeyRef:
+                name: comment-db
+                key: url
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: comment-db
+                key: password
+          - name: KAFKA_BOOTSTRAP_SERVERS
+            valueFrom:
+              configMapKeyRef:
+                name: kafka-config
+                key: bootstrap-servers
+          - name: REDIS_URL
+            valueFrom:
+              configMapKeyRef:
+                name: redis-config
+                key: redis-url
+          - name: ELASTIC_URIS
+            valueFrom:
+              secretKeyRef:
+                name: elastic-config
+                key: elastic-uris
+        resources:
+          requests:
+            memory: "1Gi"
+          limits:
+            memory: "1Gi"
+      serviceAccountName: default
+      automountServiceAccountToken: true

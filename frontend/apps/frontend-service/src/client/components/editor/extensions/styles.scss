@@ -1,0 +1,14 @@
+img[data-align="center"] {
+  display: block;
+  margin: 0 auto 1em auto; // центрирование
+}
+
+img[data-align="left"] {
+  float: left;
+  margin: 0 1em 1em 0;
+}
+
+img[data-align="right"] {
+  float: right;
+  margin: 0 0 1em 1em;
+}

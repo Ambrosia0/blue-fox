@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: s3-config
+items:
+  - key: public-bucket
+    value: uploads
+  - key: endpoint
+    value: http://s3-storage-service

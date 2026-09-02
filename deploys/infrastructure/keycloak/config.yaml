@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-config
+data:
+  base-url: http://keycloak.keycloak.svc.cluster.local:8080/auth
+  secret: XWaoMLR9qctOSvsY1EsHUo8WjYDIOz2o
+  profile-client-id: profile-service
+  realm: blog

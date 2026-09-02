@@ -1,0 +1,50 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-init
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      containers:
+      - name: init
+        image: minio/mc
+        env:
+          - name: MINIO_ROOT_USER
+            valueFrom:
+              secretKeyRef:
+                name: s3-config
+                key: root-user
+          - name: MINIO_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: s3-config
+                key: root-password
+          - name: NEW_USER_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: s3-config
+                key: access-key
+          - name: NEW_USER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: s3-config
+                key: secret-key
+          - name: S3_ENDPOINT
+            valueFrom:
+              configMapKeyRef:
+                name: s3-config
+                key: endpoint
+        command:
+          - /bin/sh
+          - -c
+          - |
+            mc alias set minio "$MINIO_ENDPOINT" "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
+            mc mb --ignore-existing "minio/uploads"
+            if ! mc admin user info minio >/dev/null 2>&1; then
+              mc admin user add minio \
+                  "$NEW_USER_USERNAME" \
+                  "$NEW_USER_PASSWORD"
+            fi
+            mc admin policy attach minio readwrite --user="$NEW_USER_USERNAME"
+      restartPolicy: OnFailure

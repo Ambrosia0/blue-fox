@@ -1,0 +1,10 @@
+FROM alpine/curl AS fetch
+WORKDIR /etc/
+RUN curl -sL https://github.com/SnuK87/keycloak-kafka/releases/download/1.4.0/keycloak-kafka-1.4.0-jar-with-dependencies.jar -o keycloak-kafka.jar
+FROM quay.io/keycloak/keycloak:26.5.7 AS build
+COPY --from=fetch /etc/keycloak-kafka.jar /opt/keycloak/providers/keycloak-kafka.jar
+
+# ENV KC_HTTP_RELATIVE_PATH=/auth
+RUN /opt/keycloak/bin/kc.sh build
+
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]

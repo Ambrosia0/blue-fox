@@ -1,0 +1,169 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ordinary-gateway
+  namespace: blog
+spec:
+  gatewayClassName: ordinary-gateway-class
+  listeners:
+    - name: default-listener
+      protocol: https
+      port: 443
+      allowedRoutes:
+        kinds:
+        - kind: HTTPRoute
+        namespaces:
+          from: Same
+      hostname: localhost
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: api-tls
+      # tls:
+      #   certificateRefs:
+      #     - group: ""
+      #       kind: Secret
+      #       name: cms-cert
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: gateway-route
+  namespace: keycloak
+spec:
+  parentRefs:
+  - kind: Gateway
+    name: ordinary-gateway
+    namespace: keycloak
+  rules:
+  - matches:
+      - path:
+          type: PathPrefix
+          value: /auth/realms/
+      - path:
+          type: PathPrefix
+          value: /auth/resources/
+    backendRefs:
+      - kind: Service
+        name: keycloak
+        port: 8080
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: gateway-route
+  namespace: blog
+spec:
+  parentRefs:
+  - kind: Gateway
+    name: ordinary-gateway
+    namespace: blog
+  rules:
+  - matches:
+      - path:
+          type: PathPrefix
+          value: /api/user/comment/**
+      - path:
+          type: PathPrefix
+          value: /api/admin/comment/**
+      - path:
+          type: PathPrefix
+          value: /api/public/comment/**
+    backendRefs:
+      - name: comment-service
+        port: 8080
+  - matches:
+      - path:
+          type: PathPrefix
+          value: /api/public/post/**
+      - path:
+          type: PathPrefix
+          value: /api/user/post/**
+      - path:
+          type: PathPrefix
+          value: /api/user/editor/**
+      - path:
+          type: PathPrefix
+          value: /api/admin/post/**
+    backendRefs:
+      - kind: Service
+        name: content-service
+  - matches:
+      - path:
+          type: PathPrefix
+          value: /api/user/file/**
+      - path:
+          type: PathPrefix
+          value: /apu/admin/file/**
+    backendRefs:
+      - kind: Service
+        name: file-service
+  - matches:
+      - path:
+          type: PathPrefix
+          value: /api/public/notification
+      - path:
+          type: PathPrefix
+          value: /api/user/notification
+    backendRefs:
+      - kind: Service
+        name: notification-service
+  - matches:
+      - path:
+          type: PathPrefix
+          value: /api/user/chat/**
+      - path:
+          type: PathPrefix
+          value: /api/admin/chat/**
+    backendRefs:
+      - kind: Service
+        name: chat-service
+  - matches:
+      - path:
+          type: PathPrefix
+          value: /api/user/**
+      - path:
+          type: PathPrefix
+          value: /api/public/**
+    backendRefs:
+      - kind: Service
+        name: profile-service
+  - matches:
+      - path:
+          type: PathPrefix
+          value: /**
+    backendRefs:
+      - kind: Service
+        name: frontend-service
+    
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned
+spec:
+  selfSigned: {}
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: api-cert
+  namespace: blog
+spec:
+  secretName: api-tls
+  dnsNames:
+    - api.localhost
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer
+  commonName: test.test
+  subject: 
+    organizations:
+      - blog
+    organizationalUnits:
+      - api
+    countries:
+      - RU

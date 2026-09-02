@@ -1,0 +1,28 @@
+{
+    "properties": [
+    {
+        "name": "app.circuit-breaker.error-threshold",
+        "type": "java.lang.Integer",
+        "description": "Error threshold for circuit breaker"
+    },
+    {
+        "name": "app.circuit-breaker.reset-timeout",
+        "type": "java.time.Duration",
+        "description": "Error count reset timeout for circuit breaker"
+    },
+    {
+        "name": "app.circuit-breaker.open-timeout",
+        "type": "java.time.Duration",
+        "description": "Duration of open state of circuit breaker"
+    },
+    {
+        "name": "app.circuit-breaker.success-threshold",
+        "type": "java.time.Integer",
+        "description": "Number of success requests before circuit-breaker should close"
+    },
+    {
+        "name": "app.circuit-breaker.enable",
+        "type": "java.time.Boolean",
+        "description": "Use autoconfiguration for circuit-breakers"
+    }
+]}

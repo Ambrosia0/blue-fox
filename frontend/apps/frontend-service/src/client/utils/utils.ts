@@ -1,0 +1,1 @@
+export const TAG_REGEXP = /^#?[A-Za-z][A-Za-z0-9_-]*$/;

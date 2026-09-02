@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ambrosia.comment_service.kafka_events";
+
+import "google/protobuf/timestamp.proto";
+
+message CommentCreated {
+    uint64 id = 1;
+    uint64 post_id = 2;
+    string user_id = 3;
+    string content = 4;
+    optional string attachment_url = 5;
+    optional uint64 parent_coment = 6;
+    int64 created_at = 7;
+}
+
+message CommentDeleted {
+    uint64 id = 1;
+    uint64 post_id = 2;
+}
+
+message CommentEvent {
+    string event_id = 1;
+    oneof event {
+        CommentCreated created = 2;
+        CommentDeleted deleted = 3;
+    }
+}
+
+message CommentDelta {
+    uint64 comment_id = 1;
+    int32 delta = 2;
+}
+
+message CommentDeltas {
+    repeated CommentDelta deltas = 1;
+}
+
+message CommentAggregate {
+    repeated CommentDelta delta = 1;
+}
+
+message CommentLikeNotification {
+    map<uint64, CommentDeltas> changes = 1;
+}

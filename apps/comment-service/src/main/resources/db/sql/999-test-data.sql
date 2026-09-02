@@ -1,0 +1,1 @@
+INSERT INTO post_projection(post_id) VALUES (13);

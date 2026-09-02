@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  labels:
+    app: api-gateway
+  namespace: blog
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: api-gateway
+  template:
+    metadata:
+      labels: 
+        app: api-gateway
+    spec:
+      volumes:
+        - name: tls
+          secret:
+            secretName: api-tls
+      containers:
+        - name: api-gateway
+          image: ghcr.io/Ambrosia0/api-gateway:0.0.1-SNAPSHOT
+          env:
+            - name: JAVA_OPTS
+              value: "-XX:MaxDirectMemorySize=812m -Dio.netty.maxDirectMemory=512m"
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "1"
+            limits:
+              memory: "2Gi"
+              cpu: "1"
+          volumeMounts:
+            - mountPath: /tls
+              name: tls
+              readOnly: true
+      serviceAccountName: default
+      automountServiceAccountToken: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-gateway
+  namespace: blog
+spec:
+  type: LoadBalancer
+  selector:
+    app: app-gateway
+  ports:
+    - protocol: TCP
+      appProtocol: https
+      port: 443
+      targetPort: 8080

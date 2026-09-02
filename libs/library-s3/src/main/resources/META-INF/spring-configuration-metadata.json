@@ -1,0 +1,9 @@
+{
+    "properties": [
+        {
+            "name": "spring.cloud.aws.s3.endpoint-override",
+            "type": "java.net.URI",
+            "description": "Overrides presign endpoint"
+        }
+    ]
+}

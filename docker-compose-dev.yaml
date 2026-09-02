@@ -1,0 +1,313 @@
+services:
+  api-gateway:
+    image: ghcr.io/ambrosia0/api-gateway:0.0.1-SNAPSHOT
+    pull_policy: never
+    ports:
+      - "44556:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      JAVA_TOOL_OPTIONS: -XX:MaxDirectMemorySize=256m
+      S3_ENDPOINT: http://s3-storage:9000
+  frontend-service:
+    image: frontend-service:v1
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    pull_policy: never
+    ports:
+      - "45555:3000"
+  report-service:
+    image: ghcr.io/ambrosia0/report-service:0.0.1-SNAPSHOT
+    pull_policy: never
+    ports:
+      - "44901:8080"
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/blog
+      - DB_URL=jdbc:postgresql://postgres:5432/reportdb
+      - DB_USER=postgres
+      - DB_PASSWORD=1111
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - REDIS_URL=redis://redis:6379
+  community-service:
+    image: ghcr.io/ambrosia0/community-service:0.0.1-SNAPSHOT
+    pull_policy: never
+    ports:
+      - "44800:8080"
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+      - elasticsearch
+      - s3-storage
+    environment:
+      - S3_ACCESS_KEY=minioadmin
+      - S3_SECRET_KEY=minioadmin
+      - S3_BUCKET=publicbucket
+      - S3_ENDPOINT=http://s3-storage:9000
+      - S3_PRESIGN_ENDPOINT=http://localhost:44470
+      - SPRING_PROFILES_ACTIVE=dev
+      - OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/blog
+      - ELASTIC_URIS=http://elasticsearch:9200
+      - DB_URL=jdbc:postgresql://postgres:5432/communitydb
+      - DB_USER=postgres
+      - DB_PASSWORD=1111
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - REDIS_URL=redis://redis:6379
+  comment-service:
+    image: ghcr.io/ambrosia0/comment-service:0.0.1-SNAPSHOT
+    pull_policy: never
+    ports:
+      - "44801:8080"
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+      - s3-storage
+    environment:
+      - S3_ACCESS_KEY=minioadmin
+      - S3_SECRET_KEY=minioadmin
+      - S3_BUCKET=publicbucket
+      - S3_ENDPOINT=http://s3-storage:9000
+      - S3_PRESIGN_ENDPOINT=http://localhost:44470
+      - SPRING_PROFILES_ACTIVE=dev
+      - OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/blog
+      - DB_URL=jdbc:postgresql://postgres:5432/commentdb
+      - DB_USER=postgres
+      - DB_PASSWORD=1111
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - REDIS_URL=redis://redis:6379
+  content-service:
+    image: ghcr.io/ambrosia0/content-service:0.0.1-SNAPSHOT
+    pull_policy: never
+    ports:
+      - "44802:8080"
+    depends_on:
+      - postgres
+      - kafka
+      - redis
+      - elasticsearch
+      - s3-storage
+    environment:
+      - S3_ACCESS_KEY=minioadmin
+      - S3_SECRET_KEY=minioadmin
+      - S3_BUCKET=publicbucket
+      - S3_ENDPOINT=http://s3-storage:9000
+      - S3_PRESIGN_ENDPOINT=http://localhost:44470
+      - SPRING_PROFILES_ACTIVE=dev
+      - OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/blog
+      - DB_URL=jdbc:postgresql://postgres:5432/contentdb
+      - DB_USER=postgres
+      - DB_PASSWORD=1111
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - REDIS_URL=redis://redis:6379
+      - ELASTIC_URIS=http://elasticsearch:9200
+      - SPRING_GRPC_CLIENT_CHANNELS_PROFILE_CHANNEL_ADDRESS=profile-service:9090
+      - SPRING_GRPC_CLIENT_CHANNELS_COMMUNITY_CHANNEL_ADDRESS=community-service:9090
+  notification-service:
+    image: ghcr.io/ambrosia0/notification-service
+    pull_policy: never
+    ports:
+      - 8080:44445
+    depends_on:
+      - kafka
+    environment:
+      - OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/blog
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+  profile-service:
+    image: ghcr.io/ambrosia0/profile-service:0.0.1-SNAPSHOT
+    pull_policy: never
+    ports:
+      - "44804:8080"
+      - "9090"
+    depends_on:
+      - postgres
+      - keycloak
+      - redis
+      - kafka
+      - elasticsearch
+      - s3-storage
+    environment:
+      - S3_ACCESS_KEY=minioadmin
+      - S3_SECRET_KEY=minioadmin
+      - S3_BUCKET=publicbucket
+      - S3_ENDPOINT=http://s3-storage:9000
+      - S3_PRESIGN_ENDPOINT=http://localhost:44470
+      - KC_REALM=blog
+      - SPRING_PROFILES_ACTIVE=dev
+      - KC_CLIENT_ID=profile-service
+      - KC_BASE_URL=http://keycloak:8080/auth
+      - OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/blog
+      - KC_SECRET=XWaoMLR9qctOSvsY1EsHUo8WjYDIOz2o
+      - ELASTIC_URIS=http://elasticsearch:9200
+      - DB_URL=jdbc:postgresql://postgres:5432/profiledb
+      - DB_USER=postgres
+      - DB_PASSWORD=1111
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - REDIS_URL=redis://redis:6379
+  keycloak:
+    image: ghcr.io/ambrosia0/keycloak-kafka
+    build:
+      context: ./infra/keycloak
+      dockerfile: Dockerfile
+    command:
+      - start
+      - --import-realm
+    pull_policy: never
+    ports:
+      - "44447:8080"
+      - "44448:7800"
+      - "44449:57800"
+    depends_on:
+      - postgres
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+      - KC_HTTP_RELATIVE_PATH=/auth
+      - KC_PROXY_HEADERS=xforwarded
+      - KC_HTTP_ENABLED=true
+      - KC_HOSTNAME_STRICT=false
+      - KC_HEALTH_ENABLED=true
+      - KC_CACHE=local
+      - KC_DB_URL_HOST=postgres
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloakdb
+      - KC_DB_PASSWORD=1111
+      - KC_DB_USERNAME=postgres
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_TOPIC=blog.keycloak.event
+      - KAFKA_EVENTS=REGISTER,DELETE_ACCOUNT
+      - KAFKA_CLIENT_ID=keycloak-client
+      - KAFKA_ADMIN_TOPIC=blog.keycloak.event.admin
+    volumes:
+      - ./infra/keycloak/dev-realm.json:/opt/keycloak/data/import/blog-realm.json:ro
+  redis:
+    image: redis:8.6.1
+    ports:
+      - "44450"
+  
+  kafka:
+    image: apache/kafka-native:latest
+    ports:
+      - "9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+  # kafka-connect:
+  #   image: quay.io/debezium/connect:latest
+  #   depends_on: 
+  #     - kafka
+  #   ports:
+  #     - 8083:8083
+  #   environment:
+  #     BOOTSTRAP_SERVERS: kafka:9092
+  #     GROUP_ID: 1
+  #     CONFIG_STORAGE_TOPIC: connect_configs
+  #     OFFSET_STORAGE_TOPIC: connect_offsets
+  #     STATUS_STORAGE_TOPIC: connect_statuses
+  #     KEY_CONVERTER_SCHEMAS_ENABLE: "false"
+  #     VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
+  # debezium-register:
+  #   image: alpine/curl:8.21.0
+  #   depends_on:
+  #     - kafka-connect
+  #     - postgres
+  #   entrypoint:
+  #     - "/bin/sh"
+  #     - "-c"
+  #   command: 
+  #   - |
+  #     until curl -sf http://kafka-connect:8083/ > /dev/null; do
+  #       echo "waiting kafka connect..."
+  #       sleep 2
+  #     done
+        # for config in /config/*.json; do
+        #   echo "registering $config"
+        #   curl -X POST http://kafka-connect:8083/connectors \
+        #     -H 'Content-Type: application/json' \
+        #     --data "@$config"
+  #   volumes:
+  #     - ./infra/kafka/connector.json:/config/connector.json:ro
+  s3-storage:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z-cpuv1
+    ports:
+      - "44470:9000"
+      - 9001
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+  minio-init:
+    image: minio/mc
+    depends_on:
+      - s3-storage
+    volumes:
+      - ./infra/minio/init.sh:/init-minio.sh:ro
+    environment:
+      BUCKET: publicbucket
+      MINIO_ALIAS: s3-storage
+      MINIO_ENDPOINT: http://s3-storage:9000
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    entrypoint: ["/bin/sh", "/init-minio.sh"]
+  kafka-init:
+    image: apache/kafka:latest
+    depends_on:
+      - kafka
+    volumes:
+      - ./infra/kafka/kafka-topics.txt:/config/topics.txt:ro
+      - ./infra/kafka/kafka-init.sh:/kafka-init.sh
+    command: ["/bin/sh", "/kafka-init.sh"]
+
+  postgres:
+    image: ghcr.io/ambrosia0/postgres-18-rum:latest
+    build:
+      context: ./infra/postgres
+      dockerfile: Dockerfile
+    ports:
+      - "5432"
+    pull_policy: never
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1111
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_wal_senders=1
+      - -c
+      - max_replication_slots=1
+    volumes:
+      - postgres_data:/var/lib/postgresql/18/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+  elasticsearch:
+    image: elasticsearch:9.3.2
+    ports:
+      - "9200"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+volumes:
+  postgres_data:
+  elastic_data:
+  minio_data:
