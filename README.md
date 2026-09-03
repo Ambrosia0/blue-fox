@@ -59,7 +59,7 @@ The project consists of the following microservices:
 
 ```bash
 # Run all services via docker-compose
-docker-compose up -d
+docker compose -f docker-compose-dev.yaml up -d
 ```
 
 ### Building the Project
@@ -92,20 +92,9 @@ docker build -t frontend-app .
 ./gradlew community-service:test
 ```
 
-#### Native Image Build
-
-```bash
-./gradlew bootBuildImage -Pnative
-```
-
 #### Image Build without Elasticsearch
 ```bash
 ./gradlew bootBuildImage -Pspring.active.profiles=es-disabled
-```
-
-#### Native image build with compression
-```bash
-./gradlew bootBuildImage -Pnative -Pcompress
 ```
 
 ## Deployment
