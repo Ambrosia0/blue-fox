@@ -15,7 +15,6 @@ import com.ambrosia.profile_service.user.model.dto.UserProjection;
 import com.ambrosia.profile_service.user.model.entity.User;
 import com.ambrosia.profile_service.user.model.entity.UserSettings;
 import com.ambrosia.profile_service.user.repository.UserRepository;
-import com.ambrosia.profile_service.user.repository.UserSettingsRepository;
 import com.ambrosia.profile_service.user.service.UserProjectionService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,8 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserProjectionServiceImpl implements UserProjectionService{
     private final UserRepository userRepository;
-
-    private final UserSettingsRepository userSettingsRepository;
 
     private final UserIndexService userIndexService;
 
@@ -50,11 +47,10 @@ public class UserProjectionServiceImpl implements UserProjectionService{
                 .isNew(true)
                 .isActive(true)
                 .isEnabled(userProjection.enabled())
-                .build()
-            );
-            userSettingsRepository.save(UserSettings.builder()
-                .id(user.getId())
-                .isNew(true)
+                .userSettings(UserSettings.builder()
+                    .id(userProjection.id())
+                    .build()
+                )
                 .build()
             );
             userIndexService.index(user);
