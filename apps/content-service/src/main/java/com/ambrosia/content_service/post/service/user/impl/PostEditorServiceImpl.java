@@ -6,9 +6,11 @@ import java.util.UUID;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ambrosia.content_service.community.model.dto.CommunityUserData;
 import com.ambrosia.content_service.community.service.CommunityPermissionService;
 import com.ambrosia.content_service.core.PostValidator;
 import com.ambrosia.content_service.core.PreviewConverter;
@@ -25,8 +27,9 @@ import com.ambrosia.content_service.post.model.entity.Post;
 import com.ambrosia.content_service.post.repository.PostRepository;
 import com.ambrosia.content_service.post.service.mapper.PostMapper;
 import com.ambrosia.content_service.post.service.user.PostEditorService;
-import com.ambrosia.content_service.post.utils.policy.PostOwnershipPolicy;
+import com.ambrosia.content_service.post.utils.policy.PostPolicy;
 import com.ambrosia.content_service.search.service.PostIndexService;
+import com.ambrosia.content_service.search.service.mappers.PostIndexMapper;
 import com.ambrosia.outbox.kafka.KafkaOutboxService;
 
 import lombok.AllArgsConstructor;
@@ -50,8 +53,10 @@ public class PostEditorServiceImpl implements PostEditorService {
 
     private final KafkaOutboxService kafkaOutboxService;
 
+    private final PostIndexMapper postIndexMapper;
+
     @Override
-    public void deletePost(long postId, PostOwnershipPolicy policy) {
+    public void deletePost(long postId, PostPolicy policy) {
         var deletionProjection = postRepository.findDeletionProjectionById(postId)
             .orElseThrow(() -> new PostDoesntExistException("Editable post doesn't exist!"));
         policy.validatePostOwnership(deletionProjection.authorId());
@@ -65,13 +70,37 @@ public class PostEditorServiceImpl implements PostEditorService {
     }
 
     @Override
-    public PostEditorViewResponse createPost(UUID authorId, PostCreateRequest postCreateRequest) {
-        if(postCreateRequest.communityId() != null)
-            communityPermissionService.validatePostCreate(authorId, postCreateRequest.communityId());
+    public PostEditorViewResponse createPost(UUID authorId, PostPolicy policy, PostCreateRequest postCreateRequest) {
+        if(postCreateRequest.replyId() != null && !postRepository.existsById(postCreateRequest.replyId()))
+            throw new PostDoesntExistException();
+
+        CommunityUserData userData = null;
+        if(postCreateRequest.replyId() != null)
+            userData = communityPermissionService.validatePostToReply(
+                    authorId, 
+                    policy, 
+                    postCreateRequest.replyId(), 
+                    postCreateRequest.communityId()
+            );
+        else if(postCreateRequest.communityId() != null)
+            userData = communityPermissionService.validatePostInCommunity(
+                authorId, 
+                policy, 
+                postCreateRequest.communityId()
+            );
+
         var post = postRepository.save(Post.builder()
             .authorId(authorId)
             .title(postCreateRequest.title())
-            .communityId(postCreateRequest.communityId())
+            .communityId(userData != null? 
+                AggregateReference.to(userData.communityId()): 
+                null
+            )
+            .replyId(postCreateRequest.replyId() != null? 
+                    AggregateReference.to(postCreateRequest.replyId()): 
+                    null
+            )
+            .isNew(true)
             .updatedAt(Instant.now())
             .build()
         );
@@ -109,22 +138,38 @@ public class PostEditorServiceImpl implements PostEditorService {
 
     @Transactional(noRollbackFor = UserBannedException.class)
     @Override
-    public void publishPost(UUID userId, long postId) {
+    public void publishPost(UUID userId, PostPolicy policy, long postId) {
         var post = postRepository.findByAuthorIdAndIdAndPublishedIsFalse(userId, postId)
             .orElseThrow(() -> new PostDoesntExistException());
-        if(post.getCommunityId() != null)
-            communityPermissionService.validatePostCreate(userId, postId);
+        
+        CommunityUserData userData = null;
+        if(post.getReplyId() != null){
+            userData = communityPermissionService.validatePostToReply(
+                userId, 
+                policy, 
+                postId, 
+                post.getReplyId().getId()
+            );
+        }
+        else if(post.getCommunityId() != null){
+            userData = communityPermissionService.validatePostInCommunity(userId, policy, postId);
+        }
+
         post.setPublishedAt(Instant.now());
         post.setPublished(true);
         
         post = postRepository.save(post);
-        postIndexService.index(post);
+        postIndexService.index(postIndexMapper.toIndex(post, userData));
 
-        var event = PostMessageFactory.createOperation(post);
+        var event = PostMessageFactory.createOperation(
+            post, 
+            userData != null? 
+                !userData.isCommunityPrivate(): 
+                true
+            );
+
         kafkaOutboxService.put(event);
-        applicationEventPublisher.publishEvent(
-            PostMessageFactory.createOperation(post)
-        );
+        applicationEventPublisher.publishEvent(event);
     }
     
     @Override

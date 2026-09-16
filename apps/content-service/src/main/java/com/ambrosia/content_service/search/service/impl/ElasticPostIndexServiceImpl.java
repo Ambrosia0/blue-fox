@@ -10,20 +10,17 @@ import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.ambrosia.content_service.community.service.CommunitySearchService;
-import com.ambrosia.content_service.exception.api.CommunityDoesntExistException;
 import com.ambrosia.content_service.follow.service.FollowSnapshotProvider;
 import com.ambrosia.content_service.post.model.dto.response.PostViewResponse;
 import com.ambrosia.content_service.post.model.dto.response.PreviewWithScoreResponse;
-import com.ambrosia.content_service.post.model.entity.Post;
 import com.ambrosia.content_service.post.service.PostQueryService;
-import com.ambrosia.content_service.post.utils.TextExtractor;
 import com.ambrosia.content_service.search.model.dto.EventFilter;
-import com.ambrosia.content_service.search.model.entity.elastic.CommunityElastic;
+import com.ambrosia.content_service.search.model.dto.PostIndex;
 import com.ambrosia.content_service.search.model.entity.elastic.PostElastic;
 import com.ambrosia.content_service.search.repository.elastic.custom.ElasticPostSearchRepository;
 import com.ambrosia.content_service.search.service.PostIndexService;
 import com.ambrosia.content_service.search.service.PostSearchService;
+import com.ambrosia.content_service.search.service.mappers.PostIndexMapper;
 import com.ambrosia.outbox.elastic.SearchIndexOutboxService;
 
 import jakarta.annotation.Nullable;
@@ -40,38 +37,22 @@ public class ElasticPostIndexServiceImpl implements PostIndexService, PostSearch
 
     private final PostQueryService postQueryService;
 
-    private final TextExtractor textExtractor;
-
-    private final CommunitySearchService communitySearchService;
-
     private final SearchIndexOutboxService searchIndexOutboxService;
 
+    private final PostIndexMapper postIndexMapper;
+
     @Override
-    public void index(Post post) {
-        var builder = convert(post)
-            .isNew(true);
-        if(post.getCommunityId() != null){
-            var community = communitySearchService.findById(post.getCommunityId())
-                .orElseThrow(() -> new CommunityDoesntExistException());
-            builder.community(
-                CommunityElastic.create(community.getId(), community.isPrivate())
-            );
-        }
-        searchIndexOutboxService.put(builder.build());
+    public void index(PostIndex postIndex) {
+        searchIndexOutboxService.put(
+            postIndexMapper.toEntity(postIndex)
+        );
     }
 
     @Override
-    public void reIndex(Post post) {
-        var builder = convert(post)
-            .isNew(false);
-        if(post.getCommunityId() != null){
-            var community = communitySearchService.findById(post.getCommunityId())
-                .orElseThrow(() -> new CommunityDoesntExistException());
-            builder.community(
-                CommunityElastic.create(community.getId(), community.isPrivate())
-            );
-        }
-        searchIndexOutboxService.put(builder.build());
+    public void reIndex(PostIndex postIndex) {
+        searchIndexOutboxService.put(
+            postIndexMapper.toEntity(postIndex)
+        );
     }
 
     @Override
@@ -105,31 +86,14 @@ public class ElasticPostIndexServiceImpl implements PostIndexService, PostSearch
                 .map(SearchHit::getId)
                 .map(Long::parseLong)
                 .toList();
-        var previews = (
-            requestingUser != null?
-                postQueryService.getPostPreviewsByIdsWithLike(ids, requestingUser):
-                postQueryService.getPostPreviewsByIds(ids))
-            .stream()
-            .collect(Collectors.toMap(PostViewResponse::id, v -> v));
+        var previews = postQueryService.getPostPreviewsByIds(ids, requestingUser)
+                .stream()
+                .collect(Collectors.toMap(PostViewResponse::id, v -> v));
         return hits.stream().map(hit ->
             new PreviewWithScoreResponse(
                 previews.get(Long.parseLong(hit.getId())),
                 hit.getScore()
             )
         ).toList();
-    }
-
-    private PostElastic.PostElasticBuilder convert(Post post){
-        return PostElastic.builder()
-                .id(post.getId())
-                .esid(post.getId().toString())
-                .content(textExtractor.extractText(post.getContent()))   
-                .tags(post.getTags())
-                .authorId(post.getAuthorId().toString())
-                .likeCount(post.getLikeCount())
-                .title(post.getTitle())
-                .publishedAt(post.getPublishedAt())
-                .version(post.getVersion())
-                .visible(post.isVisible());
     }
 }

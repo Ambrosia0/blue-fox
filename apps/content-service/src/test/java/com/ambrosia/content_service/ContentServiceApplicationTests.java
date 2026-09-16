@@ -41,6 +41,7 @@ import com.ambrosia.content_service.post.model.dto.response.PostEditorViewRespon
 import com.ambrosia.content_service.post.model.dto.response.PreviewWithScoreResponse;
 import com.ambrosia.content_service.post.repository.PostRepository;
 import com.ambrosia.content_service.post.service.user.PostEditorService;
+import com.ambrosia.content_service.post.utils.policy.UserActor;
 import com.ambrosia.content_service.search.model.entity.elastic.PostElastic;
 import com.ambrosia.content_service.search.repository.elastic.ElasticPostRepository;
 import com.ambrosia.content_service.util.FileMetadataFactory;
@@ -78,15 +79,28 @@ public class ContentServiceApplicationTests extends BaseIntegrationTest{
         .header("test", "testHEader")
         .build();
 
-    private final static PostCreateRequest post = new PostCreateRequest("test title", null);
+    private final static PostCreateRequest post = PostCreateRequest.builder()
+        .title("Test title")
+        .build();
     
     @BeforeAll
     void init(WebApplicationContext context){
         when(communityService.isUserAllowed(any())).thenReturn(ScopeCheckResponse.newBuilder().setIsAllowed(true).build());
         when(profileService.isUserExist(any())).thenReturn(UserExistenceResponse.newBuilder().setIsExist(true).build());
-        var res = postEditorService.createPost(UUID.fromString(jwt.getSubject()), new PostCreateRequest("Teeeest title", null));
+
+        var userId = UUID.fromString(jwt.getSubject());
+        var res = postEditorService.createPost(
+            userId, 
+            new UserActor(userId),
+            PostCreateRequest.builder()
+                .title("test title")
+                .build()
+        );
         postEditorService.editPost(res.authorId(), res.id(), new PostEditRequest("Test title", PostTemplate.template, List.of("#test"), 0L));
-        postEditorService.publishPost(UUID.fromString(jwt.getSubject()), res.id());
+        postEditorService.publishPost(
+            UUID.fromString(jwt.getSubject()), 
+            new UserActor(userId),
+            res.id());
         relay.flush();
 
     }

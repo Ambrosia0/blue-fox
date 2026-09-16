@@ -24,7 +24,7 @@ subprojects{
 
     plugins.withId('org.springframework.boot'){
         tasks.named('bootBuildImage'){
-            imageName = "ghcr.io/Ambrosia0/${project.name}:${project.version}"
+            imageName = "ghcr.io/ambrosia0/${project.name}:${project.version}"
             if(project.hasProperty("native")){
                 builder = "paketobuildpacks/builder-jammy-tiny"
                 environment["BP_NATIVE_IMAGE"] = "true"

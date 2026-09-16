@@ -23,10 +23,11 @@ import com.ambrosia.content_service.search.model.dto.SearchType;
 import com.ambrosia.content_service.search.model.entity.elastic.PostElastic;
 import com.ambrosia.content_service.search.repository.elastic.ElasticPostRepository;
 import com.ambrosia.content_service.search.service.PostIndexService;
+import com.ambrosia.content_service.search.service.mappers.PostIndexMapper;
 
 import tools.jackson.databind.ObjectMapper;
 
-import com.ambrosia.content_service.util.Factory;
+import com.ambrosia.content_service.util.PostFactory;
 import com.ambrosia.content_service.util.PostTemplate;
 import com.ambrosia.outbox.elastic.ElasticsearchOutboxRelay;
 
@@ -44,6 +45,8 @@ public class ElasticPostUserServiceIntegrationTests extends BaseIntegrationTest 
     @Autowired ElasticsearchOperations elasticsearchOperations;
 
     @Autowired ElasticsearchOutboxRelay relay;
+
+    @Autowired PostIndexMapper postIndexMapper;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final PreviewConverter previewConverter = new TipTapPreviewConverter(objectMapper, 50, 1);
@@ -118,10 +121,10 @@ public class ElasticPostUserServiceIntegrationTests extends BaseIntegrationTest 
     }
 
     private Post createTestPost(){
-        var post = Factory.createTestPost();
+        var post = PostFactory.createTestPost();
         post.setPreview(previewConverter.convert(PostTemplate.template));
         post = postRepository.save(post);
-        postIndexService.index(post);
+        postIndexService.index(postIndexMapper.toIndex(post, null));
         return post;
     }
 

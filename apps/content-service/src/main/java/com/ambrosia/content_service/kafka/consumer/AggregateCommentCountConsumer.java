@@ -6,7 +6,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import com.ambrosia.content_service.kafka_events.PostDelta;
-import com.ambrosia.content_service.post.service.PostInternalService;
+import com.ambrosia.content_service.post.service.PostCounterBatchService;
 import com.ambrosia.library_core.dto.Topics;
 
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Component
 public class AggregateCommentCountConsumer {
-    private final PostInternalService postInternalService;
+    private final PostCounterBatchService PostCounterBatchService;
 
     @KafkaListener(
         topics = Topics.POST_COMMENT_COUNT_AGGREGATE,
@@ -33,6 +33,6 @@ public class AggregateCommentCountConsumer {
                 }
             })
             .toList();
-        postInternalService.incrementCommentCount(batch);
+        PostCounterBatchService.incrementCommentCount(batch);
     }
 }

@@ -9,16 +9,17 @@ import com.ambrosia.content_service.post.model.entity.Post;
 import io.github.robsonkades.uuidv7.UUIDv7;
 
 public class PostMessageFactory {
-    public static PostEvent createOperation(Post post){
+    public static PostEvent createOperation(Post post, boolean isBroadcast){
         var builder = PostCreated.newBuilder()
             .setId(post.getId())
             .setTitle(post.getTitle())
             .setAuthorId(post.getAuthorId().toString())
-            .setPreview(post.getPreview());
+            .setPreview(post.getPreview())
+            .setIsBroadcast(isBroadcast);
         if(post.getPublishedAt() != null)
             builder.setPublishedAt(post.getPublishedAt().toEpochMilli());
         if(post.getCommunityId() != null)
-            builder.setCommunityId(post.getCommunityId());
+            builder.setCommunityId(post.getCommunityId().getId());
         builder.setAuthorId(post.getAuthorId().toString());
         return PostEvent.newBuilder()
             .setEventId(UUIDv7.randomUUIDString())

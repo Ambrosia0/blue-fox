@@ -17,7 +17,7 @@ import com.ambrosia.content_service.post.model.entity.Post;
 import com.ambrosia.content_service.post.repository.PostRepository;
 import com.ambrosia.content_service.post.utils.TipTapPreviewConverter;
 import com.ambrosia.content_service.search.repository.elastic.ElasticPostRepository;
-import com.ambrosia.content_service.util.Factory;
+import com.ambrosia.content_service.util.PostFactory;
 import com.ambrosia.content_service.util.PostTemplate;
 
 import tools.jackson.databind.ObjectMapper;
@@ -55,7 +55,7 @@ public class LikeAggregationServiceTest extends BaseIntegrationTest{
     }
 
     private Post createTestPost(){
-        var post = Factory.createTestPost();
+        var post = PostFactory.createTestPost();
         post.setPreview(previewConverter.convert(PostTemplate.template));
         return postRepository.save(post);
     }

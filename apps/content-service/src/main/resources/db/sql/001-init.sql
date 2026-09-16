@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS post(
     published_at timestamp DEFAULT NULL,
     created_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     visible boolean NOT NULL DEFAULT 'true',
-    version BIGINT NOT NULL DEFAULT 0
+    version BIGINT NOT NULL DEFAULT 0,
+    reply_id BIGINT REFERENCES post(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS document_vector(

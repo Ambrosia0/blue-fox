@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import com.ambrosia.content_service.community.service.CommunityPrivacyService;
 import com.ambrosia.content_service.exception.api.NotEnoughPermissionsException;
 import com.ambrosia.content_service.follow.service.CommunityFollowProjectionService;
 import com.ambrosia.content_service.grpc.ProfileService;
@@ -32,8 +31,6 @@ public class PostUserServiceImpl implements PostUserService{
     private final PostRepository postRepository;
   
     private final PostQueryService postQueryService;
-    
-    private final CommunityPrivacyService communityPrivacyService;
 
     private final LikeUserService likeUserService;
 
@@ -49,10 +46,11 @@ public class PostUserServiceImpl implements PostUserService{
     @Override
     public PostContentResponse getPost(long id, @Nullable UUID requestingUser) {
         var post = postQueryService.getPublishedPostWithCommunity(id);
-        if(post.getCommunityId() != null){
-            if(requestingUser != null && !communityFollowProjectionService.isFollowedOnPrivateOrDoesntPrivate(post.getCommunityId(), requestingUser)){
+        if(post.getCommunity() != null){
+            if(requestingUser != null && 
+                !communityFollowProjectionService.isFollowedOnPrivateOrDoesntPrivate(post.getCommunity().id(), requestingUser)){
                 throw new NotEnoughPermissionsException();
-            }else if(communityPrivacyService.isPrivate(post.getCommunityId()).get()){
+            }else if(post.getCommunity().isPrivate()){
                 throw new NotEnoughPermissionsException();
             }
         }

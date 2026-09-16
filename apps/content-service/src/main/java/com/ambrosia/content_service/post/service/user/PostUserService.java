@@ -9,9 +9,28 @@ import com.ambrosia.content_service.search.model.dto.EventFilter;
 
 import jakarta.annotation.Nullable;
 
+/**
+ * Service which administrates post view use-cases
+ * PostUserService
+ */
 public interface PostUserService {
-    PostContentResponse getPost(long id, @Nullable UUID requestingUser);
-    List<PreviewWithScoreResponse> search(EventFilter eventFilter, @Nullable UUID requestingUser, int pageSize);
+    /**
+     * Returns post content
+     * @param id post id
+     * @param requestingUserId Id of the requesting user
+     * @return post read model
+     */
+    PostContentResponse getPost(long id, @Nullable UUID requestingUserId);
+    
+    /**
+     * Returns searched posts
+     * @param eventFilter filter for searched content
+     * @param requestingUserId Id of the requesting user
+     * @param pageSize page size
+     * @return search read model
+     */
+    List<PreviewWithScoreResponse> search(EventFilter eventFilter, @Nullable UUID requestingUserId, int pageSize);
+
     boolean isAuthor(long postId, UUID userId);
     boolean isExists(long postId);
 }
