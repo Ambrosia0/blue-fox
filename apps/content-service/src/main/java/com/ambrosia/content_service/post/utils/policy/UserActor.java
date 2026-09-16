@@ -23,4 +23,10 @@ public record UserActor(
         if(!userData.isFollowed())
             throw new DoesntFollowedException();
     }
+
+    @Override
+    public void validateReply(CommunityUserData userData) {
+        if(userData.isBanned())
+            throw new UserBannedException();
+    }
 }

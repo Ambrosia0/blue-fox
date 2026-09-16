@@ -27,7 +27,7 @@ import com.ambrosia.content_service.search.service.mappers.PostIndexMapper;
 
 import tools.jackson.databind.ObjectMapper;
 
-import com.ambrosia.content_service.util.Factory;
+import com.ambrosia.content_service.util.PostFactory;
 import com.ambrosia.content_service.util.PostTemplate;
 import com.ambrosia.outbox.elastic.ElasticsearchOutboxRelay;
 
@@ -121,7 +121,7 @@ public class ElasticPostUserServiceIntegrationTests extends BaseIntegrationTest 
     }
 
     private Post createTestPost(){
-        var post = Factory.createTestPost();
+        var post = PostFactory.createTestPost();
         post.setPreview(previewConverter.convert(PostTemplate.template));
         post = postRepository.save(post);
         postIndexService.index(postIndexMapper.toIndex(post, null));

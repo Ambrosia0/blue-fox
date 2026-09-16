@@ -27,5 +27,10 @@ public interface CommunityPermissionService {
      * @param communityId community where post is creating
      * @return community data in which post is creating
      */
-    CommunityUserData validatePostToReply(UUID userId, PostPolicy policy, long postId, @Nullable Long communityId);
+    @Nullable CommunityUserData validatePostToReply(
+        UUID userId, 
+        PostPolicy policy, 
+        long postId, 
+        @Nullable Long communityId
+    );
 }

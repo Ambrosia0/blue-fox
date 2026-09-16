@@ -33,7 +33,7 @@ public class CommunityQueryRepositoryImpl implements CommunityQueryRepository{
                 WHERE cb.user_id = :userId
                 AND cb.community_id = cp.id
             ) as is_banned,
-            cp.id
+            cp.id as community_id
         FROM community_projection cp
         WHERE cp.id = :communityId
         """;
@@ -60,7 +60,7 @@ public class CommunityQueryRepositoryImpl implements CommunityQueryRepository{
                 WHERE cb.user_id = :userId
                 AND cb.community_id = cp.id
             ) as is_banned,
-            cp.id
+            cp.id as community_id
         FROM community_projection cp
         WHERE cp.id = :communityId
 
@@ -78,7 +78,7 @@ public class CommunityQueryRepositoryImpl implements CommunityQueryRepository{
                 WHERE cb.user_id = :userId
                 AND cb.community_id = cp.id
             ) as is_banned,
-            cp.id
+            cp.id as community_id
         FROM post p
         JOIN community_projection cp ON cp.id = p.community_id
         WHERE p.id = :postId
@@ -86,6 +86,7 @@ public class CommunityQueryRepositoryImpl implements CommunityQueryRepository{
         return jdbcClient
             .sql(sql)
             .param("postId", postId)
+            .param("userId", userId)
             .param("communityId", communityId)
             .query(CommunityUserData.class)
             .list();

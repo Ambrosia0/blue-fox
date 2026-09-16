@@ -7,4 +7,5 @@ import com.ambrosia.content_service.community.model.dto.CommunityUserData;
 public interface PostPolicy {
     void validateCreate(CommunityUserData userData);
     void validatePostOwnership(UUID ownerId);
+    void validateReply(CommunityUserData userData);
 }

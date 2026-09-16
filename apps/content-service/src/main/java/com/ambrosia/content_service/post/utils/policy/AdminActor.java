@@ -10,4 +10,7 @@ public record AdminActor() implements PostPolicy{
 
     @Override
     public void validateCreate(CommunityUserData userData) {}
+
+    @Override
+    public void validateReply(CommunityUserData userData) {}
 }

@@ -28,34 +28,47 @@ public class CommunityPermissionServiceImpl implements CommunityPermissionServic
     }
     
     @Override
-    public CommunityUserData validatePostToReply(
+    public @Nullable CommunityUserData validatePostToReply(
             UUID userId, 
             PostPolicy policy, 
             long postId, 
             @Nullable Long communityId) {
+        
         var communityData = communityQueryRepository.findCommunityUserDataByReplyId(
                 userId,  
                 communityId,
                 postId
             );
-        if(communityData.isEmpty())
-            throw new CommunityDoesntExistException();
+        if(communityData.isEmpty()){
+            if(communityId != null) // community must be present
+                throw new CommunityDoesntExistException();
+            else
+                return null; // there is no related community to post
+        }
         
-        var p1 = communityData.getFirst();
-        var p2 = communityData.getLast();
+        var c1 = communityData.getFirst();
+        var c2 = communityData.getLast();
 
-        if(communityData.size() == 1 && p1.isCommunityPrivate())
+        // reply can be only inside private community
+        if(communityData.size() == 1 && c1.isCommunityPrivate())
             throw new PrivateReplyException();
 
-        if((p1.communityId() != p2.communityId()) && 
-                (p1.isCommunityPrivate() || p2.isCommunityPrivate()))
+        // can't reply outside private community
+        if(!c1.communityId().equals(c2.communityId()) && 
+                (c1.isCommunityPrivate() || c2.isCommunityPrivate()))
             throw new PrivateReplyException();
 
-        policy.validateCreate(p1);
-        policy.validateCreate(p2);
+        CommunityUserData toReturn = null;
         
-        return p1.communityId() == communityId? 
-            p1:
-            p2;
+        // posting to community
+        if(c1.communityId().equals(communityId)){
+            policy.validateCreate(c1);
+            policy.validateReply(c2);
+            toReturn = c1;
+        }else if(communityId == null){ // only checking reply policy if not posting to community
+            policy.validateReply(c1);
+            toReturn = c2;
+        }
+        return toReturn;
     }
 }

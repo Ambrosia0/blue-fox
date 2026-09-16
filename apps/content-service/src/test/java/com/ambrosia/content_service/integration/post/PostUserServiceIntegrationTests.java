@@ -27,7 +27,7 @@ import com.ambrosia.content_service.search.model.dto.EventFilter.SortField;
 import com.ambrosia.content_service.search.repository.DocumentVectorRepository;
 import com.ambrosia.content_service.search.service.PostIndexService;
 import com.ambrosia.content_service.search.service.mappers.PostIndexMapper;
-import com.ambrosia.content_service.util.Factory;
+import com.ambrosia.content_service.util.PostFactory;
 import com.ambrosia.content_service.util.PostTemplate;
 
 import tools.jackson.databind.ObjectMapper;
@@ -148,7 +148,7 @@ public class PostUserServiceIntegrationTests extends BaseIntegrationTest {
     }
 
     private Post createTestPost(){
-        var post = Factory.createTestPost();
+        var post = PostFactory.createTestPost();
         post.setPreview(previewConverter.convert(PostTemplate.template));
         post = postRepository.save(post);
         postIndexService.index(postIndexMapper.toIndex(post, null));
