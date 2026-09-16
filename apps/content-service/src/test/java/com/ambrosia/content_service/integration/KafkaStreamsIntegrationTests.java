@@ -21,7 +21,7 @@ import com.ambrosia.content_service.BaseIntegrationTest;
 import com.ambrosia.content_service.kafka.consumer.CommunityEventConsumer;
 import com.ambrosia.content_service.post.model.entity.Post;
 import com.ambrosia.content_service.post.repository.PostRepository;
-import com.ambrosia.content_service.util.Factory;
+import com.ambrosia.content_service.util.PostFactory;
 import com.ambrosia.library_core.dto.Topics;
 
 @TestPropertySource(properties = {
@@ -48,7 +48,7 @@ public class KafkaStreamsIntegrationTests extends BaseIntegrationTest{
 
     private Post createPost(){
         return postRepository.save(
-            Factory.createTestPost()
+            PostFactory.createTestPost()
         );
     }
 

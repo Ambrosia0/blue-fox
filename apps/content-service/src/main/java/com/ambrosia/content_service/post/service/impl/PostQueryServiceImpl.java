@@ -27,12 +27,7 @@ public class PostQueryServiceImpl implements PostQueryService{
     }
 
     @Override
-    public List<PostViewResponse> getPostPreviewsByIds(List<Long> ids) {
-        return postQueryRepository.findPreviewsByIdInList(ids);
-    }
-
-    @Override
-    public List<PostViewResponse> getPostPreviewsByIdsWithLike(List<Long> ids, UUID userId) {
-        return postQueryRepository.findPreviewsByIdInListWithLike(ids, userId);
+    public List<PostViewResponse> getPostPreviewsByIds(List<Long> ids, UUID userId) {
+        return postQueryRepository.findPreviewsByIdInList(ids, userId);
     }
 }

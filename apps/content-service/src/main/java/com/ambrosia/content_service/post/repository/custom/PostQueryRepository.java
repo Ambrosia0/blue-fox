@@ -9,6 +9,5 @@ import com.ambrosia.content_service.post.model.dto.response.PostViewResponse;
 
 public interface PostQueryRepository {
     Optional<PostContentResponse> findPublishedByPostId(long postId);
-    List<PostViewResponse> findPreviewsByIdInList(List<Long> postIds);
-    List<PostViewResponse> findPreviewsByIdInListWithLike(List<Long> postIds, UUID requestingUser);
+    List<PostViewResponse> findPreviewsByIdInList(List<Long> postIds, UUID requestingUser);
 }

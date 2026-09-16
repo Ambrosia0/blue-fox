@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import com.ambrosia.content_service.post.model.dto.response.PreviewWithScoreResponse;
-import com.ambrosia.content_service.post.model.entity.Post;
 import com.ambrosia.content_service.post.utils.TextExtractor;
 import com.ambrosia.content_service.search.model.dto.EventFilter;
+import com.ambrosia.content_service.search.model.dto.PostIndex;
 import com.ambrosia.content_service.search.repository.DocumentVectorRepository;
 import com.ambrosia.content_service.search.repository.PostSearchRepository;
 import com.ambrosia.content_service.search.service.PostIndexService;
@@ -32,30 +32,30 @@ public class DatabasePostIndexServiceImpl implements PostIndexService, PostSearc
 
     @Transactional
     @Override
-    public void index(Post post) {
-        Assert.notNull(post.getId(), "Post id must not be null!");
-        Assert.notNull(post.getContent(), "Content must not be null!");
-        Assert.notNull(post.getTitle(), "Title must not be null!");
-        var content = textExtractor.extractText(post.getContent());
+    public void index(PostIndex postIndex) {
+        Assert.notNull(postIndex.post().getId(), "Post id must not be null!");
+        Assert.notNull(postIndex.post().getContent(), "Content must not be null!");
+        Assert.notNull(postIndex.post().getTitle(), "Title must not be null!");
+        var content = textExtractor.extractText(postIndex.post().getContent());
         documentVectorRepository.insertDocument(
-            post.getId(),
+            postIndex.post().getId(),
             content,
-            post.getTags(),
-            post.getTitle()
+            postIndex.post().getTags(),
+            postIndex.post().getTitle()
         );
     }
 
     @Transactional
     @Override
-    public void reIndex(Post post) {
-        Assert.notNull(post.getId(), "Post id must not be null!");
-        Assert.notNull(post.getContent(), "Content must not be null!");
-        var content = textExtractor.extractText(post.getContent());
+    public void reIndex(PostIndex postIndex) {
+        Assert.notNull(postIndex.post().getId(), "Post id must not be null!");
+        Assert.notNull(postIndex.post().getContent(), "Content must not be null!");
+        var content = textExtractor.extractText(postIndex.post().getContent());
         documentVectorRepository.update(
-            post.getId(),
+            postIndex.post().getId(),
             content,
-            post.getTags(),
-            post.getTitle()
+            postIndex.post().getTags(),
+            postIndex.post().getTitle()
         );
     }
 

@@ -6,7 +6,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import com.ambrosia.content_service.kafka_events.AggregatedViewEvent;
-import com.ambrosia.content_service.post.service.PostInternalService;
+import com.ambrosia.content_service.post.service.PostCounterBatchService;
 import com.ambrosia.library_core.dto.Topics;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Component
 public class AggregatedViewConsumer {
-    private final PostInternalService postInternalService;
+    private final PostCounterBatchService postCounterBatchService;
 
     @KafkaListener(
         topics = Topics.VIEW_AGGREGATION,
@@ -35,7 +35,7 @@ public class AggregatedViewConsumer {
                 }
             })
             .toList();
-        postInternalService.incrementViewCount(toIncrement);
+        postCounterBatchService.incrementViewCount(toIncrement);
 
     }
 }
