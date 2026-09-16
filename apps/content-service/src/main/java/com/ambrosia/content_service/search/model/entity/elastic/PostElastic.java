@@ -60,6 +60,9 @@ public class PostElastic implements Persistable<String>{
     @Field(name = "community", type = FieldType.Object)
     private CommunityElastic community;
 
+    @Field(name = "reply", type = FieldType.Long)
+    private Long reply;
+
     @Field(name = "publishedAt", type = FieldType.Date)
     private Instant publishedAt;
 

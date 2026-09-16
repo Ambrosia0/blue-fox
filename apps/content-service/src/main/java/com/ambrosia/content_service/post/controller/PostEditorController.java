@@ -57,26 +57,37 @@ public class PostEditorController {
     public void deletePost(
         @PathVariable long postId,
         @AuthenticationPrincipal Jwt jwt){
+        var userId = UUID.fromString(jwt.getSubject());
         postEditorService.deletePost(
             postId,
-            new UserActor(UUID.fromString(jwt.getSubject()))
+            new UserActor(userId)
         );
     }
 
 
     @PostMapping
     public PostEditorViewResponse createPost(
-        @RequestBody @Valid PostCreateRequest postCreateRequest,
-        @AuthenticationPrincipal Jwt jwt){
-        return postEditorService.createPost(UUID.fromString(jwt.getSubject()), postCreateRequest);
+            @RequestBody @Valid PostCreateRequest postCreateRequest,
+            @AuthenticationPrincipal Jwt jwt){
+        var userId = UUID.fromString(jwt.getSubject());
+        return postEditorService.createPost(
+                userId, 
+                new UserActor(userId),
+                postCreateRequest
+            );
     }
     
 
     @PostMapping("/{postId}/publish")
     public void publishPost(
-        @PathVariable long postId,
-        @AuthenticationPrincipal Jwt jwt) {
-        postEditorService.publishPost(UUID.fromString(jwt.getSubject()), postId);
+            @PathVariable long postId,
+            @AuthenticationPrincipal Jwt jwt) {
+        var userId = UUID.fromString(jwt.getSubject());
+        postEditorService.publishPost(
+                userId,
+                new UserActor(userId), 
+                postId
+            );
     }
     
     

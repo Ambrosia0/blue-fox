@@ -2,8 +2,12 @@ package com.ambrosia.content_service.post.utils.policy;
 
 import java.util.UUID;
 
-public record AdminActor() implements PostOwnershipPolicy{
+import com.ambrosia.content_service.community.model.dto.CommunityUserData;
+
+public record AdminActor() implements PostPolicy{
     @Override
-    public void validatePostOwnership(UUID ownerId) {
-    }
+    public void validatePostOwnership(UUID ownerId) {}
+
+    @Override
+    public void validateCreate(CommunityUserData userData) {}
 }

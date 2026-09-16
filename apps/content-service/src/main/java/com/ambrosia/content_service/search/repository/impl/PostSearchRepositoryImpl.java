@@ -1,33 +1,33 @@
 package com.ambrosia.content_service.search.repository.impl;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
-import com.ambrosia.content_service.post.model.dto.response.PostViewResponse;
 import com.ambrosia.content_service.post.model.dto.response.PreviewWithScoreResponse;
 import com.ambrosia.content_service.search.model.dto.EventFilter;
 import com.ambrosia.content_service.search.model.dto.SearchType;
 import com.ambrosia.content_service.search.model.dto.EventFilter.SortField;
 import com.ambrosia.content_service.search.repository.PostSearchRepository;
+import com.ambrosia.content_service.search.repository.mappers.ScoredPreviewMapper;
+import com.ambrosia.content_service.search.repository.mappers.UnscoredPreviewMapper;
 
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Search variants are separated according to different approaches to filtration of the resulting table:
- * - Latest - date filtration;
- * - Best - like_count filtration;
- * - Popular - filtration based on application of decay function to like_count and publication date;
+ * Search variants are separated according to different approaches to sorting of the resulting table:
+ * - Latest - date sort;
+ * - Best - like_count sort;
+ * - Popular - sort based on application of decay function to like_count and publication date;
  * - Individual - usage of external tables (follows) to filter output, possibly applying decay function.
  * Only for authorized users.
- * - Relevant - filtering based on a relevance score calculated from lexical analysis 
+ * - Relevant - sort based on a relevance score calculated from lexical analysis 
  * of post tokens using a RUM index.
  * Latest and Popular shares some filters, such as @param authorId and @param searchString
  */
@@ -35,6 +35,9 @@ import lombok.RequiredArgsConstructor;
 @Repository
 public class PostSearchRepositoryImpl implements PostSearchRepository{
     private final JdbcClient jdbcClient;
+
+    private UnscoredPreviewMapper unscoredPreviewMapper = new UnscoredPreviewMapper();
+    private ScoredPreviewMapper scoredPreviewMapper = new ScoredPreviewMapper();
 
     private float timeAffectionCoefficient = 0.7f;
     private String baseSql = """
@@ -50,13 +53,21 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         p.view_count,
         p.published_at,
         cp.name,
-        cp.avatar_id
+        cp.is_private,
+        cp.avatar_id,
+        rp.id as ref_id,
+        rp.title as ref_title,
+        EXISTS(
+            SELECT 1 FROM post_like pl 
+            WHERE pl.post_id = p.id 
+            AND pl.user_id = :requestingUser
+        ) as is_liked
     """;
 
     @Override
     public List<PreviewWithScoreResponse> search(
             EventFilter eventFilter, 
-            UUID requestingUser, 
+            @Nullable UUID requestingUser, 
             int pageSize,
             List<UUID> blacklist
         ) {
@@ -77,10 +88,10 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
             List<UUID> blacklist){
         var paramMap = new LinkedHashMap<String, Object>();
         var sql = new StringBuilder(baseSql);
-        if(userId != null)
-            applyLikeCalculaction(paramMap, sql, userId);
+        paramMap.put("requestingUser", userId);
         applyRankCalculation(eventFilter, paramMap, sql);
         applyDocumentFromItem(sql);
+        applyResponseJoin(sql);
         applyInitWhereCondition(sql);
         applySharedFilters(eventFilter, paramMap, sql, userId, blacklist);
         applyRelevancyFilter(eventFilter, paramMap, sql);
@@ -88,28 +99,7 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         return jdbcClient
             .sql(sql.toString())
             .params(paramMap)
-            .query((RowMapper<PreviewWithScoreResponse>)(rs, rowNum) -> new PreviewWithScoreResponse(
-                new PostViewResponse(
-                    rs.getLong("id"),
-                    rs.getObject("author_id", UUID.class),
-                    rs.getString("title"),
-                    rs.getString("preview"),
-                    rs.getArray("tags") == null?
-                        null:
-                        Arrays.asList((String[])rs.getArray("tags").getArray()),
-                    rs.getObject("community_id", Long.class),
-                    rs.getInt("like_count"),
-                    rs.getInt("comment_count"),
-                    rs.getLong("view_count"),
-                    rs.getTimestamp("published_at").toInstant(),
-                    userId != null?
-                        rs.getObject("is_liked", Boolean.class):
-                        null,
-                    rs.getObject("name", String.class),
-                    rs.getObject("avatar_id", UUID.class)
-                ),
-                rs.getFloat("rank")
-            ))
+            .query(scoredPreviewMapper)
             .list();
     }
 
@@ -120,8 +110,7 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
             List<UUID> blacklist){
         var paramMap = new LinkedHashMap<String, Object>();
         var sql = new StringBuilder(baseSql);
-        if(userId != null)
-            applyLikeCalculaction(paramMap, sql, userId);
+        paramMap.put("requestingUser", userId);
         applyDecayFunction(paramMap, sql);
         if(eventFilter.searchString() != null){
             applyRankCalculation(eventFilter, paramMap, sql);
@@ -129,6 +118,7 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         }else{
             applyPostFromItem(sql);
         }
+        applyResponseJoin(sql);
         applyInitWhereCondition(sql);
         applySharedFilters(eventFilter, paramMap, sql, userId, blacklist);
         applyPopularityFilter(eventFilter, paramMap, sql);
@@ -136,28 +126,7 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         return jdbcClient
             .sql(sql.toString())
             .params(paramMap)
-            .query((RowMapper<PreviewWithScoreResponse>)(rs, rowNum) -> new PreviewWithScoreResponse(
-                new PostViewResponse(
-                    rs.getLong("id"),
-                    rs.getObject("author_id", UUID.class),
-                    rs.getString("title"),
-                    rs.getString("preview"),
-                    rs.getArray("tags") == null?
-                        null:
-                        Arrays.asList((String[])rs.getArray("tags").getArray()),
-                    rs.getObject("community_id", Long.class),
-                    rs.getInt("like_count"),
-                    rs.getInt("comment_count"),
-                    rs.getLong("view_count"),
-                    rs.getTimestamp("published_at").toInstant(),
-                    userId != null?
-                        rs.getObject("is_liked", Boolean.class):
-                        null,
-                    rs.getObject("name", String.class),
-                    rs.getObject("avatar_id", UUID.class)
-                ),
-                rs.getFloat("popularity_score")
-            ))
+            .query(scoredPreviewMapper)
             .list();
     }
 
@@ -168,14 +137,14 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
             List<UUID> blacklist) {
         var paramMap = new LinkedHashMap<String, Object>();
         var sql = new StringBuilder(baseSql);
-        if(userId != null)
-            applyLikeCalculaction(paramMap, sql, userId);
+        paramMap.put("requestingUser", userId);
         if(eventFilter.searchString() != null){
             applyRankCalculation(eventFilter, paramMap, sql);
             applyDocumentFromItem(sql);
         }else{
             applyPostFromItem(sql);
         }
+        applyResponseJoin(sql);
         applyInitWhereCondition(sql);
         applySharedFilters(eventFilter, paramMap, sql, userId, blacklist);
         applyDateFilter(eventFilter, paramMap, sql);
@@ -183,28 +152,7 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         return jdbcClient
             .sql(sql.toString())
             .params(paramMap)
-            .query((RowMapper<PreviewWithScoreResponse>)(rs, rowNum) -> new PreviewWithScoreResponse(
-                new PostViewResponse(
-                    rs.getLong("id"),
-                    rs.getObject("author_id", UUID.class),
-                    rs.getString("title"),
-                    rs.getString("preview"),
-                    rs.getArray("tags") == null?
-                        null:
-                        Arrays.asList((String[])rs.getArray("tags").getArray()),
-                    rs.getObject("community_id", Long.class),
-                    rs.getInt("like_count"),
-                    rs.getInt("comment_count"),
-                    rs.getLong("view_count"),
-                    rs.getTimestamp("published_at").toInstant(),
-                    userId != null?
-                        rs.getObject("is_liked", Boolean.class):
-                        null,
-                    rs.getObject("name", String.class),
-                    rs.getObject("avatar_id", UUID.class)
-                ),
-                 null
-            ))
+            .query(unscoredPreviewMapper)
             .list();
     }
 
@@ -215,14 +163,14 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
             List<UUID> blacklist) {
         var paramMap = new LinkedHashMap<String, Object>();
         var sql = new StringBuilder(baseSql);
-        if(userId != null)
-            applyLikeCalculaction(paramMap, sql, userId);
+        paramMap.put("requestingUser", userId);
         if(eventFilter.searchString() != null){
             applyRankCalculation(eventFilter, paramMap, sql);
             applyDocumentFromItem(sql);
         }else{
             applyPostFromItem(sql);
         }
+        applyResponseJoin(sql);
         applyInitWhereCondition(sql);
         applySharedFilters(eventFilter, paramMap, sql, userId, blacklist);
         applyBestFilter(eventFilter, paramMap, sql);
@@ -230,28 +178,7 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         return jdbcClient
             .sql(sql.toString())
             .params(paramMap)
-            .query((RowMapper<PreviewWithScoreResponse>)(rs, rowNum) -> new PreviewWithScoreResponse(
-                new PostViewResponse(
-                    rs.getLong("id"),
-                    rs.getObject("author_id", UUID.class),
-                    rs.getString("title"),
-                    rs.getString("preview"),
-                    rs.getArray("tags") == null?
-                        null:
-                        Arrays.asList((String[])rs.getArray("tags").getArray()),
-                    rs.getObject("community_id", Long.class),
-                    rs.getInt("like_count"),
-                    rs.getInt("comment_count"),
-                    rs.getLong("view_count"),
-                    rs.getTimestamp("published_at").toInstant(),
-                    userId != null?
-                        rs.getObject("is_liked", Boolean.class):
-                        null,
-                    rs.getObject("name", String.class),
-                    rs.getObject("avatar_id", UUID.class)
-                ),
-                 null
-            ))
+            .query(unscoredPreviewMapper)
             .list();
     }
 
@@ -265,8 +192,9 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         if(eventFilter.sortField() == SortField.SCORE){
             applyDecayFunction(paramMap, sql);
         }
-        applyLikeCalculaction(paramMap, sql, userId);
+        paramMap.put("requestingUser", userId);
         applyPostFromItem(sql);
+        applyResponseJoin(sql);
         applyInitWhereCondition(sql);
         applySharedFilters(eventFilter, paramMap, sql, userId, blacklist);
         applyPersonalizationFilter(sql);
@@ -278,46 +206,22 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         return jdbcClient
             .sql(sql.toString())
             .params(paramMap)
-            .query((RowMapper<PreviewWithScoreResponse>)(rs, rowNum) -> new PreviewWithScoreResponse(
-                new PostViewResponse(
-                    rs.getLong("id"),
-                    rs.getObject("author_id", UUID.class),
-                    rs.getString("title"),
-                    rs.getString("preview"),
-                    rs.getArray("tags") == null?
-                        null:
-                        Arrays.asList((String[])rs.getArray("tags").getArray()),
-                    rs.getObject("community_id", Long.class),
-                    rs.getInt("like_count"),
-                    rs.getInt("comment_count"),
-                    rs.getLong("view_count"),
-                    rs.getTimestamp("published_at").toInstant(),
-                    userId != null?
-                        rs.getObject("is_liked", Boolean.class):
-                        null,
-                    rs.getObject("name", String.class),
-                    rs.getObject("avatar_id", UUID.class)
-                ),
-                eventFilter.sortField() == SortField.SCORE? rs.getFloat("popularity_score"): null
-            ))
+            .query(eventFilter.sortField() == SortField.SCORE? 
+                scoredPreviewMapper: 
+                unscoredPreviewMapper
+            )
             .list();
     }
     
     private void applyRankCalculation(EventFilter eventFilter, Map<String, Object> paramMap, StringBuilder sql){
-        sql.append(",dv.search_vector <=> plainto_tsquery(:searchString) AS rank ");
+        sql.append(",dv.search_vector <=> plainto_tsquery(:searchString) AS score ");
         paramMap.put("searchString", eventFilter.searchString());
     }
 
     private void applyDecayFunction(Map<String, Object> paramMap, StringBuilder sql){
-        sql.append(",(log(1 + p.like_count) + (:coeff / (EXTRACT(EPOCH FROM (now() - p.published_at)) + 1))) as popularity_score ");
+        sql.append(",(log(1 + p.like_count) + (:coeff / (EXTRACT(EPOCH FROM (now() - p.published_at)) + 1))) as score ");
         paramMap.put("coeff", timeAffectionCoefficient);
     }
-
-    private void applyLikeCalculaction(Map<String, Object> paramMap, StringBuilder sql, UUID userId){
-        sql.append(",EXISTS(SELECT 1 FROM post_like pl WHERE pl.post_id = p.id AND pl.user_id = :requestingUser) as is_liked ");
-        paramMap.put("requestingUser", userId);
-    }
-
     private void applyPostFromItem(StringBuilder sql){
         sql.append("""
         FROM post p 
@@ -330,6 +234,12 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         FROM document_vector dv 
         JOIN post p ON p.id = dv.id
         LEFT JOIN community_projection cp ON cp.id = p.id 
+        """);
+    }
+
+    private void applyResponseJoin(StringBuilder sql){
+        sql.append("""
+        LEFT JOIN post rp ON rp.id = p.reply_id 
         """);
     }
 
@@ -398,9 +308,9 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
             paramMap.put("lastSeenInstant", eventFilter.lastSeenInstant());
         }
         if(eventFilter.direction() == Direction.DESC){
-            sql.append("ORDER BY rank DESC, p.published_at DESC ");
+            sql.append("ORDER BY score DESC, p.published_at DESC ");
         }else{
-            sql.append("ORDER BY rank ASC, p.published_at ASC ");
+            sql.append("ORDER BY score ASC, p.published_at ASC ");
         }
     }
 
@@ -421,20 +331,20 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
     }
 
     private void applyPopularityFilter(EventFilter eventFilter, Map<String, Object> paramMap, StringBuilder sql){
-        sql.append("AND published_at > (now() - interval '7 days') ");
+        sql.append("AND p.published_at > (now() - interval '7 days') ");
         if(eventFilter.lastScore() != null && eventFilter.lastSeenInstant() != null){
             if(eventFilter.direction() == Direction.DESC){
-                sql.append("AND (popularity_score, p.published_at) < (:lastScore, :lastSeenInstant)");
+                sql.append("AND (score, p.published_at) < (:lastScore, :lastSeenInstant)");
             }else if(eventFilter.direction() == Direction.ASC){
-                sql.append("AND (popularity_score, p.published_at) > (:lastScore, :lastSeenInstant)");
+                sql.append("AND (score, p.published_at) > (:lastScore, :lastSeenInstant)");
             }
             paramMap.put("lastScore", eventFilter.lastScore());
             paramMap.put("lastSeenInstant", eventFilter.lastSeenInstant());
         }
         if(eventFilter.direction() == Direction.DESC)
-            sql.append("ORDER BY popularity_score DESC, p.published_at DESC ");
+            sql.append("ORDER BY score DESC, p.published_at DESC ");
         else
-            sql.append("ORDER BY popularity_score ASC, p.published_at ASC ");
+            sql.append("ORDER BY score ASC, p.published_at ASC ");
     }
 
     private void applyDateFilter(EventFilter eventFilter, Map<String, Object> paramMap, StringBuilder sql){

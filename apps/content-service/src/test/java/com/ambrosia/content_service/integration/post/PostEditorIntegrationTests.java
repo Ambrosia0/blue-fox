@@ -60,7 +60,12 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
     void shouldCreateUnpublishedPost(){
         var authorId = UUID.randomUUID();
         var resp = postEditorService.createPost(
-            authorId, new PostCreateRequest("TestTitle", null));
+            authorId, 
+            new UserActor(authorId),
+            PostCreateRequest.builder()
+                .title("test title")
+                .build()
+            );
         var post = postRepository.findById(resp.id());
         assertTrue(post.isPresent());
         assertFalse(post.get().isPublished());
@@ -143,13 +148,23 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
         var post = createPublishedPost();
         assertThrows(
             PostDoesntExistException.class,
-            () -> postEditorService.publishPost(post.getAuthorId(), post.getId()));
+            () -> postEditorService.publishPost(
+                post.getAuthorId(),
+                new UserActor(post.getAuthorId()),
+                post.getId()
+            )
+        );
     }
 
     @Test
     void shouldPublishPost(){
         var post = createUnpublishedPost();
-        assertDoesNotThrow(() -> postEditorService.publishPost(post.getAuthorId(), post.getId()));
+            assertDoesNotThrow(() -> postEditorService.publishPost(
+                post.getAuthorId(),
+                new UserActor(post.getAuthorId()),
+                post.getId()
+            )
+        );
     }
 
     @Test

@@ -15,6 +15,7 @@ public class Factory {
             .published(true)
             .publishedAt(Instant.now())
             .visible(true)
+            .isNew(true)
             .title("Test Title" + ThreadLocalRandom.current().nextLong())
             .build();
     }

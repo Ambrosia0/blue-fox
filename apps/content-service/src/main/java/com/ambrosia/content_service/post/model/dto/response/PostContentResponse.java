@@ -5,9 +5,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,15 +27,10 @@ public class PostContentResponse implements Serializable{
     private String content;
     private String preview;
 
-    @JsonInclude(value = Include.NON_NULL)
     private List<String> tags;
     
     private Instant publishedAt;
 
-    @JsonInclude(value = Include.NON_NULL)
-    private Long communityId;
-
-    @JsonInclude(value = Include.NON_NULL)
     private Boolean isLiked;
 
     private int likeCount;
@@ -46,13 +38,6 @@ public class PostContentResponse implements Serializable{
     private long viewCount;
     private long previewedCount;
 
-    @JsonInclude(value = Include.NON_NULL)
-    private String communityName;
-
-    @JsonInclude(value = Include.NON_NULL)
-    private Boolean isCommunityPrivate;
-
-    @JsonInclude(value = Include.NON_NULL)
-    private UUID communityAvatarId;
-
+    private PostResponse response;
+    private CommunityResponse community;
 }

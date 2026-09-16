@@ -26,6 +26,7 @@ import com.ambrosia.content_service.search.model.dto.SearchType;
 import com.ambrosia.content_service.search.model.dto.EventFilter.SortField;
 import com.ambrosia.content_service.search.repository.DocumentVectorRepository;
 import com.ambrosia.content_service.search.service.PostIndexService;
+import com.ambrosia.content_service.search.service.mappers.PostIndexMapper;
 import com.ambrosia.content_service.util.Factory;
 import com.ambrosia.content_service.util.PostTemplate;
 
@@ -43,6 +44,8 @@ public class PostUserServiceIntegrationTests extends BaseIntegrationTest {
     @Autowired DocumentVectorRepository documentVectorRepository;
 
     @Autowired PostIndexService postIndexService;
+
+    @Autowired PostIndexMapper postIndexMapper;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final PreviewConverter previewConverter = new TipTapPreviewConverter(objectMapper, 50, 1);
@@ -148,7 +151,7 @@ public class PostUserServiceIntegrationTests extends BaseIntegrationTest {
         var post = Factory.createTestPost();
         post.setPreview(previewConverter.convert(PostTemplate.template));
         post = postRepository.save(post);
-        postIndexService.index(post);
+        postIndexService.index(postIndexMapper.toIndex(post, null));
         return post;
     }
 
