@@ -3,6 +3,8 @@ package com.ambrosia.community_service.community.service.impl;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,6 @@ import com.ambrosia.community_service.community.repository.CommunityRepository;
 import com.ambrosia.community_service.community.service.AvatarService;
 import com.ambrosia.community_service.community.service.CommunityBanService;
 import com.ambrosia.community_service.community.service.CommunityManageService;
-import com.ambrosia.community_service.community.service.ScopeLinkService;
 import com.ambrosia.community_service.community.service.cache.CommunitySlugCache;
 import com.ambrosia.community_service.community.utils.AvatarIdGenerator;
 import com.ambrosia.community_service.community.utils.CommunityEventFactory;
@@ -42,8 +43,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class CommunityManageServiceImpl implements CommunityManageService{
-    private final ScopeLinkService scopeLinkService;
-    
     private final ApplicationEventPublisher eventPublisher;
 
     private final AvatarService avatarService;
@@ -75,11 +74,11 @@ public class CommunityManageServiceImpl implements CommunityManageService{
             .isPrivate(communityCreate.isPrivate())
             .build());
         
-        scopeLinkService.save(
+        community.setScopes(
             Arrays.asList(ScopeEnum.values())
                 .stream()
                 .map(scope -> ScopeLink.create(userId, scope.getId(), community.getId()))
-                .toList()
+                .collect(Collectors.toSet())
         );
 
         var event = CommunityEventFactory.createOpration(community);
@@ -178,7 +177,7 @@ public class CommunityManageServiceImpl implements CommunityManageService{
         if(userScopes.stream().anyMatch(pair -> pair.userId().equals(community.getOwnerId())))
             throw new UserIsOwnerException();
 
-        List<ScopeLink> scopesToInsert = null;
+        Stream<ScopeLink> scopesToInsert = null;
         if(!userScopes.isEmpty()){
             var userList = userScopes.stream().map(pair -> pair.userId()).toList();
             if(communityBanService.isAnyBanned(userList))
@@ -192,13 +191,20 @@ public class CommunityManageServiceImpl implements CommunityManageService{
                         .map(scope -> ScopeLink.create(pair.userId(), scope.getId(), communityId))
                         .forEach(link -> consumer.accept(link));
                 }
-            )
-            .toList();
+            );
         }
-        scopeLinkService.cleanScopes(communityId, List.of(community.getOwnerId()));
 
-        if(scopesToInsert != null && !scopesToInsert.isEmpty())
-            scopeLinkService.save(scopesToInsert);
+        var ownerScopes = community.getScopes().stream()
+                .filter(t -> t.getId().userId().equals(community.getOwnerId()));
+
+        var scopes = (scopesToInsert != null? 
+            Stream.concat(ownerScopes, scopesToInsert):
+            ownerScopes)
+            .collect(Collectors.toSet());
+
+        community.setScopes(scopes);
+
+        communityRepository.save(community);
         communitySlugCache.evictCommunity(community.getSlug());
     }
 
