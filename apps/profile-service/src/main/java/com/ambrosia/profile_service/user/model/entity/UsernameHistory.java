@@ -1,5 +1,6 @@
 package com.ambrosia.profile_service.user.model.entity;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "username_history")
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsernameHistory {
+public class UsernameHistory implements Serializable {
     @Id
     private UUID id;
 
