@@ -3,6 +3,7 @@ package com.ambrosia.community_service.community.model.entity;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.validator.constraints.UniqueElements;
@@ -10,6 +11,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.AllArgsConstructor;
@@ -68,4 +70,7 @@ public class Community implements Serializable{
     @ReadOnlyProperty
     @Column(value = "created_at")
     private Instant createdAt;
+
+    @MappedCollection(idColumn = "community_id")
+    private Set<ScopeLink> scopes;
 }
