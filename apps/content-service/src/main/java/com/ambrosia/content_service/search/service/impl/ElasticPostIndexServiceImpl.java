@@ -6,14 +6,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.ambrosia.content_service.follow.service.FollowSnapshotProvider;
-import com.ambrosia.content_service.post.model.dto.response.PostViewResponse;
 import com.ambrosia.content_service.post.model.dto.response.PreviewWithScoreResponse;
-import com.ambrosia.content_service.post.service.PostQueryService;
+import com.ambrosia.content_service.post.service.PostViewQueryService;
 import com.ambrosia.content_service.search.model.dto.EventFilter;
 import com.ambrosia.content_service.search.model.dto.PostIndex;
 import com.ambrosia.content_service.search.model.entity.elastic.PostElastic;
@@ -35,7 +33,7 @@ public class ElasticPostIndexServiceImpl implements PostIndexService, PostSearch
 
     private final FollowSnapshotProvider followSnapshotProvider;
 
-    private final PostQueryService postQueryService;
+    private final PostViewQueryService postViewQueryService;
 
     private final SearchIndexOutboxService searchIndexOutboxService;
 
@@ -56,15 +54,17 @@ public class ElasticPostIndexServiceImpl implements PostIndexService, PostSearch
     }
 
     @Override
-    public void deleteFromIndex(Long id) {
+    public void deleteFromIndex(Long id, Long version) {
         Assert.notNull(id, "Id must not be null!");
+        Assert.notNull(version, "Version must no be null!");
         searchIndexOutboxService.put(PostElastic.builder()
             .esid(id.toString())
+            .version(version)
+            .isNew(false)
             .build()
         );
     }
 
-    // to optimize
     @Override
     public List<PreviewWithScoreResponse> search(
             EventFilter eventFilter, 
@@ -82,18 +82,20 @@ public class ElasticPostIndexServiceImpl implements PostIndexService, PostSearch
         );
         if(hits == null || hits.isEmpty())
             return List.of();
-        var ids = hits.stream()
-                .map(SearchHit::getId)
-                .map(Long::parseLong)
-                .toList();
-        var previews = postQueryService.getPostPreviewsByIds(ids, requestingUser)
-                .stream()
-                .collect(Collectors.toMap(PostViewResponse::id, v -> v));
-        return hits.stream().map(hit ->
-            new PreviewWithScoreResponse(
-                previews.get(Long.parseLong(hit.getId())),
-                hit.getScore()
+
+        var hitsMap = hits.stream()
+            .collect(Collectors.toMap(k -> Long.parseLong(k.getId()), v -> v.getScore()));
+
+        var previews = postViewQueryService.getPostPreviews(
+                hitsMap.keySet(), 
+                requestingUser
+        );
+        return previews.stream()
+            .map(preview -> new PreviewWithScoreResponse(
+                    preview,
+                    hitsMap.get(preview.id())
+                )
             )
-        ).toList();
+            .toList();
     }
 }

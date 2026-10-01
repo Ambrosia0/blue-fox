@@ -1,10 +1,11 @@
 package com.ambrosia.content_service.integration.post;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -13,31 +14,26 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ambrosia.content_service.BaseIntegrationTest;
-import com.ambrosia.content_service.core.PreviewConverter;
+import com.ambrosia.content_service.exception.api.NotEnoughPermissionsException;
 import com.ambrosia.content_service.like.model.entity.PostLike;
 import com.ambrosia.content_service.like.repository.PostLikeRepository;
 import com.ambrosia.content_service.post.exception.PostDoesntExistException;
-import com.ambrosia.content_service.post.model.entity.Post;
-import com.ambrosia.content_service.post.repository.PostRepository;
 import com.ambrosia.content_service.post.service.user.PostUserService;
-import com.ambrosia.content_service.post.utils.TipTapPreviewConverter;
+import com.ambrosia.content_service.post.utils.policy.AnonymousActor;
+import com.ambrosia.content_service.post.utils.policy.UserActor;
 import com.ambrosia.content_service.search.model.dto.EventFilter;
 import com.ambrosia.content_service.search.model.dto.SearchType;
 import com.ambrosia.content_service.search.model.dto.EventFilter.SortField;
 import com.ambrosia.content_service.search.repository.DocumentVectorRepository;
 import com.ambrosia.content_service.search.service.PostIndexService;
 import com.ambrosia.content_service.search.service.mappers.PostIndexMapper;
-import com.ambrosia.content_service.util.PostFactory;
-import com.ambrosia.content_service.util.PostTemplate;
-
-import tools.jackson.databind.ObjectMapper;
+import com.ambrosia.content_service.util.PostCreator;
+import com.ambrosia.content_service.util.UserCreator;
 
 @Transactional
 @ActiveProfiles(profiles = {"es-disabled"}, inheritProfiles = true)
 public class PostUserServiceIntegrationTests extends BaseIntegrationTest {
     @Autowired PostUserService postUserService;
-
-    @Autowired PostRepository postRepository;
 
     @Autowired PostLikeRepository postLikeRepository;
 
@@ -47,55 +43,56 @@ public class PostUserServiceIntegrationTests extends BaseIntegrationTest {
 
     @Autowired PostIndexMapper postIndexMapper;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final PreviewConverter previewConverter = new TipTapPreviewConverter(objectMapper, 50, 1);
+    @Autowired PostCreator postCreator;
+
+    @Autowired UserCreator userCreator;
 
     @Test
     void shouldThrowPostDoesntExistException() {
         assertThrows(
             PostDoesntExistException.class,
-            () -> postUserService.getPost(999L, null)
+            () -> postUserService.getPost(999L, new AnonymousActor())
         );
     }
 
     @Test
-    void shouldReturnPostWithoutLikeWhenUserIsNull() {
-        var post = createTestPost();
-        var response = postUserService.getPost(post.getId(), null);
+    void shouldReturnPostWithoutLikeWhenUserIsAnonymous() {
+        var post = postCreator.create(true);
+        var response = postUserService.getPost(post.getId(), new AnonymousActor());
         assertEquals(post.getId(), response.getId());
         assertEquals(null, response.getIsLiked());
     }
 
     @Test
     void shouldReturnPostWithLikedFalseWhenUserHasNotLiked() {
-        var post = createTestPost();
-        var uuid = UUID.randomUUID();
-        var response = postUserService.getPost(post.getId(), uuid);
+        var post = postCreator.create(true);
+        var user = userCreator.create();
+        var response = postUserService.getPost(post.getId(), new UserActor(user.getId()));
         assertEquals(post.getId(), response.getId());
         assertEquals(false, response.getIsLiked());
     }
 
     @Test
     void shouldReturnPostWithLikedTrueWhenUserHasLiked() {
-        var post = createTestPost();
-        var uuid = UUID.randomUUID();
-        postLikeRepository.save(PostLike.create(uuid, post.getId()));
-        var response = postUserService.getPost(post.getId(), uuid);
+        var post = postCreator.create(true);
+        var user = userCreator.create();
+        postLikeRepository.save(PostLike.create(user.getId(), post.getId()));
+        var response = postUserService.getPost(post.getId(), new UserActor(user.getId()));
         assertEquals(post.getId(), response.getId());
         assertEquals(true, response.getIsLiked());
     }
 
     @Test
     void shouldReturnPostPreviewsWithLatestSearchType() {
-        createTestPost();
-        createTestPost();
-        createTestPost();
+        postCreator.create(true);
+        postCreator.create(true);
+        postCreator.create(true);
 
         var eventFilter = EventFilter.builder()
             .searchType(SearchType.LATEST)
             .build();
 
-        var response = postUserService.search(eventFilter, null, 10);
+        var response = postUserService.search(eventFilter, new AnonymousActor(), 10);
         assertEquals(3, response.size());
         response.forEach(p -> assertEquals(null, p.score()));
     }
@@ -106,39 +103,43 @@ public class PostUserServiceIntegrationTests extends BaseIntegrationTest {
             .searchType(SearchType.POPULAR)
             .build();
 
-        var response = postUserService.search(eventFilter, null, 10);
+        var response = postUserService.search(eventFilter, new AnonymousActor(), 10);
         assertEquals(0, response.size());
     }
 
     @Test
     void shouldReturnPostPreviewsWithScore() {
-        createTestPost();
-        createTestPost();
+        postCreator.create(true);
+        postCreator.create(true);
 
+        var searchingUser = userCreator.create();
         var eventFilter = EventFilter.builder()
             .searchType(SearchType.RELEVANCY)
-            .visible(true)
             .searchString("Test")
             .sortField(SortField.SCORE)
             .build();
-        var response = postUserService.search(eventFilter, null, 10);
+        var response = postUserService.search(
+                eventFilter, 
+                new UserActor(searchingUser.getId()),
+                10
+            );
         assertEquals(2, response.size());
         response.forEach(p -> assertNotNull(p.score()));
     }
 
     @Test
     void shouldReturnPostPreviewsWithLikeStatus() {
-        var post1 = createTestPost();
-        createTestPost();
+        var post1 = postCreator.create(true);
+        postCreator.create(true);
 
-        var uuid = UUID.randomUUID();
-        postLikeRepository.save(PostLike.create(uuid, post1.getId()));
+        var user = userCreator.create();
+        postLikeRepository.save(PostLike.create(user.getId(), post1.getId()));
 
         var eventFilter = EventFilter.builder()
             .searchType(SearchType.LATEST)
             .build();
 
-        var response = postUserService.search(eventFilter, uuid, 10);
+        var response = postUserService.search(eventFilter, new UserActor(user.getId()), 10);
         assertEquals(2, response.size());
         var likedPost = response.stream()
             .filter(p -> p.postViewResponse().id() == post1.getId())
@@ -147,18 +148,55 @@ public class PostUserServiceIntegrationTests extends BaseIntegrationTest {
         assertEquals(true, likedPost.postViewResponse().isLiked());
     }
 
-    private Post createTestPost(){
-        var post = PostFactory.createTestPost();
-        post.setPreview(previewConverter.convert(PostTemplate.template));
-        post = postRepository.save(post);
-        postIndexService.index(postIndexMapper.toIndex(post, null));
-        return post;
+    @Test 
+    void shouldNotThrowExceptionOnDeletePublishedPostWhenAuthorIsDeleting(){
+        var post = postCreator.create(true);
+        assertDoesNotThrow(
+            () -> postUserService.deletePost(post.getId(), new UserActor(post.getAuthorId()))
+        );
+    }
+
+    @Test 
+    void shouldThrowNotEnoughPermissionsOnPostDeleteWhenDeletingIsNotAuthor(){
+        var post = postCreator.create(true);
+        var user = userCreator.create();
+        assertThrows(
+            NotEnoughPermissionsException.class, 
+            () -> postUserService.deletePost(post.getId(), new UserActor(user.getId()))
+        );
+    }
+
+    @Test 
+    void shouldThrowPostDoesntExistOnPostDeleteWhenPostDoesntExist(){
+        var user = userCreator.create();
+        assertThrows(
+            PostDoesntExistException.class,
+            () -> postUserService.deletePost(
+                ThreadLocalRandom.current().nextLong(),
+                new UserActor(user.getId())
+            )
+        );
+    }
+
+    @Test 
+    void shouldNotThrowExceptionOnDeletePostInPublicCommunityWhenUserIsModerator(){
+        var createResp = postCreator.createPublishedWithCommunity(false);
+        var moderatorId = createResp.communityProjection().getPermissions()
+            .stream()
+            .findFirst()
+            .get()
+            .getUserId();
+        assertDoesNotThrow(
+            () -> postUserService.deletePost(
+                createResp.post().getId(), 
+                new UserActor(moderatorId)
+            )
+        );
     }
 
     @AfterEach
     void cleanUp() {
-        documentVectorRepository.deleteAll();
         postLikeRepository.deleteAll();
-        postRepository.deleteAll();
+        postCreator.cleanUp();
     }
 }

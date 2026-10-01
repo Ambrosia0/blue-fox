@@ -5,5 +5,5 @@ import com.ambrosia.content_service.search.model.dto.PostIndex;
 public interface PostIndexService {
     void index(PostIndex postIndex);
     void reIndex(PostIndex postIndex);
-    void deleteFromIndex(Long postId);
+    void deleteFromIndex(Long id, Long version);
 }

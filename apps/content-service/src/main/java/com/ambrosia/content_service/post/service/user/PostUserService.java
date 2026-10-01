@@ -1,13 +1,11 @@
 package com.ambrosia.content_service.post.service.user;
 
 import java.util.List;
-import java.util.UUID;
 
 import com.ambrosia.content_service.post.model.dto.response.PostContentResponse;
 import com.ambrosia.content_service.post.model.dto.response.PreviewWithScoreResponse;
+import com.ambrosia.content_service.post.utils.policy.PostPolicy;
 import com.ambrosia.content_service.search.model.dto.EventFilter;
-
-import jakarta.annotation.Nullable;
 
 /**
  * Service which administrates post view use-cases
@@ -20,7 +18,7 @@ public interface PostUserService {
      * @param requestingUserId Id of the requesting user
      * @return post read model
      */
-    PostContentResponse getPost(long id, @Nullable UUID requestingUserId);
+    PostContentResponse getPost(long id, PostPolicy policy);
     
     /**
      * Returns searched posts
@@ -29,8 +27,12 @@ public interface PostUserService {
      * @param pageSize page size
      * @return search read model
      */
-    List<PreviewWithScoreResponse> search(EventFilter eventFilter, @Nullable UUID requestingUserId, int pageSize);
+    List<PreviewWithScoreResponse> search(EventFilter eventFilter, PostPolicy policy, int pageSize);
 
-    boolean isAuthor(long postId, UUID userId);
-    boolean isExists(long postId);
+    /**
+     * Deletes published post
+     * @param postId deleted post
+     * @param policy policy
+     */
+    void deletePost(long postId, PostPolicy policy);
 }

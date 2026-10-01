@@ -13,10 +13,11 @@ import com.ambrosia.content_service.exception.api.UserDoesntExistException;
 import com.ambrosia.content_service.follow.model.dto.UserFollowResponse;
 import com.ambrosia.content_service.follow.model.entity.UserFollow;
 import com.ambrosia.content_service.follow.model.entity.keys.UserFollowKey;
+import com.ambrosia.content_service.follow.repository.UserFollowQueryRepository;
 import com.ambrosia.content_service.follow.repository.UserFollowRepository;
 import com.ambrosia.content_service.follow.service.UserFollowService;
-import com.ambrosia.content_service.grpc.ProfileService;
 import com.ambrosia.content_service.kafka.utils.UserFollowEventFactory;
+import com.ambrosia.content_service.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,13 +26,15 @@ import lombok.RequiredArgsConstructor;
 public class UserFollowServiceImpl implements UserFollowService{
     private final UserFollowRepository userFollowRepository;
 
+    private final UserFollowQueryRepository userFollowQueryRepository;
+
     private final ApplicationEventPublisher applicationEventPublisher;
     
-    private final ProfileService profileService;
+    private final UserService userService;
 
     @Override
     public void followUser(UUID requestingUser, UUID followedUser) {
-        if(!profileService.isUserExist(followedUser))
+        if(!userService.isUserExist(followedUser))
             throw new UserDoesntExistException();
         userFollowRepository.optionalSave(UserFollow.create(requestingUser, followedUser))
             .orElseThrow(() -> new AlreadyFollowedException());
@@ -50,7 +53,7 @@ public class UserFollowServiceImpl implements UserFollowService{
 
     @Override
     public Slice<UserFollowResponse> getFollows(UUID requestingUser, int page) {
-        return userFollowRepository.findByUserId(requestingUser, PageRequest.ofSize(10).withPage(page));
+        return userFollowQueryRepository.findByUserId(requestingUser, PageRequest.ofSize(10).withPage(page));
     }
     
 }

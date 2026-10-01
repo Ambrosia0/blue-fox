@@ -1,5 +1,8 @@
 package com.ambrosia.content_service.post.model.dto.request;
 
+import java.util.Set;
+import java.util.UUID;
+
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
@@ -10,5 +13,7 @@ public record PostCreateRequest(
 
     Long replyId,
 
-    Long communityId
+    Long communityId,
+
+    Set<UUID> collaborators
 ) {}

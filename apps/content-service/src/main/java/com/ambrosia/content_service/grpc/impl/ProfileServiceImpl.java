@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.ambrosia.content_service.grpc.ProfileService;
 import com.ambrosia.profile_service.grpc.UserBlacklistRequest;
-import com.ambrosia.profile_service.grpc.UserExistenceRequest;
 import com.ambrosia.profile_service.grpc.ProfileServiceGrpc.ProfileServiceBlockingStub;
 import com.google.protobuf.ByteString;
 
@@ -22,14 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ProfileServiceImpl implements ProfileService{
     private final ProfileServiceBlockingStub profileServiceBlockingStub;
-
-    @Override
-    public boolean isUserExist(UUID userId) {
-        return profileServiceBlockingStub.isUserExist(UserExistenceRequest.newBuilder()
-            .setUserId(userId.toString())
-            .build()
-        ).getIsExist();
-    }
 
     @CircuitBreaker(name = "profile-service", fallbackMethod = "fallback")
     @Cacheable(cacheNames = "blacklist", key = "#userId", unless = "#result == null")

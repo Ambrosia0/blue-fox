@@ -3,6 +3,7 @@ package com.ambrosia.content_service.post.model.entity;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -12,6 +13,7 @@ import org.springframework.data.annotation.Version;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import com.ambrosia.content_service.community.model.entity.CommunityProjection;
@@ -51,6 +53,10 @@ public class Post implements Serializable, Persistable<Long>{
     private boolean published = false;
 
     @Builder.Default
+    @Column("is_republished")
+    private boolean isRepublished = false;
+
+    @Builder.Default
     @Column("updated_at")
     private Instant updatedAt = Instant.now();
 
@@ -78,16 +84,15 @@ public class Post implements Serializable, Persistable<Long>{
     private Instant createdAt;
 
     @Builder.Default
-    @Column("visible")
-    private boolean visible = true;
-
-    @Builder.Default
     @Transient 
     private boolean isNew = false;
 
     private AggregateReference<Post, Long> replyId;
 
     private AggregateReference<CommunityProjection, Long> communityId;
+
+    @MappedCollection(idColumn = "post_id") 
+    private Set<PostCollaboration> collaborationUsers;
 
     @Version
     @Column("version")

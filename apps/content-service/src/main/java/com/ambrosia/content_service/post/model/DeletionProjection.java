@@ -6,5 +6,5 @@ public record DeletionProjection(
     Long id,
     Long communityId,
     UUID authorId,
-    boolean published
+    Long version
 ) {}

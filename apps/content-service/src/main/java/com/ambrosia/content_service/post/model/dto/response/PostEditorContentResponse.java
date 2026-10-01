@@ -18,6 +18,10 @@ public record PostEditorContentResponse(
     @JsonInclude(value = Include.NON_NULL)
     List<String> tags,
     
+    List<String> attachmentIds,
+
+    CommunityResponse communityResponse,
+
     Instant updatedAt,
     Long version
 ) {
@@ -27,6 +31,8 @@ public record PostEditorContentResponse(
             post.getTitle(),
             post.getContent(),
             post.getTags(),
+            null,
+            null,
             post.getUpdatedAt(),
             post.getVersion()
         );

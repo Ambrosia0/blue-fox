@@ -8,13 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,28 +25,31 @@ import com.ambrosia.content_service.follow.model.entity.UserFollow;
 import com.ambrosia.content_service.follow.model.entity.keys.UserFollowKey;
 import com.ambrosia.content_service.follow.repository.UserFollowRepository;
 import com.ambrosia.content_service.follow.service.UserFollowService;
-import com.ambrosia.content_service.grpc.ProfileService;
 import com.ambrosia.content_service.kafka.producer.UserFollowEventProducer;
+import com.ambrosia.content_service.util.UserCreator;
 
+@Import({UserCreator.class})
 @Transactional
 public class UserFollowServiceIntegrationTests extends BaseIntegrationTest{
     @Autowired UserFollowService userFollowService;
-    @MockitoBean ProfileService profileService;
     @MockitoSpyBean UserFollowEventProducer userFollowEventProducer;
+
     @Autowired UserFollowRepository userFollowRepository;
+    @Autowired UserCreator userCreator;
 
     @Test
     void shouldThrowUserDoesntExistException(){
-        when(profileService.isUserExist(any(UUID.class))).thenReturn(false);
+        var user = userCreator.create();
         assertThrows(
             UserDoesntExistException.class, 
-            () -> userFollowService.followUser(UUID.randomUUID(), UUID.randomUUID()));
+            () -> userFollowService.followUser(user.getId(), UUID.randomUUID()));
     }
 
     @Test
     void shouldThrowAlreadyFollowedException(){
-        when(profileService.isUserExist(any(UUID.class))).thenReturn(true);
-        var follow = createFollow();
+        var user = userCreator.create();
+        var followedUser = userCreator.create();
+        var follow = createFollow(user.getId(), followedUser.getId());
         assertThrows(
             AlreadyFollowedException.class, 
             () -> userFollowService.followUser(follow.getId().userId(), follow.getId().followedUserId()));
@@ -55,15 +57,17 @@ public class UserFollowServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldCreateUserFollowAndPublishEvent(){
-        when(profileService.isUserExist(any(UUID.class))).thenReturn(true);
-        var userId = UUID.randomUUID();
-        var followed = UUID.randomUUID();
-        assertDoesNotThrow(() -> userFollowService.followUser(userId, followed));
+        var user = userCreator.create();
+        var followed = userCreator.create();
+        assertDoesNotThrow(() -> userFollowService.followUser(user.getId(), followed.getId()));
         verify(
             userFollowEventProducer,
             times(1)
         ).on(any());
-        assertTrue(userFollowRepository.findById(UserFollowKey.create(userId, followed)).isPresent());
+        assertTrue(userFollowRepository
+                .findById(UserFollowKey.create(user.getId(), followed.getId()))
+                .isPresent()
+        );
     }
 
     @Test
@@ -76,7 +80,9 @@ public class UserFollowServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldDeleteUserFollowAndPublishEvent(){
-        var follow = createFollow();
+        var user = userCreator.create();
+        var followed = userCreator.create();
+        var follow = createFollow(user.getId(), followed.getId());
         assertEquals(1, userFollowRepository.count());
         assertDoesNotThrow(
             () -> userFollowService.removeFollow(follow.getId().userId(), follow.getId().followedUserId()));
@@ -92,18 +98,14 @@ public class UserFollowServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldReturnFollows(){
-        var id = UUID.randomUUID();
-        createFollow(id);
-        createFollow(id);
-        createFollow(id);
-        assertEquals(3, userFollowService.getFollows(id, 0).getContent().size());
+        var user = userCreator.create();
+        createFollow(user.getId(), userCreator.create().getId());
+        createFollow(user.getId(), userCreator.create().getId());
+        createFollow(user.getId(), userCreator.create().getId());
+        assertEquals(3, userFollowService.getFollows(user.getId(), 0).getContent().size());
     }
 
-    private UserFollow createFollow(){
-        return userFollowRepository.save(UserFollow.create(UUID.randomUUID(), UUID.randomUUID()));
-    }
-
-    private UserFollow createFollow(UUID userId){
-        return userFollowRepository.save(UserFollow.create(userId, UUID.randomUUID()));
+    private UserFollow createFollow(UUID userId, UUID followedUserId){
+        return userFollowRepository.save(UserFollow.create(userId, followedUserId));
     }
 }

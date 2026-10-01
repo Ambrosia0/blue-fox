@@ -2,14 +2,13 @@ package com.ambrosia.content_service.post.model.dto.response;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 public record PostViewResponse(
     long id,
-    UUID authorId,
+    UserResponse user,
     String title,
     String preview,
 

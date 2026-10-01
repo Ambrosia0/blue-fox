@@ -14,7 +14,7 @@ import com.ambrosia.content_service.attachment.utils.AttachmentIdGenerator;
 import com.ambrosia.content_service.exception.api.AttachmentDoesntExistException;
 import com.ambrosia.content_service.exception.api.NotEnoughPermissionsException;
 import com.ambrosia.content_service.exception.internal.CantValidateAttachmentException;
-import com.ambrosia.content_service.post.service.user.PostUserService;
+import com.ambrosia.content_service.post.service.PostService;
 import com.ambrosia.library_s3.utils.S3ConfigurationProperties;
 
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class S3PostAttachmentUserServiceImpl implements PostAttachmentUserServic
 
     private final S3Presigner s3Presigner;
 
-    private final PostUserService postUserService;
+    private final PostService postService;
 
     private final S3ConfigurationProperties configurationProperties;
 
@@ -46,7 +46,7 @@ public class S3PostAttachmentUserServiceImpl implements PostAttachmentUserServic
 
     @Override
     public AttachmentUploadResponse uploadAttachment(UUID userId, long postId, FileMetadata fileMetadata) {
-        if(!postUserService.isAuthor(postId, userId))
+        if(!postService.isAuthor(postId, userId))
             throw new NotEnoughPermissionsException();
         var attachmentId = AttachmentIdGenerator.generateAttachmentId(postId);
         var key = configurationProperties.getTempPrefix()+"/"+postId+"/"+attachmentId;
@@ -102,7 +102,7 @@ public class S3PostAttachmentUserServiceImpl implements PostAttachmentUserServic
 
     @Override
     public List<PostAttachment> getAttachments(UUID requestingUser, long postId) {
-        if(!postUserService.isAuthor(postId, requestingUser))
+        if(!postService.isAuthor(postId, requestingUser))
             throw new NotEnoughPermissionsException();
         return postAttachmentRepository.findByPostId(postId);
     }

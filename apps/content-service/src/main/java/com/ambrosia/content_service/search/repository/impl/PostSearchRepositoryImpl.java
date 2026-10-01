@@ -36,8 +36,8 @@ import lombok.RequiredArgsConstructor;
 public class PostSearchRepositoryImpl implements PostSearchRepository{
     private final JdbcClient jdbcClient;
 
-    private UnscoredPreviewMapper unscoredPreviewMapper = new UnscoredPreviewMapper();
-    private ScoredPreviewMapper scoredPreviewMapper = new ScoredPreviewMapper();
+    private final UnscoredPreviewMapper unscoredPreviewMapper;
+    private final ScoredPreviewMapper scoredPreviewMapper;
 
     private float timeAffectionCoefficient = 0.7f;
     private String baseSql = """
@@ -61,7 +61,11 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
             SELECT 1 FROM post_like pl 
             WHERE pl.post_id = p.id 
             AND pl.user_id = :requestingUser
-        ) as is_liked
+        ) as is_liked,
+        up.username,
+        up.first_name,
+        up.last_name,
+        up.avatar_id
     """;
 
     @Override
@@ -91,7 +95,7 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         paramMap.put("requestingUser", userId);
         applyRankCalculation(eventFilter, paramMap, sql);
         applyDocumentFromItem(sql);
-        applyResponseJoin(sql);
+        applySharedJoins(sql);
         applyInitWhereCondition(sql);
         applySharedFilters(eventFilter, paramMap, sql, userId, blacklist);
         applyRelevancyFilter(eventFilter, paramMap, sql);
@@ -118,7 +122,7 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         }else{
             applyPostFromItem(sql);
         }
-        applyResponseJoin(sql);
+        applySharedJoins(sql);
         applyInitWhereCondition(sql);
         applySharedFilters(eventFilter, paramMap, sql, userId, blacklist);
         applyPopularityFilter(eventFilter, paramMap, sql);
@@ -144,7 +148,7 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         }else{
             applyPostFromItem(sql);
         }
-        applyResponseJoin(sql);
+        applySharedJoins(sql);
         applyInitWhereCondition(sql);
         applySharedFilters(eventFilter, paramMap, sql, userId, blacklist);
         applyDateFilter(eventFilter, paramMap, sql);
@@ -170,7 +174,7 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         }else{
             applyPostFromItem(sql);
         }
-        applyResponseJoin(sql);
+        applySharedJoins(sql);
         applyInitWhereCondition(sql);
         applySharedFilters(eventFilter, paramMap, sql, userId, blacklist);
         applyBestFilter(eventFilter, paramMap, sql);
@@ -194,7 +198,7 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         }
         paramMap.put("requestingUser", userId);
         applyPostFromItem(sql);
-        applyResponseJoin(sql);
+        applySharedJoins(sql);
         applyInitWhereCondition(sql);
         applySharedFilters(eventFilter, paramMap, sql, userId, blacklist);
         applyPersonalizationFilter(sql);
@@ -237,8 +241,9 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         """);
     }
 
-    private void applyResponseJoin(StringBuilder sql){
+    private void applySharedJoins(StringBuilder sql){
         sql.append("""
+        LEFT JOIN user_projection up ON up.id = p.author_id
         LEFT JOIN post rp ON rp.id = p.reply_id 
         """);
     }

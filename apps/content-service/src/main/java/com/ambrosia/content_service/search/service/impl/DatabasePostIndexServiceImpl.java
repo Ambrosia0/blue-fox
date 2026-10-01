@@ -59,10 +59,10 @@ public class DatabasePostIndexServiceImpl implements PostIndexService, PostSearc
         );
     }
 
-    // on delete cascade reference in database
     @Override
-    public void deleteFromIndex(Long postId) {
+    public void deleteFromIndex(Long postId, Long version) {
         Assert.notNull(postId, "Post id must not be null!");
+        Assert.notNull(postId, "Post version must not be null!");
         documentVectorRepository.deleteById(postId);
     }
 

@@ -17,13 +17,8 @@ public class KafkaPostEventOutboxConverter implements KafkaOutboxConverter<PostE
     @Override
     public KafkaOutbox convert(Object source) {
         var event = (PostEvent) source;
-        var id = switch(event.getEventCase()){
-            case CREATED -> event.getCreated().getId();
-            case DELETED -> event.getDeleted().getId();
-            default -> throw new RuntimeException("Unknown body!");
-        };
         return KafkaOutbox.from(
-            Long.toString(id), 
+            Long.toString(event.getPostId()), 
             Topics.POST_EVENT,
             event.toByteArray()
         );

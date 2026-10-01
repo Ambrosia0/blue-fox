@@ -6,16 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ambrosia.content_service.BaseIntegrationTest;
 import com.ambrosia.content_service.exception.api.InvalidContentException;
@@ -25,39 +26,45 @@ import com.ambrosia.content_service.grpc.ProfileService;
 import com.ambrosia.content_service.post.exception.PostDoesntExistException;
 import com.ambrosia.content_service.post.model.dto.request.PostCreateRequest;
 import com.ambrosia.content_service.post.model.dto.request.PostEditRequest;
+import com.ambrosia.content_service.post.model.dto.request.PostEditorFilter;
 import com.ambrosia.content_service.post.repository.PostRepository;
 import com.ambrosia.content_service.post.service.user.PostEditorService;
 import com.ambrosia.content_service.post.utils.policy.UserActor;
+import com.ambrosia.content_service.search.model.entity.elastic.PostElastic;
 import com.ambrosia.content_service.util.CommunityCreator;
 import com.ambrosia.content_service.util.FollowCreator;
 import com.ambrosia.content_service.util.PostCreator;
 import com.ambrosia.content_service.util.PostTemplate;
+import com.ambrosia.content_service.util.UserCreator;
+import com.ambrosia.outbox.elastic.ElasticsearchOutboxRelay;
 
-@Import({PostCreator.class, FollowCreator.class, CommunityCreator.class})
-@Transactional
 public class PostEditorIntegrationTests extends BaseIntegrationTest{
     @Autowired PostEditorService postEditorService;
     @Autowired PostRepository postRepository;
     @Autowired PostCreator postCreator;
     @Autowired FollowCreator followCreator;
     @Autowired CommunityCreator communityCreator;
+    @Autowired UserCreator userCreator;
+    @Autowired ElasticsearchOutboxRelay relay;
     @MockitoBean ProfileService profileService;
 
+    @Autowired ElasticsearchOperations operations;
+
     @Test
-    void shouldThrowPostDoesntExistExceptionOnDelete(){
+    void shouldThrowPostDoesntExistExceptionOnDeleteDraft(){
         assertThrows(
             PostDoesntExistException.class, 
-            () -> postEditorService.deletePost(
+            () -> postEditorService.deleteDraftPost(
                 ThreadLocalRandom.current().nextLong(), 
                 new UserActor(UUID.randomUUID()))
         );
     }
 
     @Test
-    void shouldDeletePost(){
-        var post = postCreator.createUnpublished();
+    void shouldDeleteDraft(){
+        var post = postCreator.create(false);
         assertTrue(postRepository.findById(post.getId()).isPresent());
-        postEditorService.deletePost(
+        postEditorService.deleteDraftPost(
             post.getId(),
             new UserActor(post.getAuthorId())
         );
@@ -65,11 +72,43 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
     }
 
     @Test
+    void shouldRepublishDraft(){
+        var post = postCreator.create(true);
+        var prevInstant = post.getPublishedAt();
+        assertDoesNotThrow(() -> postEditorService.unpublishPost(post.getAuthorId(), post.getId()));
+        assertFalse(postRepository.findById(post.getId()).get().isPublished());
+        relay.flush();
+        operations.indexOps(PostElastic.class).refresh();
+        assertFalse(operations.exists(post.getId().toString(), PostElastic.class));
+        assertDoesNotThrow(
+            () -> postEditorService.publishPost(
+                new UserActor(post.getAuthorId()),
+                post.getId()
+            )
+        );
+
+        relay.flush();
+        operations.indexOps(PostElastic.class).refresh();
+        assertTrue(operations.exists(post.getId().toString(), PostElastic.class));
+        assertDoesNotThrow(() -> {
+            var updated = postRepository.findById(post.getId()).get();
+            var dif = Math.abs(
+                ChronoUnit.MICROS.between(
+                    prevInstant.truncatedTo(ChronoUnit.MICROS), 
+                    updated.getPublishedAt().truncatedTo(ChronoUnit.MICROS)
+                )
+            );
+            assertTrue(dif <= 2);
+            assertTrue(updated.isPublished() && updated.isRepublished());
+        });
+    }
+
+    @Test
     void shouldCreateUnpublishedPost(){
-        var authorId = UUID.randomUUID();
+        var author = userCreator.create();
         var resp = postEditorService.createPost(
-            authorId, 
-            new UserActor(authorId),
+            author.getId(), 
+            new UserActor(author.getId()),
             PostCreateRequest.builder()
                 .title("test title")
                 .build()
@@ -81,7 +120,7 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldThrowPostDoesntExistExceptionOnEdit(){
-        var post = postCreator.createUnpublished();
+        var post = postCreator.create(false);
         assertThrows(
             PostDoesntExistException.class,
             () -> postEditorService.editPost(
@@ -94,7 +133,7 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldThrowInvalidContentExceptionOnEdit(){
-        var post = postCreator.createUnpublished();
+        var post = postCreator.create(false);
         assertThrows(
             InvalidContentException.class,
             () -> postEditorService.editPost(
@@ -107,7 +146,7 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldEditPost(){
-        var post = postCreator.createUnpublished();
+        var post = postCreator.create(false);
         postEditorService.editPost(
             post.getAuthorId(), 
             post.getId(),
@@ -117,7 +156,7 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldThrowInvalidPostVersionException(){
-        var post = postCreator.createUnpublished();
+        var post = postCreator.create(false);
         assertDoesNotThrow(
             () -> postEditorService.editPost( 
                 post.getAuthorId(), 
@@ -137,7 +176,7 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldThrowPostDoesntExistExceptionOnGetContent(){
-        var post = postCreator.createPublished();
+        var post = postCreator.create(true);
         assertThrows(
             PostDoesntExistException.class, 
             () -> postEditorService.getContent(post.getId(), post.getAuthorId()));
@@ -145,7 +184,7 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldReturnPostContentOnGetContent(){
-        var post = postCreator.createPublished();
+        var post = postCreator.create(true);
         assertThrows(
             PostDoesntExistException.class, 
             () -> postEditorService.getContent(post.getId(), post.getAuthorId()));
@@ -153,11 +192,10 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldThrowPostDoesntExistExceptionOnPublish(){
-        var post = postCreator.createPublished();
+        var post = postCreator.create(true);
         assertThrows(
             PostDoesntExistException.class,
             () -> postEditorService.publishPost(
-                post.getAuthorId(),
                 new UserActor(post.getAuthorId()),
                 post.getId()
             )
@@ -166,9 +204,8 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldPublishPost(){
-        var post = postCreator.createUnpublished();
+        var post = postCreator.create(false);
             assertDoesNotThrow(() -> postEditorService.publishPost(
-                post.getAuthorId(),
                 new UserActor(post.getAuthorId()),
                 post.getId()
             )
@@ -177,18 +214,20 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldReturnEmptyList(){
-        var post = postCreator.createPublished();
+        var post = postCreator.create(true);
         assertTrue(postEditorService.getUnpublishedPosts(
             post.getAuthorId(), 
+            PostEditorFilter.builder().build(),
             PageRequest.ofSize(10).first()).isEmpty()
         );
     }
 
     @Test
     void shouldReturnUnpublishedPost(){
-        var post = postCreator.createUnpublished();
+        var post = postCreator.create(false);
         var posts = postEditorService.getUnpublishedPosts(
             post.getAuthorId(),
+            PostEditorFilter.builder().build(),
             PageRequest.ofSize(10).first());
         assertFalse(posts.isEmpty());
         assertDoesNotThrow(() -> posts.getContent().getFirst());
@@ -196,14 +235,14 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test 
     void shouldCreatePostWithReply(){
-        var originalPost = postCreator.createPublished();
+        var originalPost = postCreator.create(true);
 
-        var userId = UUID.randomUUID();
+        var user = userCreator.create();
         assertDoesNotThrow(
             () -> {
                 var resp = postEditorService.createPost(
-                    userId, 
-                    new UserActor(userId),
+                    user.getId(), 
+                    new UserActor(user.getId()),
                     PostCreateRequest.builder()
                         .replyId(originalPost.getId())
                         .title("TestTitle")
@@ -216,16 +255,16 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test 
     void shouldThrowPrivateReplyExceptionOnReplyToPrivateCommunityPostWithoutCommunity(){
-        var originalPost = postCreator.createPublishedWithPrivateCommunity();
+        var creatResp = postCreator.createPublishedWithCommunity(true);
 
-        var userId = UUID.randomUUID();
+        var user = userCreator.create();
         assertThrows(
             PrivateReplyException.class,
             () -> postEditorService.createPost(
-                    userId, 
-                    new UserActor(userId),
+                    user.getId(), 
+                    new UserActor(user.getId()),
                     PostCreateRequest.builder()
-                        .replyId(originalPost.getId())
+                        .replyId(creatResp.post().getId())
                         .title("TestTitle")
                         .build()
                 )
@@ -234,20 +273,20 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test 
     void shouldNotThrowExceptionOnReplyToPrivateCommunityPostWithCommunity(){
-        var originalPost = postCreator.createPublishedWithPrivateCommunity();
+        var createResp = postCreator.createPublishedWithCommunity(true);
 
-        var userId = UUID.randomUUID();
+        var user = userCreator.create();
         followCreator.createFollow(
-            originalPost.getCommunityId().getId(), 
-            userId
+            createResp.post().getCommunityId().getId(), 
+            user.getId()
         );
         assertDoesNotThrow(
             () -> postEditorService.createPost(
-                    userId, 
-                    new UserActor(userId),
+                    user.getId(), 
+                    new UserActor(user.getId()),
                     PostCreateRequest.builder()
-                        .replyId(originalPost.getId())
-                        .communityId(originalPost.getCommunityId().getId())
+                        .replyId(createResp.post().getId())
+                        .communityId(createResp.post().getCommunityId().getId())
                         .title("TestTitle")
                         .build()
                 )
@@ -256,17 +295,17 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test 
     void shouldNotThrowDoesntFollowedExceptionOnReplyToPrivateCommunityPostWithCommunity(){
-        var originalPost = postCreator.createPublishedWithPrivateCommunity();
+        var createResp = postCreator.createPublishedWithCommunity(true);
 
-        var userId = UUID.randomUUID();
-        followCreator.createFollow(originalPost.getCommunityId().getId(), userId);
+        var user = userCreator.create();
+        followCreator.createFollow(createResp.post().getCommunityId().getId(), user.getId());
         assertDoesNotThrow(
             () -> postEditorService.createPost(
-                    userId, 
-                    new UserActor(userId),
+                    user.getId(), 
+                    new UserActor(user.getId()),
                     PostCreateRequest.builder()
-                        .replyId(originalPost.getId())
-                        .communityId(originalPost.getCommunityId().getId())
+                        .replyId(createResp.post().getId())
+                        .communityId(createResp.post().getCommunityId().getId())
                         .title("TestTitle")
                         .build()
                 )
@@ -275,14 +314,14 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test 
     void shouldNotThrowExceptionOnReplyToPublicCommunityPostWithoutCommunity(){
-        var originalPost = postCreator.createPublishedWithPublicCommunity();
-        var userId = UUID.randomUUID();
+        var createResp = postCreator.createPublishedWithCommunity(false);
+        var user = userCreator.create();
         assertDoesNotThrow(
             () -> postEditorService.createPost(
-                userId, 
-                new UserActor(userId),
+                user.getId(), 
+                new UserActor(user.getId()),
                 PostCreateRequest.builder()
-                    .replyId(originalPost.getId())
+                    .replyId(createResp.post().getId())
                     .title("TestTitle")
                     .build()
             )
@@ -291,16 +330,16 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test 
     void shouldNotThrowExceptionOnReplyToPublicCommunityPostInOtherCommunity(){
-        var originalPost = postCreator.createPublishedWithPublicCommunity();
-        var userId = UUID.randomUUID();
-        var community = communityCreator.createPublic();
-        followCreator.createFollow(community.getId(), userId);
+        var createResp = postCreator.createPublishedWithCommunity(false);
+        var user = userCreator.create();
+        var community = communityCreator.create(false);
+        followCreator.createFollow(community.getId(), user.getId());
         assertDoesNotThrow(
             () -> postEditorService.createPost(
-                userId, 
-                new UserActor(userId),
+                user.getId(), 
+                new UserActor(user.getId()),
                 PostCreateRequest.builder()
-                    .replyId(originalPost.getId())
+                    .replyId(createResp.post().getId())
                     .title("TestTitle")
                     .communityId(community.getId())
                     .build()
@@ -310,22 +349,29 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
 
     @Test 
     void shouldThrowPrivateReplyExceptionOnReplyToPrivateCommunityPostInOtherPublicCommunity(){
-        var originalPost = postCreator.createPublishedWithPrivateCommunity();
-        var userId = UUID.randomUUID();
-        var community = communityCreator.createPublic();
-        followCreator.createFollow(community.getId(), userId);
+        var createResp = postCreator.createPublishedWithCommunity(true);
+        var user = userCreator.create();
+        var community = communityCreator.create(false);
+        followCreator.createFollow(community.getId(), user.getId());
         assertThrows(
             PrivateReplyException.class,
             () -> postEditorService.createPost(
-                userId, 
-                new UserActor(userId),
+                user.getId(), 
+                new UserActor(user.getId()),
                 PostCreateRequest.builder()
-                    .replyId(originalPost.getId())
+                    .replyId(createResp.post().getId())
                     .title("TestTitle")
                     .communityId(community.getId())
                     .build()
             )
         );
+    }
+
+    @AfterEach 
+    void cleanUp(){
+        postCreator.cleanUp();
+        communityCreator.cleanUp();
+        userCreator.cleanUp();
     }
 
     private PostEditRequest createEditRequest(String content){

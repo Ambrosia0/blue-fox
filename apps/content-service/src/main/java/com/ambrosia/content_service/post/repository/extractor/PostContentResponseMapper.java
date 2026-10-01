@@ -6,17 +6,28 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import com.ambrosia.content_service.post.model.dto.response.CommunityResponse;
 import com.ambrosia.content_service.post.model.dto.response.PostContentResponse;
 import com.ambrosia.content_service.post.model.dto.response.PostResponse;
+import com.ambrosia.content_service.post.model.dto.response.UserResponse;
 
+@Component 
 public class PostContentResponseMapper implements RowMapper<PostContentResponse>{
     @Override
     public PostContentResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new PostContentResponse(
                 rs.getLong("id"),
-                rs.getObject("author_id", UUID.class),
+                rs.getObject("author_id", UUID.class) != null?
+                    new UserResponse(
+                        rs.getObject("author_id", UUID.class),
+                        rs.getString("username"),
+                        rs.getString("first_name"), 
+                        rs.getString("last_name"),
+                        rs.getObject("avatar_id", String.class)
+                    ):
+                    null,
                 rs.getString("title"),
                 rs.getString("content"),
                 rs.getString("preview"),
@@ -39,8 +50,9 @@ public class PostContentResponseMapper implements RowMapper<PostContentResponse>
                     new CommunityResponse(
                         rs.getLong("community_id"),
                         rs.getString("name"),
+                        rs.getString("slug"),
                         rs.getBoolean("is_private"),
-                        rs.getObject("avatar_id", UUID.class)
+                        rs.getObject("avatar_id", String.class)
                     ):
                     null
         );

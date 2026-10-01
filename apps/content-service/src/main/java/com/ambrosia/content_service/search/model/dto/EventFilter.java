@@ -18,12 +18,10 @@ public record EventFilter(
     List<String> tags,
     SearchType searchType,
     Float lastScore,
-    Boolean visible,
     Direction direction,
     SortField sortField
 ) {
     public EventFilter{
-        visible = true;
         if(searchType == null){
             searchType = SearchType.LATEST;
         }

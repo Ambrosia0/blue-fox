@@ -1,14 +1,13 @@
 package com.ambrosia.content_service.community.service.impl;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Service;
 
 import com.ambrosia.content_service.community.model.dto.CommunityUserData;
 import com.ambrosia.content_service.community.repository.CommunityQueryRepository;
-import com.ambrosia.content_service.community.service.CommunityPermissionService;
+import com.ambrosia.content_service.community.service.PostPermissionService;
 import com.ambrosia.content_service.exception.api.CommunityDoesntExistException;
 import com.ambrosia.content_service.exception.api.PrivateReplyException;
+import com.ambrosia.content_service.post.exception.PostDoesntExistException;
 import com.ambrosia.content_service.post.utils.policy.PostPolicy;
 
 import jakarta.annotation.Nullable;
@@ -16,12 +15,12 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class CommunityPermissionServiceImpl implements CommunityPermissionService{
+public class CommunityPermissionServiceImpl implements PostPermissionService{
     private final CommunityQueryRepository communityQueryRepository;
 
     @Override
-    public CommunityUserData validatePostInCommunity(UUID userId, PostPolicy policy, long communityId) {
-        var userData = communityQueryRepository.findCommunityUserDataByCommunityId(communityId, userId)
+    public CommunityUserData validatePostInCommunity(PostPolicy policy, long communityId) {
+        var userData = communityQueryRepository.findCommunityUserDataByCommunityId(communityId, policy.userId())
             .orElseThrow(() -> new CommunityDoesntExistException());
         policy.validateCreate(userData);
         return userData;
@@ -29,13 +28,12 @@ public class CommunityPermissionServiceImpl implements CommunityPermissionServic
     
     @Override
     public @Nullable CommunityUserData validatePostToReply(
-            UUID userId, 
             PostPolicy policy, 
             long postId, 
             @Nullable Long communityId) {
         
         var communityData = communityQueryRepository.findCommunityUserDataByReplyId(
-                userId,  
+                policy.userId(),  
                 communityId,
                 postId
             );
@@ -70,5 +68,20 @@ public class CommunityPermissionServiceImpl implements CommunityPermissionServic
             toReturn = c2;
         }
         return toReturn;
+    }
+
+    @Override
+    public void validateViewCommunity(PostPolicy policy, long communityId) {
+        var userData = communityQueryRepository.findCommunityUserDataByCommunityId(communityId, policy.userId())
+            .orElseThrow(() -> new CommunityDoesntExistException());
+        policy.validateView(userData);
+    }
+
+    @Override
+    public void validatePostDelete(PostPolicy policy, long postId) {
+        var userData = communityQueryRepository.findPostUserDataByPostId(postId, policy.userId());
+        if(userData.isEmpty())
+            throw new PostDoesntExistException();
+        policy.validateDelete(userData.get());
     }
 }

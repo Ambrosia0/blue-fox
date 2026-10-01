@@ -2,11 +2,12 @@ package com.ambrosia.content_service.post.service.user;
 
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import com.ambrosia.content_service.post.model.dto.request.PostCreateRequest;
 import com.ambrosia.content_service.post.model.dto.request.PostEditRequest;
+import com.ambrosia.content_service.post.model.dto.request.PostEditorFilter;
 import com.ambrosia.content_service.post.model.dto.response.PostEditorContentResponse;
 import com.ambrosia.content_service.post.model.dto.response.PostEditorViewResponse;
 import com.ambrosia.content_service.post.utils.policy.PostPolicy;
@@ -35,18 +36,24 @@ public interface PostEditorService {
 
     /**
      * Publishes post
-     * @param userId id of the author
      * @param policy policy, which validates permission for publish operation
      * @param postId
      */
-    void publishPost(UUID authorId, PostPolicy policy, long postId);
+    void publishPost(PostPolicy policy, long postId);
 
     /**
-     * Deletes post
+     * Unpublishes post
+     * @param authorId id of the author
+     * @param postId unpublished post
+     */
+    void unpublishPost(UUID authorId, long postId);
+
+    /**
+     * Deletes unpublished post
      * @param postId post
      * @param policy
      */
-    void deletePost(long postId, PostPolicy policy);
+    void deleteDraftPost(long postId, PostPolicy policy);
 
     /**
      * Returns content of unpublished post
@@ -59,8 +66,8 @@ public interface PostEditorService {
     /**
      * Returns view of unpublished posts
      * @param authorId author id
-     * @param pageable pageable
+     * @param filter filter
      * @return post view read projection
      */
-    Page<PostEditorViewResponse> getUnpublishedPosts(UUID authorId, Pageable pageable);
+    Slice<PostEditorViewResponse> getUnpublishedPosts(UUID authorId, PostEditorFilter filter, Pageable pageable);
 }

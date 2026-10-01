@@ -3,7 +3,6 @@ package com.ambrosia.content_service.post.model.dto.response;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +21,7 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class PostContentResponse implements Serializable{
     private Long id;
-    private UUID authorId;
+    private UserResponse user;
     private String title;
     private String content;
     private String preview;

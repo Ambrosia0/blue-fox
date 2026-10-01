@@ -25,14 +25,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
-@RequestMapping("/api/me/post/{postId}")
+@RequestMapping("/api/me/post/{postId}/attachment")
 @RestController
 @RequiredArgsConstructor
 @Validated
 public class PostAttachmentController {
     private final PostAttachmentUserService attachmentService;
     
-    @PostMapping(path = "/attachment")
+    @PostMapping
     public AttachmentUploadResponse attachMedia(
         @PathVariable long postId,
         @RequestBody @Valid FileMetadata attachment,
@@ -45,7 +45,7 @@ public class PostAttachmentController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PostMapping("/attachment/{attachmentId}")
+    @PostMapping("/{attachmentId}")
     public void confirmAttachment(
             @PathVariable long postId,
             @PathVariable String attachmentId,
@@ -57,7 +57,7 @@ public class PostAttachmentController {
         );
     }
 
-    @GetMapping("/attachment")
+    @GetMapping
     public List<PostAttachment> getAttachedMedia(
         @PathVariable long postId,
         @AuthenticationPrincipal Jwt jwt) {
@@ -67,7 +67,7 @@ public class PostAttachmentController {
         );
     }
 
-    @DeleteMapping(path = "/attachment/{attachmentId}")
+    @DeleteMapping(path = "/{attachmentId}")
     public void deleteAttachment(
         @PathVariable long postId,
         @PathVariable String attachmentId,

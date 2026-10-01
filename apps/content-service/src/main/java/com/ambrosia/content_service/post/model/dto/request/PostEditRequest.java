@@ -5,7 +5,6 @@ import java.util.List;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import jakarta.validation.constraints.NotBlank;
@@ -16,7 +15,6 @@ public record PostEditRequest(
     String title,
 
     // @JsonDeserialize(using = PostContentDeserializer.class)
-    @JsonProperty("post")
     String post,
 
     @Size(max = 3)

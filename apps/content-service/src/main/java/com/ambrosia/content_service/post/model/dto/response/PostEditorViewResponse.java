@@ -1,11 +1,14 @@
 package com.ambrosia.content_service.post.model.dto.response;
 
 import java.time.Instant;
-import java.util.UUID;
+import java.util.List;
 
 public record PostEditorViewResponse(
     long id,
-    UUID authorId,
+    UserResponse author,
     String title,
+    List<String> tags,
+    CommunityResponse communityResponse,
+    List<UserResponse> collaborators,
     Instant updatedAt
 ) {}

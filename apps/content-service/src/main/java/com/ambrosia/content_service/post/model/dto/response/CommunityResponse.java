@@ -1,10 +1,11 @@
 package com.ambrosia.content_service.post.model.dto.response;
 
-import java.util.UUID;
+import java.io.Serializable;
 
 public record CommunityResponse(
     long id,
     String name,
+    String slug,
     boolean isPrivate,
-    UUID avatarId
-) {}
+    String avatarId
+) implements Serializable{}

@@ -58,7 +58,7 @@ public class ElasticPostSearchRepositoryImpl implements ElasticPostSearchReposit
             List<UUID> userFollows, 
             List<Long> communityFollows, 
             List<UUID> blacklist){
-        var bool = visibilityFilter();
+        var bool = builderInit();
         personalFilter(eventFilter, bool, userFollows, communityFollows, blacklist);
         if(eventFilter.sortField() == SortField.SCORE)
             popularityFilter(eventFilter, bool);
@@ -122,7 +122,7 @@ public class ElasticPostSearchRepositoryImpl implements ElasticPostSearchReposit
     }
 
     private SearchHits<PostElastic> findRelevant(EventFilter eventFilter, int pageSize){
-        var bool = visibilityFilter();
+        var bool = builderInit();
         tagFilter(eventFilter, bool);
         authorFilter(eventFilter, bool);
         communityFilter(eventFilter, bool);
@@ -141,7 +141,7 @@ public class ElasticPostSearchRepositoryImpl implements ElasticPostSearchReposit
     }
 
     private SearchHits<PostElastic> findBest(EventFilter eventFilter, int pageSize){
-        var bool = visibilityFilter();
+        var bool = builderInit();
         tagFilter(eventFilter, bool);
         authorFilter(eventFilter, bool);
         communityFilter(eventFilter, bool);
@@ -159,7 +159,7 @@ public class ElasticPostSearchRepositoryImpl implements ElasticPostSearchReposit
     }
     
     private SearchHits<PostElastic> findPopular(EventFilter eventFilter, int pageSize){
-        var bool = visibilityFilter();
+        var bool = builderInit();
         tagFilter(eventFilter, bool);
         authorFilter(eventFilter, bool);
         communityFilter(eventFilter, bool);
@@ -178,7 +178,7 @@ public class ElasticPostSearchRepositoryImpl implements ElasticPostSearchReposit
     }
 
     private SearchHits<PostElastic> findLatest(EventFilter eventFilter, int pageSize){
-        var bool = visibilityFilter();
+        var bool = builderInit();
         tagFilter(eventFilter, bool);
         authorFilter(eventFilter, bool);
         communityFilter(eventFilter, bool);
@@ -281,9 +281,8 @@ public class ElasticPostSearchRepositoryImpl implements ElasticPostSearchReposit
         );
     }
 
-    private BoolQuery.Builder visibilityFilter(){
-        return new BoolQuery.Builder()
-            .filter(f -> f.term(ft -> ft.field("visible").value(true)));
+    private BoolQuery.Builder builderInit(){
+        return new BoolQuery.Builder();
     }
 
     private SortOrder toSortOrder(Direction direction){

@@ -17,6 +17,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.ambrosia.content_service.post.model.dto.response.PostContentResponse;
 import com.ambrosia.content_service.post.model.dto.response.PreviewWithScoreResponse;
 import com.ambrosia.content_service.post.service.user.PostUserService;
+import com.ambrosia.content_service.post.utils.policy.AnonymousActor;
+import com.ambrosia.content_service.post.utils.policy.UserActor;
 import com.ambrosia.content_service.search.model.dto.EventFilter;
 import com.ambrosia.content_service.search.model.dto.SearchType;
 
@@ -36,9 +38,10 @@ public class PostController {
     public PostContentResponse getPost(
         @PathVariable long postId,
         @AuthenticationPrincipal Jwt jwt){
-        return jwt != null?
-            postUserService.getPost(postId, UUID.fromString(jwt.getSubject())):
-            postUserService.getPost(postId, null);
+        var policy = jwt != null?
+            new UserActor(UUID.fromString(jwt.getSubject())):
+            new AnonymousActor();
+        return postUserService.getPost(postId, policy);
     }
 
     @GetMapping
@@ -47,6 +50,9 @@ public class PostController {
         @AuthenticationPrincipal Jwt jwt){
         if(eventFilter.searchType() == SearchType.PERSONALIZED && jwt == null)
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized!");
-        return postUserService.search(eventFilter, jwt != null? UUID.fromString(jwt.getSubject()): null, 10);
+        var policy = jwt != null?
+            new UserActor(UUID.fromString(jwt.getSubject())):
+            new AnonymousActor();
+        return postUserService.search(eventFilter, policy, 10);
     }    
 }

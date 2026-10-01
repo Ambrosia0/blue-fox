@@ -3,21 +3,20 @@ package com.ambrosia.content_service.integration.search;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.UUID;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 
 import com.ambrosia.content_service.BaseIntegrationTest;
-import com.ambrosia.content_service.core.PreviewConverter;
 import com.ambrosia.content_service.like.model.entity.PostLike;
 import com.ambrosia.content_service.like.repository.PostLikeRepository;
-import com.ambrosia.content_service.post.model.entity.Post;
-import com.ambrosia.content_service.post.repository.PostRepository;
 import com.ambrosia.content_service.post.service.user.PostUserService;
-import com.ambrosia.content_service.post.utils.TipTapPreviewConverter;
+import com.ambrosia.content_service.post.utils.policy.AnonymousActor;
+import com.ambrosia.content_service.post.utils.policy.UserActor;
 import com.ambrosia.content_service.search.model.dto.EventFilter;
 import com.ambrosia.content_service.search.model.dto.SearchType;
 import com.ambrosia.content_service.search.model.entity.elastic.PostElastic;
@@ -25,16 +24,13 @@ import com.ambrosia.content_service.search.repository.elastic.ElasticPostReposit
 import com.ambrosia.content_service.search.service.PostIndexService;
 import com.ambrosia.content_service.search.service.mappers.PostIndexMapper;
 
-import tools.jackson.databind.ObjectMapper;
-
-import com.ambrosia.content_service.util.PostFactory;
-import com.ambrosia.content_service.util.PostTemplate;
+import com.ambrosia.content_service.util.PostCreator;
+import com.ambrosia.content_service.util.UserCreator;
 import com.ambrosia.outbox.elastic.ElasticsearchOutboxRelay;
 
+@Import({PostCreator.class, UserCreator.class})
 public class ElasticPostUserServiceIntegrationTests extends BaseIntegrationTest {
     @Autowired PostUserService postUserService;
-
-    @Autowired PostRepository postRepository;
 
     @Autowired PostLikeRepository postLikeRepository;
 
@@ -46,16 +42,17 @@ public class ElasticPostUserServiceIntegrationTests extends BaseIntegrationTest 
 
     @Autowired ElasticsearchOutboxRelay relay;
 
-    @Autowired PostIndexMapper postIndexMapper;
+    @Autowired PostCreator postCreator;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final PreviewConverter previewConverter = new TipTapPreviewConverter(objectMapper, 50, 1);
+    @Autowired UserCreator userCreator;
+
+    @Autowired PostIndexMapper postIndexMapper;
 
     @Test
     void shouldReturnPostPreviewsWithLatestSearchType() {
-        createTestPost();
-        createTestPost();
-        createTestPost();
+        postCreator.create(true);
+        postCreator.create(true);
+        postCreator.create(true);
 
         var eventFilter = EventFilter.builder()
             .searchType(SearchType.LATEST)
@@ -63,7 +60,7 @@ public class ElasticPostUserServiceIntegrationTests extends BaseIntegrationTest 
 
         relay.flush();
         elasticsearchOperations.indexOps(PostElastic.class).refresh();
-        var search = postUserService.search(eventFilter, null, 10);
+        var search = postUserService.search(eventFilter, new AnonymousActor(), 10);
         assertEquals(3, search.size());
         search.forEach(p -> assertEquals(0.0f, p.score()));
     }
@@ -74,35 +71,45 @@ public class ElasticPostUserServiceIntegrationTests extends BaseIntegrationTest 
             .searchType(SearchType.POPULAR)
             .build();
 
-        var response = postUserService.search(eventFilter, null, 10);
+        var response = postUserService.search(eventFilter, new AnonymousActor(), 10);
         assertEquals(0, response.size());
     }
 
     @Test
     void shouldReturnPostPreviewsWithScore() {
-        createTestPost();
-        createTestPost();
+        var post1 = postCreator.create(true);
+        var post2 = postCreator.create(true);
 
+        var searchingUser = userCreator.create();
         var eventFilter = EventFilter.builder()
             .searchType(SearchType.RELEVANCY)
-            .visible(true)
             .searchString("test")
             .build();
         
         relay.flush();
         elasticsearchOperations.indexOps(PostElastic.class).refresh();
-        var search = postUserService.search(eventFilter, null, 10);
-        assertEquals(2, search.size());
+        var search = postUserService.search(
+                eventFilter, 
+                new UserActor(searchingUser.getId()), 
+                20
+        );
+
+        var searchedPosts = List.of(post1.getId(), post2.getId());
+        assertEquals(2, search.stream()
+            .filter(t -> searchedPosts.contains(t.postViewResponse().id()))
+            .toList()
+            .size()
+        );
         search.forEach(p -> assertNotNull(p.score()));
     }
 
     @Test
     void shouldReturnPostPreviewsWithLikeStatus() {
-        var post1 = createTestPost();
-        createTestPost();
+        var post1 = postCreator.create(true);
+        var post2 = postCreator.create(true);
 
-        var uuid = UUID.randomUUID();
-        postLikeRepository.save(PostLike.create(uuid, post1.getId()));
+        var searchingUser = userCreator.create();
+        postLikeRepository.save(PostLike.create(searchingUser.getId(), post1.getId()));
 
         var eventFilter = EventFilter.builder()
             .searchType(SearchType.LATEST)
@@ -111,8 +118,14 @@ public class ElasticPostUserServiceIntegrationTests extends BaseIntegrationTest 
         relay.flush();
 
         elasticsearchOperations.indexOps(PostElastic.class).refresh();
-        var search = postUserService.search(eventFilter, uuid, 10);
-        assertEquals(2, search.size());
+        var search = postUserService.search(eventFilter, new UserActor(searchingUser.getId()), 10);
+        
+        var searchedPosts = List.of(post1.getId(), post2.getId());
+        assertEquals(2, search.stream()
+            .filter(t -> searchedPosts.contains(t.postViewResponse().id()))
+            .toList()
+            .size()
+        );
         var likedPost = search.stream()
             .filter(p -> p.postViewResponse().id() == post1.getId())
             .findFirst()
@@ -120,19 +133,9 @@ public class ElasticPostUserServiceIntegrationTests extends BaseIntegrationTest 
         assertEquals(true, likedPost.postViewResponse().isLiked());
     }
 
-    private Post createTestPost(){
-        var post = PostFactory.createTestPost();
-        post.setPreview(previewConverter.convert(PostTemplate.template));
-        post = postRepository.save(post);
-        postIndexService.index(postIndexMapper.toIndex(post, null));
-        return post;
-    }
-
     @AfterEach
     void cleanUp() {
-        postLikeRepository.deleteAll();
-        postRepository.deleteAll();
-        elasticPostRepository.deleteAll();
-        elasticsearchOperations.indexOps(PostElastic.class).refresh();
+        postCreator.cleanUp();
+        userCreator.cleanUp();
     }
 }

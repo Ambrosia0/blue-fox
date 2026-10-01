@@ -9,6 +9,7 @@ public class PreviewEventFactory {
     public static PostPreviewEvent from(Collection<PreviewWithScoreResponse> preview){
         return PostPreviewEvent.newBuilder()
             .addAllPostId(preview.stream()
+                .filter(t -> t.postViewResponse() != null)
                 .map(t -> t.postViewResponse().id())
                 .toList()
             )

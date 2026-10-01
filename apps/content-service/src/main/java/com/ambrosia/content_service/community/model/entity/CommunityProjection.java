@@ -1,5 +1,6 @@
 package com.ambrosia.content_service.community.model.entity;
 
+import java.util.Collections;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
@@ -9,17 +10,16 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-import com.ambrosia.content_service.post.model.entity.Post;
-
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Table(name = "community_projection")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter 
 @Builder
 public class CommunityProjection implements Persistable<Long>{
     @Id
@@ -31,11 +31,15 @@ public class CommunityProjection implements Persistable<Long>{
     @Column(value = "avatar_id")
     private String avatarId;
 
+    @Column(value = "slug")
+    private String slug;
+
     @Column(value = "is_private")
     private boolean isPrivate;
 
+    @Getter(value = AccessLevel.NONE)
     @MappedCollection(idColumn = "community_id")
-    private Set<Post> posts;
+    private Set<CommunityPermission> permissions;
 
     @Transient
     @Builder.Default
@@ -45,4 +49,7 @@ public class CommunityProjection implements Persistable<Long>{
         return isNew;
     }
     
+    public Set<CommunityPermission> getPermissions(){
+        return Collections.unmodifiableSet(permissions);
+    }
 }

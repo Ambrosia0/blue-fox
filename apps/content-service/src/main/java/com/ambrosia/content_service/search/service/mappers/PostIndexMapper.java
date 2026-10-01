@@ -27,7 +27,6 @@ public class PostIndexMapper {
                 .title(postIndex.post().getTitle())
                 .publishedAt(postIndex.post().getPublishedAt())
                 .version(postIndex.post().getVersion())
-                .visible(postIndex.post().isVisible())
                 .reply(postIndex.post().getReplyId() != null? postIndex.post().getReplyId().getId(): null)
                 .isNew(postIndex.post().isNew());
         if(postIndex.communityUserData() != null){

@@ -44,7 +44,7 @@ public class S3PostAttachmentUserServiceIntegrationTests extends BaseIntegration
 
     @Test
     void shouldThrowNotEnoughPermissionsException(){
-        var post = postCreator.createFromScratch();
+        var post = postCreator.create(false);
         assertThrows(
             NotEnoughPermissionsException.class,
             () -> postAttachmentUserService.uploadAttachment(
@@ -57,7 +57,7 @@ public class S3PostAttachmentUserServiceIntegrationTests extends BaseIntegration
 
     @Test
     void shouldThrowCantValidateAttachmentUpload(){
-        var post = postCreator.createFromScratch();
+        var post = postCreator.create(false);
         assertThrows(
             CantValidateAttachmentException.class,
             () -> postAttachmentUserService.validateAttachmentUpload(
@@ -70,7 +70,7 @@ public class S3PostAttachmentUserServiceIntegrationTests extends BaseIntegration
 
     @Test
     void shouldUploadAttachmentThenDeleteAttachment() throws IOException{
-        var post = postCreator.createFromScratch();
+        var post = postCreator.create(false);
         var file = FileMetadataFactory.fileMetadata();
         var resp = postAttachmentUserService.uploadAttachment(
                 post.getAuthorId(),
@@ -109,6 +109,6 @@ public class S3PostAttachmentUserServiceIntegrationTests extends BaseIntegration
     @AfterEach
     void cleanUp(){
         postAttachmentRepository.deleteAll();
-        postRepository.deleteAll();
+        postCreator.cleanUp();
     }
 }

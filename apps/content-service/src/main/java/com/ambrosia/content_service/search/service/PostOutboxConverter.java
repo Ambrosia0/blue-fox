@@ -27,7 +27,7 @@ public class PostOutboxConverter implements ElasticsearchOutboxHandler<PostElast
     private String ENTITY_TYPE = "post";
 
     @Override
-    public SearchIndexOutbox convert(Object source) {
+    public SearchIndexOutbox convert(PostElastic source) {
         Assert.notNull(source, "Object must not be null!");
         var casted = (PostElastic) source;
         return SearchIndexOutbox.from(
@@ -53,16 +53,22 @@ public class PostOutboxConverter implements ElasticsearchOutboxHandler<PostElast
             .stream()
             .map(t -> objectMapper.readValue(t, PostElastic.class))
             .collect(Collectors.partitioningBy(t -> t.getTitle() == null));
-        var toDelete = partitioned.get(true);
-        try {
-            if(!toDelete.isEmpty())
-                elasticPostRepository.deleteAll(toDelete);
 
+        try {
             var toUpsert = partitioned.get(false);
             if(!toUpsert.isEmpty())
                 elasticPostRepository.saveAll(toUpsert);
         } catch (OptimisticLockingFailureException e) {
             // TODO: handle exception
         }
+        
+        try {
+            var toDelete = partitioned.get(true);
+            if(!toDelete.isEmpty())
+                elasticPostRepository.deleteAll(toDelete);
+        } catch (OptimisticLockingFailureException e) {
+            // TODO: handle exception
+        }
+
     }
 }
