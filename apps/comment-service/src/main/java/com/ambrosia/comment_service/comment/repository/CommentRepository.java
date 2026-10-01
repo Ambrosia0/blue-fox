@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
 import com.ambrosia.comment_service.comment.model.dto.response.CreateCommentResponse;
@@ -13,8 +13,8 @@ import com.ambrosia.comment_service.comment.model.entity.Comment;
 import com.ambrosia.comment_service.comment.repository.custom.CustomCommentRepository;
 
 public interface CommentRepository extends 
-    CrudRepository<Comment, Long>,
-    CustomCommentRepository{
+        Repository<Comment, Long>,
+        CustomCommentRepository{
     int countByPostId(long postId);
     boolean existsByPostId(long postId);
 
@@ -39,10 +39,12 @@ public interface CommentRepository extends
         INSERT INTO comment(post_id, user_id, content, parent_comment_id, like_count, number_of_children, is_visible) 
         SELECT p.id, :#{#comment.userId}, :#{#comment.content}, :#{#comment.parentCommentId}, :#{#comment.likeCount}, :#{#comment.numberOfChildren}, :#{#comment.isVisible} 
         FROM (SELECT :#{#comment.postId} AS id) p 
-        JOIN post_projection ON post_projection.post_id = p.id
-        WHERE (
+        JOIN post_projection pp ON pp.post_id = p.id
+        WHERE pp.is_published = 'true' 
+        AND (
             :#{#comment.parentCommentId} IS NULL 
-            OR EXISTS (SELECT 1 FROM comment WHERE comment.id = :#{#comment.parentCommentId} AND comment.is_visible IS TRUE))
+            OR EXISTS (SELECT 1 FROM comment WHERE comment.id = :#{#comment.parentCommentId} AND comment.is_visible IS TRUE)
+        )
         RETURNING *
     ),
     updated_comments AS (
@@ -63,4 +65,7 @@ public interface CommentRepository extends
 
     @Query("SELECT * FROM comment c WHERE c.id = :commentId AND user_id = :userId")
     Optional<CreateCommentResponse> findCreateProjection(long commentId, UUID userId);
+
+    Optional<Comment> findById(Long id);
+    void deleteAll();
 }

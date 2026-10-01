@@ -13,9 +13,11 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString 
 @AllArgsConstructor
 public class CreateCommentResponse{
     long id;
@@ -24,7 +26,7 @@ public class CreateCommentResponse{
     String content;
 
     @JsonInclude(value = Include.NON_NULL)
-    Long parentComment;
+    Long parentCommentId;
     Instant createdAt;
 
     /**

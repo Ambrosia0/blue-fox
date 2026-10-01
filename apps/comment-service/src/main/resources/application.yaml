@@ -51,20 +51,11 @@ spring:
    channels:
     profile-channel:
       address: profile-service:9090
-    community-channel:
-      address: community-service:9090
-    content-channel:
-      address: content-service:9090
 app:
  s3:
    public-bucket: ${S3_BUCKET:publicbucket}
    base-prefix: files/comment
    temp-prefix: temp/files/comment
-# logging:
-#   level:
-#     '[org.springframework.data]': trace
-#     '[io.lettuce]': debug
-  # - native
 ---
 spring:
   config:

@@ -18,6 +18,7 @@ import com.ambrosia.comment_service.comment.model.dto.request.CreateComment;
 import com.ambrosia.comment_service.comment.model.dto.response.CreateCommentResponse;
 import com.ambrosia.comment_service.comment.service.UserCommentLikeService;
 import com.ambrosia.comment_service.comment.service.UserCommentService;
+import com.ambrosia.comment_service.core.policy.UserActor;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +37,9 @@ public class UserCommentController {
     public CreateCommentResponse createComment(
             @RequestBody @Valid CreateComment createComment,
             @AuthenticationPrincipal Jwt jwt){
+        var policy = new UserActor(UUID.fromString(jwt.getSubject()));
         return userCommentService.createComment(
-            UUID.fromString(jwt.getSubject()),
+            policy,
             createComment
         );
     }
@@ -47,25 +49,36 @@ public class UserCommentController {
             @PathVariable Long commentId,
             @PathVariable String attachmentId,
             @AuthenticationPrincipal Jwt jwt) {
+        var policy = new UserActor(UUID.fromString(jwt.getSubject()));
         return userCommentService.confirmAttachmentUpload(
-            UUID.fromString(jwt.getSubject()),
+            policy,
             commentId,
             attachmentId
         );
+    }
+
+    @DeleteMapping("/{commentId}")
+    public void deleteComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal Jwt jwt){
+        var policy = new UserActor(UUID.fromString(jwt.getSubject()));
+        userCommentService.deleteComment(commentId, policy);
     }
 
     @PostMapping("/{commentId}/like")
     public void likeComment(
             @PathVariable long commentId,
             @AuthenticationPrincipal Jwt jwt) {
-        userCommentLikeService.likeComment(commentId, UUID.fromString(jwt.getSubject()));
+        var policy = new UserActor(UUID.fromString(jwt.getSubject()));
+        userCommentLikeService.likeComment(commentId, policy);
     }
 
     @DeleteMapping("/{commentId}/like")
     public void unlikeComment(
             @PathVariable long commentId,
             @AuthenticationPrincipal Jwt jwt) {
-        userCommentLikeService.unlikeComment(commentId, UUID.fromString(jwt.getSubject()));
+        var policy = new UserActor(UUID.fromString(jwt.getSubject()));
+        userCommentLikeService.unlikeComment(commentId, policy);
     }
     
 }

@@ -15,6 +15,12 @@ public record EventFilter(
     Direction direction,
     boolean visible
 ) {
+    public EventFilter{
+        if(sortField == null)
+            sortField = SortField.HOT;
+        if(direction == null)
+            direction =Direction.DESC;
+    }
     
     public enum SortField{
         DATE,

@@ -1,52 +1,50 @@
 package com.ambrosia.comment_service.kafka.utils;
 
-import com.ambrosia.comment_service.comment.model.dto.response.CreateCommentResponse;
-import com.ambrosia.comment_service.comment.model.entity.Comment;
+import com.ambrosia.comment_service.comment.model.dto.response.CommentData;
 import com.ambrosia.comment_service.kafka_events.CommentCreated;
 import com.ambrosia.comment_service.kafka_events.CommentDeleted;
 import com.ambrosia.comment_service.kafka_events.CommentEvent;
+import com.ambrosia.comment_service.kafka_events.User;
+import com.ambrosia.comment_service.user.model.dto.UserResponse;
 
-import jakarta.annotation.Nullable;
+import io.github.robsonkades.uuidv7.UUIDv7;
 
 public class CommentMessageFactory {
-    public static CommentEvent createOperation(Comment comment, @Nullable String attachmentUrl){
-        var builder = CommentCreated.newBuilder();
-        builder.setId(comment.getId())
-            .setPostId(comment.getPostId())
-            .setUserId(comment.getUserId().toString())
-            .setContent(comment.getContent())
-            .setCreatedAt(comment.getCreatedAt().toEpochMilli());
-        if(comment.getParentCommentId() != null)
-            builder.setParentComent(comment.getParentCommentId());
-        if(attachmentUrl != null)
-            builder.setAttachmentUrl(attachmentUrl);
+    public static CommentEvent createOperation(CommentData comment){
+        var builder = CommentCreated.newBuilder()
+            .setPostId(comment.postId())
+            .setUser(toUser(comment.user()))
+            .setContent(comment.content())
+            .setCreatedAt(comment.createdAt().toEpochMilli());
+        if(comment.parentComment() != null)
+            builder.setParentComent(comment.parentComment());
+        if(comment.attachmentUrl() != null)
+            builder.setAttachmentUrl(comment.attachmentUrl());
         return CommentEvent.newBuilder()
-            .setCreated(builder.build())
-            .build();
-    }
-
-    public static CommentEvent createOperation(CreateCommentResponse response){
-        var builder = CommentCreated.newBuilder();
-        builder.setId(response.getId())
-            .setPostId(response.getPostId())
-            .setUserId(response.getUserId().toString())
-            .setContent(response.getContent())
-            .setCreatedAt(response.getCreatedAt().toEpochMilli());
-        if(response.getParentComment() != null)
-            builder.setParentComent(response.getParentComment());
-        if(response.getAttachmentId() != null)
-            builder.setAttachmentUrl(response.getAttachmentId());
-        return CommentEvent.newBuilder()
+            .setCommentId(comment.id())
+            .setEventId(UUIDv7.randomUUIDString())
             .setCreated(builder.build())
             .build();
     }
 
     public static CommentEvent deleteOperation(long commentId){
         var deleted = CommentDeleted.newBuilder()
-            .setId(commentId)
             .build();
         return CommentEvent.newBuilder()
+            .setCommentId(commentId)
+            .setEventId(UUIDv7.randomUUIDString())
             .setDeleted(deleted)
             .build();
+    }
+
+    private static User toUser(UserResponse userResponse){
+        var builder = User.newBuilder()
+            .setId(userResponse.id().toString())
+            .setUsername(userResponse.username())
+            .setLastName(userResponse.lastName())
+            .setFirstName(userResponse.firstName());
+        if(userResponse.avatarId() != null)
+            builder.setAvatarId(userResponse.avatarId());
+        return builder.build();
     }
 }

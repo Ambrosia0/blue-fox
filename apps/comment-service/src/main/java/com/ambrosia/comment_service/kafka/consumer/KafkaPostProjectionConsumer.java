@@ -39,7 +39,7 @@ public class KafkaPostProjectionConsumer {
             ));
         var batches = parsedMessage.values()
             .stream()
-            .collect(Collectors.partitioningBy(PostEvent::hasCreated));
+            .collect(Collectors.partitioningBy(t -> t.hasCreated() || t.hasUpdated()));
         postProjectionCreator.process(batches.get(true), batches.get(false));
     }
 }

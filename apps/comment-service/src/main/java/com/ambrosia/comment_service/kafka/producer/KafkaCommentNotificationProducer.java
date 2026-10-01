@@ -16,11 +16,10 @@ public class KafkaCommentNotificationProducer {
 
     @EventListener
     public void on(CommentEvent commentEvent){
-        var id = switch(commentEvent.getEventCase()){
-            case CREATED -> commentEvent.getCreated().getId();
-            case DELETED -> commentEvent.getDeleted().getId();
-            default -> throw new RuntimeException("Unexpected event!");
-        };
-        kafkaTemplate.send(Topics.COMMENT_EVENT, Long.toString(id), commentEvent.toByteArray());
+        kafkaTemplate.send(
+            Topics.COMMENT_EVENT, 
+            Long.toString(commentEvent.getCommentId()), 
+            commentEvent.toByteArray()
+        );
     }
 }

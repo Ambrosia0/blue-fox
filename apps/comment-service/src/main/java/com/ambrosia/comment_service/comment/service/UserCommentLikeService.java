@@ -1,8 +1,8 @@
 package com.ambrosia.comment_service.comment.service;
 
-import java.util.UUID;
+import com.ambrosia.comment_service.community.utils.CommentPolicy;
 
 public interface UserCommentLikeService {
-    void likeComment(long commentId, UUID userId);
-    void unlikeComment(long commentId, UUID userId);
+    void likeComment(long commentId, CommentPolicy commentPolicy);
+    void unlikeComment(long commentId, CommentPolicy commentPolicy);
 }

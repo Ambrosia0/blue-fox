@@ -1,15 +1,13 @@
 package com.ambrosia.comment_service.comment.model.dto.response;
 
 import java.time.Instant;
-import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.ambrosia.comment_service.user.model.dto.UserResponse;
 
-public record TreeCommentData(
+public record CommentData(
     Long id,
     Long postId,
-    UUID userId,
+    UserResponse user,
     String content,
     int likeCount,
 
@@ -18,11 +16,7 @@ public record TreeCommentData(
     Instant createdAt,
     int numberOfChildren,
 
-    @JsonInclude(value = Include.NON_NULL)
     Boolean isLiked,
-
-    @JsonInclude(value = Include.NON_NULL)
-    Float score,
 
     String attachmentUrl
 ){}
