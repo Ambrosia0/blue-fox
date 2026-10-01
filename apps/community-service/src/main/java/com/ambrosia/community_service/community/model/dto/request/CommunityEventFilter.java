@@ -8,7 +8,9 @@ import org.hibernate.validator.constraints.UniqueElements;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
+@Builder 
 public record CommunityEventFilter(
     @Size(min = 3, max = 32) String searchString,
     Long lastSeenId,

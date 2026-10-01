@@ -22,41 +22,6 @@ public class CommunitySearchRepositoryImpl implements CommunitySearchRepository{
 
     private final CommunityPreviewRowMapper communityPreviewRowMapper;
 
-    private String baseSqlRelevant = """
-    WITH ranked as (
-        SELECT 
-            c.id, 
-            c.displayed_name,
-            c.slug, 
-            c.follow_count,
-            c.rules,
-            c.tags,
-            c.avatar_id,
-            c.created_at,
-            GREATEST(
-                similarity(c.displayed_name, :searchString),
-                similarity(c.slug, :searchString)
-            ) as rank
-            WHERE c.displayed_name % :searchString OR c.slug % :searchString
-    )
-    SELECT * FROM ranked
-    WHERE 1=1
-    """;
-
-    private String baseSql = """
-    SELECT 
-        c.id, 
-        c.displayed_name,
-        c.slug, 
-        c.follow_count,
-        c.rules, 
-        c.tags,
-        c.avatar_id,
-        c.created_at
-    FROM community c
-    WHERE 1=1
-    """;
-
     @Override
     public List<CommunityPreview> search(CommunityEventFilter eventFilter, int pageSize) {
         if(eventFilter.searchString() != null)
@@ -67,7 +32,27 @@ public class CommunitySearchRepositoryImpl implements CommunitySearchRepository{
 
     private List<CommunityPreview> findRelevant(CommunityEventFilter eventFilter, int pageSize){
         var paramMap = new LinkedHashMap<String, Object>(5, 1.0f);
-        var sql = new StringBuilder(baseSqlRelevant);
+        var sql = new StringBuilder("""
+        WITH ranked as (
+            SELECT 
+                c.id, 
+                c.displayed_name,
+                c.slug, 
+                c.follow_count,
+                c.rules,
+                c.tags,
+                c.avatar_id,
+                c.created_at,
+                GREATEST(
+                    similarity(c.displayed_name, :searchString),
+                    similarity(c.slug, :searchString)
+                ) as rank
+            FROM community c
+            WHERE c.displayed_name % :searchString OR c.slug % :searchString
+        )
+        SELECT * FROM ranked
+        WHERE 1=1
+        """);
         paramMap.put("searchString", eventFilter.searchString());
 
         applySharedFilters(eventFilter, paramMap, sql);
@@ -77,9 +62,9 @@ public class CommunitySearchRepositoryImpl implements CommunitySearchRepository{
             paramMap.put("lastSeenId", eventFilter.lastSeenId());
         }
         if(eventFilter.direction() == Direction.DESC)
-            sql.append("ORDER BY rank DESC, c.id DESC LIMIT :pageSize");
+            sql.append("ORDER BY rank DESC, ranked.id DESC LIMIT :pageSize");
         else
-            sql.append("ORDER BY rank DESC, c.id ASC LIMIT :pageSize");
+            sql.append("ORDER BY rank DESC, ranked.id ASC LIMIT :pageSize");
         paramMap.put("pageSize", pageSize);
         return jdbcClient
             .sql(sql.toString())
@@ -90,16 +75,35 @@ public class CommunitySearchRepositoryImpl implements CommunitySearchRepository{
 
     private List<CommunityPreview> findLatest(CommunityEventFilter eventFilter, int pageSize){
         var paramMap = new LinkedHashMap<String, Object>(5, 1.0f);
-        var sql = new StringBuilder(baseSql);
+        var sql = new StringBuilder("""
+        SELECT 
+            c.id, 
+            c.displayed_name,
+            c.slug, 
+            c.follow_count,
+            c.rules, 
+            c.tags,
+            c.avatar_id,
+            c.created_at
+        FROM community c
+        WHERE 1=1
+        """);
         if(eventFilter.lastSeenInstant() != null && eventFilter.lastSeenId() != null){
-            sql.append("AND (c.created_at, c.id) < (:lastSeenInstant, :lastSeenId) ");
+            if(eventFilter.direction() == Direction.DESC){
+                sql.append("AND (c.created_at, c.id) < (:lastSeenInstant, :lastSeenId) ");
+                sql.append("ORDER BY created_at DESC, c.id DESC LIMIT :pageSize");
+            } else{
+                sql.append("AND (c.created_at, c.id) > (:lastSeenInstant, :lastSeenId) ");
+                sql.append("ORDER BY created_at DESC, c.id ASC LIMIT :pageSize");
+            }
             paramMap.put("lastSeenInstant", eventFilter.lastSeenInstant());
             paramMap.put("lastSeenId", eventFilter.lastSeenId());
+        }else{
+            if(eventFilter.direction() == Direction.DESC)
+                sql.append("ORDER BY created_at DESC, c.id DESC LIMIT :pageSize");
+            else
+                sql.append("ORDER BY created_at DESC, c.id ASC LIMIT :pageSize");
         }
-        if(eventFilter.direction() == Direction.DESC)
-            sql.append("ORDER BY created_at DESC, c.id DESC LIMIT :pageSize");
-        else
-            sql.append("ORDER BY created_at DESC, c.id ASC LIMIT :pageSize");
         paramMap.put("pageSize", pageSize);
         return jdbcClient
             .sql(sql.toString())

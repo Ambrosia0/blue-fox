@@ -9,7 +9,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.jupiter.api.Test;
@@ -18,27 +17,30 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ambrosia.community_service.BaseIntegrationTest;
-import com.ambrosia.community_service.community.model.entity.Community;
-import com.ambrosia.community_service.community.repository.CommunityRepository;
 import com.ambrosia.community_service.exception.follow.AlreadyFollowedException;
 import com.ambrosia.community_service.exception.follow.DoesntFollowedException;
-import com.ambrosia.community_service.follow.model.entity.CommunityFollow;
 import com.ambrosia.community_service.follow.model.entity.key.CommunityFollowKey;
 import com.ambrosia.community_service.follow.repository.CommunityFollowRepository;
 import com.ambrosia.community_service.follow.service.CommunityFollowService;
 import com.ambrosia.community_service.kafka.producer.CommunityFollowEventProducer;
 import com.ambrosia.community_service.kafka_events.CommunityFollowEvent;
+import com.ambrosia.community_service.utils.CommunityCreator;
+import com.ambrosia.community_service.utils.FollowCreator;
+import com.ambrosia.community_service.utils.UserCreator;
 
 @Transactional
 public class CommunityFollowServiceIntegrationTests extends BaseIntegrationTest{
     @Autowired CommunityFollowService communityFollowService;
     @MockitoSpyBean CommunityFollowEventProducer communityFollowEventProducer;
     @Autowired CommunityFollowRepository communityFollowRepository;
-    @Autowired CommunityRepository communityRepository;
+
+    @Autowired FollowCreator followCreator;
+    @Autowired CommunityCreator communityCreator;
+    @Autowired UserCreator userCreator;
 
     @Test
     void shouldThrowAlreadyFollowedException(){
-        var follow = createFollow();
+        var follow = followCreator.createFromScratch(false);
         assertThrows(
             AlreadyFollowedException.class, 
             () -> communityFollowService.followCommunity(follow.getId().communityId(), follow.getId().userId()));
@@ -46,8 +48,8 @@ public class CommunityFollowServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldCreateCommunityFollowAndPublishEvent(){
-        var community = createCommunity();
-        var id = UUID.randomUUID();
+        var community = communityCreator.createCommunity(false);
+        var id = userCreator.create().getId();
         assertDoesNotThrow(() -> communityFollowService.followCommunity(community.getId(), id));
         verify(
             communityFollowEventProducer,
@@ -58,16 +60,19 @@ public class CommunityFollowServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldThrowDoesntFollowedException(){
+        var user = userCreator.create();
         assertThrows(
             DoesntFollowedException.class,
             () -> communityFollowService.removeFollow(
-                ThreadLocalRandom.current().nextLong(), UUID.randomUUID())
+                ThreadLocalRandom.current().nextLong(), 
+                user.getId()
+            )
         );
     }
 
     @Test
     void shouldDeleteUserFollowAndPublishEvent(){
-        var follow = createFollow();
+        var follow = followCreator.createFromScratch(false);
         assertDoesNotThrow(
             () -> communityFollowService.removeFollow(follow.getId().communityId(), follow.getId().userId()));
         verify(
@@ -82,32 +87,11 @@ public class CommunityFollowServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldReturnCommunityFollows(){
-        var comm1 = createCommunity();
-        var comm2 = createCommunity();
-        var id = UUID.randomUUID();
-        communityFollowRepository.save(CommunityFollow.create(id, comm1.getId()));
-        communityFollowRepository.save(CommunityFollow.create(id, comm2.getId()));
-        assertEquals(2, communityFollowService.getFollows(id, 0).getContent().size());        
-    }
-
-    private Community createCommunity(){
-        var name = "TestCommunity"+ThreadLocalRandom.current().nextLong(1L, 999_999L);
-        return communityRepository.save(Community.builder()
-            .displayedName(name)
-            .slug(name)
-            .ownerId(UUID.randomUUID())
-            .build()
-        );
-    }
-
-    private CommunityFollow createFollow(){
-        var name = "TestCommunity"+ThreadLocalRandom.current().nextLong(1L, 999_999L);
-        var community = communityRepository.save(Community.builder()
-            .displayedName(name)
-            .slug(name)
-            .ownerId(UUID.randomUUID())
-            .build()
-        );
-        return communityFollowRepository.save(CommunityFollow.create(UUID.randomUUID(), community.getId()));
+        var comm1 = communityCreator.createCommunity(false);
+        var comm2 = communityCreator.createCommunity(false);
+        var userId = userCreator.create().getId();
+        followCreator.create(comm1.getId(), userId);
+        followCreator.create(comm2.getId(), userId);
+        assertEquals(2, communityFollowService.getFollows(userId, 0).getContent().size());        
     }
 }

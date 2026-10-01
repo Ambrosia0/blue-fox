@@ -1,7 +1,5 @@
 package com.ambrosia.community_service.community.service.impl;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.context.ApplicationEventPublisher;
@@ -11,20 +9,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ambrosia.community_service.community.model.dto.request.CommunityCreate;
 import com.ambrosia.community_service.community.model.dto.request.CommunityEdit;
 import com.ambrosia.community_service.community.model.dto.request.FileMetadata;
-import com.ambrosia.community_service.community.model.dto.request.ScopePair;
 import com.ambrosia.community_service.community.model.dto.response.AvatarUploadResponse;
-import com.ambrosia.community_service.community.model.dto.response.CommunityResponse;
+import com.ambrosia.community_service.community.model.dto.response.CommunityCreateResponse;
+import com.ambrosia.community_service.community.model.dto.response.CommunityEditResponse;
 import com.ambrosia.community_service.community.model.entity.Community;
-import com.ambrosia.community_service.community.model.entity.ScopeLink;
 import com.ambrosia.community_service.community.repository.CommunityRepository;
 import com.ambrosia.community_service.community.service.AvatarService;
 import com.ambrosia.community_service.community.service.CommunityBanService;
 import com.ambrosia.community_service.community.service.CommunityManageService;
 import com.ambrosia.community_service.community.service.ScopeLinkService;
 import com.ambrosia.community_service.community.service.cache.CommunitySlugCache;
+import com.ambrosia.community_service.community.service.mappers.CommunityMapper;
 import com.ambrosia.community_service.community.utils.AvatarIdGenerator;
 import com.ambrosia.community_service.community.utils.CommunityEventFactory;
-import com.ambrosia.community_service.community.utils.ScopeEnum;
 import com.ambrosia.community_service.community.utils.policy.CommunityAccessPolicy;
 import com.ambrosia.community_service.core.AppConfiguration;
 import com.ambrosia.community_service.core.CommunityIndexService;
@@ -33,7 +30,7 @@ import com.ambrosia.community_service.exception.community.ExceededOwnedCommunity
 import com.ambrosia.community_service.exception.community.UserDoesntExistException;
 import com.ambrosia.community_service.exception.community.UserIsBannedException;
 import com.ambrosia.community_service.exception.community.UserIsOwnerException;
-import com.ambrosia.community_service.grpc.ProfileService;
+import com.ambrosia.community_service.user.service.UserService;
 import com.ambrosia.outbox.kafka.KafkaOutboxService;
 
 import jakarta.annotation.Nullable;
@@ -48,8 +45,6 @@ public class CommunityManageServiceImpl implements CommunityManageService{
 
     private final AvatarService avatarService;
 
-    private final ProfileService profileService;
-
     private final CommunityRepository communityRepository;
 
     private final AppConfiguration appConfiguration;
@@ -62,11 +57,16 @@ public class CommunityManageServiceImpl implements CommunityManageService{
 
     private final CommunitySlugCache communitySlugCache;
 
+    private final UserService userService;
+
+    private final CommunityMapper communityMapper;
+
     @Transactional
     @Override
-    public CommunityResponse createCommunity(CommunityCreate communityCreate, UUID userId) {
+    public CommunityCreateResponse createCommunity(CommunityCreate communityCreate, UUID userId) {
         if(communityRepository.countOwned(userId) >= appConfiguration.getMaxOwnedCommunitiesPerUser())
             throw new ExceededOwnedCommunityLimitException();
+
         var community = communityRepository.save(Community.builder()
             .displayedName(communityCreate.displayedName())
             .slug(communityCreate.slug())
@@ -75,25 +75,18 @@ public class CommunityManageServiceImpl implements CommunityManageService{
             .isPrivate(communityCreate.isPrivate())
             .build());
         
-        scopeLinkService.save(
-            Arrays.asList(ScopeEnum.values())
-                .stream()
-                .map(scope -> ScopeLink.create(userId, scope.getId(), community.getId()))
-                .toList()
-        );
-
         var event = CommunityEventFactory.createOpration(community);
         kafkaOutboxService.put(event);
         communityIndexService.index(community);
         
         eventPublisher.publishEvent(event);
 
-        return CommunityResponse.create(community);
+        return communityMapper.toCreateResponse(community);
     }
 
     @Transactional
     @Override
-    public CommunityResponse editCommunityInfo(long communityId, CommunityEdit communityEdit, CommunityAccessPolicy policy) {
+    public CommunityEditResponse editCommunityInfo(long communityId, CommunityEdit communityEdit, CommunityAccessPolicy policy) {
         var community = communityRepository.findById(communityId)
             .orElseThrow(() -> new CommunityDoesntExistException());
         policy.validateOwnership(community);
@@ -103,12 +96,23 @@ public class CommunityManageServiceImpl implements CommunityManageService{
             community.setOwnerId(communityEdit.ownerId());
         }
 
-        if(communityEdit.description() != null) community.setDescription(communityEdit.description());
-        if(communityEdit.displayedName() != null) community.setDisplayedName(communityEdit.displayedName());
-        if(communityEdit.rules() != null) community.setRules(communityEdit.rules());
-        if(communityEdit.tags() != null) community.setTags(communityEdit.tags());
+        if(communityEdit.scopes() != null && !communityEdit.scopes().isEmpty()){
+            if(community.getOwnerId() != null && communityEdit.scopes().containsKey(community.getOwnerId())){
+                throw new UserIsOwnerException();
+            }
 
-        community = communityRepository.save(community);
+            var userIds = communityEdit.scopes().keySet();
+            if(communityBanService.isAnyBanned(userIds))
+                throw new UserIsBannedException();
+            
+            if(!userService.isUsersExist(userIds)){
+                throw new UserDoesntExistException();
+            }
+        }
+
+        community = communityRepository.save(
+            communityMapper.apply(community, communityEdit)
+        );
 
         var event = CommunityEventFactory.updateOperation(community);
         
@@ -119,7 +123,7 @@ public class CommunityManageServiceImpl implements CommunityManageService{
 
         eventPublisher.publishEvent(event);
 
-        return CommunityResponse.create(community);
+        return communityMapper.toEditResponse(community);
     }
 
     @Override
@@ -169,41 +173,6 @@ public class CommunityManageServiceImpl implements CommunityManageService{
     
     @Transactional
     @Override
-    public void editCommunityScopes(long communityId, List<ScopePair> userScopes, CommunityAccessPolicy policy) {
-        var community = communityRepository.findById(communityId)
-            .orElseThrow(() -> new CommunityDoesntExistException());
-        
-        policy.validateOwnership(community);
-        
-        if(userScopes.stream().anyMatch(pair -> pair.userId().equals(community.getOwnerId())))
-            throw new UserIsOwnerException();
-
-        List<ScopeLink> scopesToInsert = null;
-        if(!userScopes.isEmpty()){
-            var userList = userScopes.stream().map(pair -> pair.userId()).toList();
-            if(communityBanService.isAnyBanned(userList))
-                throw new UserIsBannedException();
-            
-            if(!profileService.isUsersExists(userList)){
-                throw new UserDoesntExistException();
-            }
-            scopesToInsert = userScopes.stream().<ScopeLink>mapMulti((pair, consumer) -> {
-                    pair.scopes().stream()
-                        .map(scope -> ScopeLink.create(pair.userId(), scope.getId(), communityId))
-                        .forEach(link -> consumer.accept(link));
-                }
-            )
-            .toList();
-        }
-        scopeLinkService.cleanScopes(communityId, List.of(community.getOwnerId()));
-
-        if(scopesToInsert != null && !scopesToInsert.isEmpty())
-            scopeLinkService.save(scopesToInsert);
-        communitySlugCache.evictCommunity(community.getSlug());
-    }
-
-    @Transactional
-    @Override
     public void deleteCommunity(long communityId, CommunityAccessPolicy policy) {
         var community = communityRepository.findById(communityId)
             .orElseThrow(() -> new CommunityDoesntExistException());
@@ -211,7 +180,7 @@ public class CommunityManageServiceImpl implements CommunityManageService{
         if(community.getAvatarId() != null)
             avatarService.delete(communityId, community.getAvatarId());
         communityRepository.deleteById(communityId);
-        communityIndexService.removeFromIndex(community.getId());
+        communityIndexService.removeFromIndex(community.getId(), community.getVersion());
     }
 
     @Override

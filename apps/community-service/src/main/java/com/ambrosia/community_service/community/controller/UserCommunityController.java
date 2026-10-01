@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ambrosia.community_service.community.model.dto.request.CommunityCreate;
 import com.ambrosia.community_service.community.model.dto.request.CommunityEdit;
 import com.ambrosia.community_service.community.model.dto.request.FileMetadata;
-import com.ambrosia.community_service.community.model.dto.request.ScopePair;
 import com.ambrosia.community_service.community.model.dto.response.AvatarUploadResponse;
-import com.ambrosia.community_service.community.model.dto.response.CommunityResponse;
+import com.ambrosia.community_service.community.model.dto.response.CommunityCreateResponse;
+import com.ambrosia.community_service.community.model.dto.response.CommunityEditResponse;
 import com.ambrosia.community_service.community.model.dto.response.CommunityScopeResponse;
 import com.ambrosia.community_service.community.service.CommunityManageService;
 import com.ambrosia.community_service.community.service.CommunityModeratorService;
@@ -51,14 +51,14 @@ public class UserCommunityController {
     
     @ResponseStatus(code = HttpStatus.CREATED)
     @PostMapping
-    public CommunityResponse createCommunity(
+    public CommunityCreateResponse createCommunity(
             @RequestBody CommunityCreate createRequest,
             @AuthenticationPrincipal Jwt jwt) {
         return communityManageService.createCommunity(createRequest, UUID.fromString(jwt.getSubject()));
     }
 
     @PatchMapping("/{id}")
-    public CommunityResponse editCommunityInfo(
+    public CommunityEditResponse editCommunityInfo(
             @PathVariable long id,
             @RequestBody @Valid CommunityEdit communityEdit,
             @AuthenticationPrincipal Jwt jwt){
@@ -120,19 +120,6 @@ public class UserCommunityController {
         );
     }
     
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PutMapping("/{id}/scopes")
-    public void editCommunityScopes(
-            @PathVariable long id,
-            @RequestBody @Valid @Size(max = 3) List<@Valid ScopePair> userScopes,
-            @AuthenticationPrincipal Jwt jwt) {
-        communityManageService.editCommunityScopes(
-            id, 
-            userScopes, 
-            new UserActor(UUID.fromString(jwt.getSubject()))
-        );
-    }
-    
     @GetMapping("/{id}/me/scopes")
     public CommunityScopeResponse getUserScopes(
             @PathVariable long id,
@@ -140,16 +127,6 @@ public class UserCommunityController {
         return scopeLinkService.getUserScopes(id, UUID.fromString(jwt.getSubject()));
     }
 
-    @GetMapping("/{id}/scopes")
-    public List<CommunityScopeResponse> getCommunityScopes(
-            @PathVariable Long id,
-            @AuthenticationPrincipal Jwt jwt) {
-        return communityModeratorService.getUsersScopesForCommunity(
-            id, 
-            UUID.fromString(jwt.getSubject())
-        );
-    }
-    
     @GetMapping("/scopes")
     public List<ScopeEnum> getScopes() {
         return scopeLinkService.getScopes();

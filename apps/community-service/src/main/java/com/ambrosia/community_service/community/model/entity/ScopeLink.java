@@ -5,12 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.domain.Persistable;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import com.ambrosia.community_service.community.model.entity.keys.ScopeLinkKey;
 import com.ambrosia.community_service.community.utils.ScopeEnum;
 
 import lombok.AllArgsConstructor;
@@ -21,24 +18,21 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScopeLink implements Persistable<ScopeLinkKey>, Serializable{
-    @Id
-    private ScopeLinkKey id;
+public class ScopeLink implements Serializable{
+    @Column(value = "scope_id") 
+    private Short scopeId;
 
-    @Transient
-    private boolean isNew = false;
+    @Column(value = "user_id") 
+    private UUID userId;
 
-    public static ScopeLink create(UUID userId, Short scopeId, Long communityId){
-        return new ScopeLink(ScopeLinkKey.create(userId, scopeId, communityId), true);
-    }
-    public static ScopeLink create(UUID userId, Short scopeId, Long communityId, boolean isNew){
-        return new ScopeLink(ScopeLinkKey.create(userId, scopeId, communityId), isNew);
+    public static ScopeLink create(UUID userId, Short scopeId){
+        return new ScopeLink(scopeId, userId);
     }
 
-    public static List<ScopeLink> create(UUID userId, ScopeEnum[] scopes, Long communityId){
+    public static List<ScopeLink> create(UUID userId, ScopeEnum[] scopes){
         return Arrays.asList(scopes)
             .stream()
-            .map(scopeEnum -> create(userId, scopeEnum.getId(), communityId))
+            .map(scopeEnum -> create(userId, scopeEnum.getId()))
             .toList();
     }
 }

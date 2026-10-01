@@ -4,29 +4,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.awaitility.Awaitility.await;
+import java.util.List;
 
-import java.time.Duration;
-import java.util.UUID;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ambrosia.community_service.BaseIntegrationTest;
 import com.ambrosia.community_service.community.model.dto.request.CommunityEventFilter;
-import com.ambrosia.community_service.community.model.dto.response.CommunityResponse;
 import com.ambrosia.community_service.community.model.entity.elastic.ElasticCommunity;
 import com.ambrosia.community_service.community.repository.CommunityRepository;
 import com.ambrosia.community_service.community.repository.elastic.ElasticCommunityRepository;
 import com.ambrosia.community_service.community.service.CommunityManageService;
 import com.ambrosia.community_service.community.service.CommunitySearchService;
 import com.ambrosia.community_service.community.service.UserCommunityService;
-import com.ambrosia.community_service.utils.Factory;
+import com.ambrosia.community_service.utils.CommunityCreator;
+import com.ambrosia.outbox.elastic.ElasticsearchOutboxRelay;
 import com.ambrosia.outbox.repository.SearchIndexOutboxRepository;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 
 public class ElasticCommunityIndexationIntegrationTests extends BaseIntegrationTest {
@@ -41,6 +37,10 @@ public class ElasticCommunityIndexationIntegrationTests extends BaseIntegrationT
     @Autowired CommunityRepository communityRepository;
     @Autowired SearchIndexOutboxRepository searchIndexOutboxRepository;
     
+    @Autowired CommunityCreator communityCreator;
+
+    @Autowired ElasticsearchOutboxRelay relay;
+
     @BeforeAll
     void init(){
         assertTrue(elasticsearchOperations.indexOps(ElasticCommunity.class).exists());
@@ -50,33 +50,25 @@ public class ElasticCommunityIndexationIntegrationTests extends BaseIntegrationT
 
     @Test
     void shouldReturnCommunityPreviews() {
-        createTestCommunity("Test Comm 1");
-        createTestCommunity("Test Comm 2");
-        
-        var filter = new CommunityEventFilter(null, null, null, null, null, Sort.Direction.DESC);
-        await().pollInterval(Duration.ofSeconds(5)).atMost(Duration.ofSeconds(20))
-            .untilAsserted(() -> {
-                elasticsearchOperations.indexOps(ElasticCommunity.class).refresh();
-                var search = communitySearchService.search(filter, 10);
-                assertEquals(2, search.size());
-                search.forEach(p -> assertNotNull(p.displayedName()));
-            });
-    }
-
-    private CommunityResponse createTestCommunity(String name){
-        var userId = UUID.randomUUID();
-        var community = Factory.createCommunity(name, userId);
-        var created = communityManageService.createCommunity(
-            Factory.createRequest(community.getDisplayedName(), community.getSlug(), false),
-            community.getOwnerId()
+        var searched = List.of(
+            communityCreator.createCommunity(false).getId(), 
+            communityCreator.createCommunity(false).getId()
         );
-        return created;
-    }
-
-    @AfterEach
-    void cleanUp() {
-        communityRepository.deleteAll();
-        elasticCommunityRepository.deleteAll();
+        var filter = CommunityEventFilter.builder()
+            .direction(Direction.DESC)
+            .build();
+            
+        relay.flush();
         elasticsearchOperations.indexOps(ElasticCommunity.class).refresh();
+
+        var search = communitySearchService.search(filter, 10);
+        assertEquals(
+            searched.size(), 
+            communitySearchService.search(filter, 10)
+                .stream()
+                .filter(t -> searched.contains(t.id()))
+                .count()
+        );
+        search.forEach(p -> assertNotNull(p.displayedName()));
     }
 }

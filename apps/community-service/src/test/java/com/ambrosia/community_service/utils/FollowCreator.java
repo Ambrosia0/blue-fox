@@ -4,20 +4,24 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
+import org.springframework.context.annotation.Import;
 
 import com.ambrosia.community_service.follow.model.entity.CommunityFollow;
 import com.ambrosia.community_service.follow.repository.CommunityFollowRepository;
 
 @TestComponent
+@Import({CommunityCreator.class})
 public class FollowCreator {
     @Autowired CommunityCreator communityCreator;
+    @Autowired UserCreator userCreator;
     @Autowired CommunityFollowRepository communityFollowRepository;
 
-    public CommunityFollow createFromScratch(){
-        var community = communityCreator.createCommunity();
+    public CommunityFollow createFromScratch(boolean isCommunityPrivate){
+        var community = communityCreator.createCommunity(isCommunityPrivate);
+        var user = userCreator.create();
         return communityFollowRepository.save(
             CommunityFollow.create(
-                UUID.randomUUID(),
+                user.getId(),
                 community.getId()
             )
         );
@@ -31,6 +35,7 @@ public class FollowCreator {
             )
         );
     }
+
 
     public void cleanUp(){
         communityFollowRepository.deleteAll();

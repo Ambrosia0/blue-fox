@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ambrosia.community_service.follow.model.entity.CommunityFollow;
+import com.ambrosia.community_service.follow.model.dto.response.CommunityFollowResponse;
 import com.ambrosia.community_service.follow.service.CommunityFollowService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class CommunityFollowController {
     private final CommunityFollowService communityFollowService;
 
     @GetMapping
-    public Slice<CommunityFollow> getCommunityFollows(
+    public Slice<CommunityFollowResponse> getCommunityFollows(
         @AuthenticationPrincipal Jwt jwt,
         @RequestParam(required = false, defaultValue = "0") int page)  {
         return communityFollowService.getFollows(UUID.fromString(jwt.getSubject()), page);

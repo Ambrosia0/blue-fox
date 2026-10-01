@@ -1,60 +1,57 @@
 package com.ambrosia.community_service.community.repository;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.ListPagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
 
-import com.ambrosia.community_service.community.model.dto.response.CommunityPreview;
-import com.ambrosia.community_service.community.model.dto.response.CommunityResponse;
+import com.ambrosia.community_service.community.model.dto.response.CommunityScopeResponse;
 import com.ambrosia.community_service.community.model.entity.Community;
 import com.ambrosia.community_service.community.repository.custom.CustomCommunityRepository;
 
 public interface CommunityRepository extends 
-    CrudRepository<Community, Long>, 
-    ListPagingAndSortingRepository<Community, Long>,
-    CustomCommunityRepository{
-    @Modifying
-    @Query("""
-        UPDATE community 
-        SET avatar_url = :avatarUrl, description = :description, tags = :tags 
-        WHERE id = :id AND owner_id = :requestingUser
-        RETURNING *
-            """)
-    Optional<CommunityResponse> save(Community community, @Param("requestingUser") UUID requestingUser);
-
-    @Query("SELECT * FROM community WHERE id = :id")
-    Optional<CommunityResponse> findByIdProjected(long id);
-
-    Page<CommunityPreview> findBy(Pageable pageable);
-
-    @Modifying
-    @Query("UPDATE community SET follow_count = follow_count + :count WHERE id = :communityId")
-    void incrementFollowCount(@Param("communityId") long communityId, @Param("count") long count);
+        CrudRepository<Community, Long>, 
+        ListPagingAndSortingRepository<Community, Long>,
+        CustomCommunityRepository{
 
     @Query("SELECT COUNT(*) FROM community WHERE owner_id = :userId")
     long countOwned(UUID userId);
 
-    @Modifying
-    @Query("DELETE FROM community WHERE id = :communityId")
-    int returningDelete(long communityId);
-
     @Query("SELECT is_private FROM community WHERE id = :communityId")
     Optional<Boolean> findIsCommunityPrivate(long communityId);
 
-    boolean existsBySlug(String slug);
-
     @Modifying
+    @Query("DELETE FROM scope_link WHERE community_id = :communityId AND user_id = :userId")
+    int cleanScopesForUser(long communityId, UUID userId);
+
+    @Query("SELECT EXISTS(SELECT 1 FROM scope_link WHERE community_id = :communityId AND user_id = :userId)")
+    boolean isModerator(long communityId, UUID userId);
+
     @Query("""
-    UPDATE community
-    SET avatar_id = :avatarId
-    WHERE id = :communityId
+    SELECT EXISTS(
+        SELECT 1 FROM scope_link
+        WHERE user_id = :userId
+        AND community_id = :communityId
+        AND scope_id = :scopeId
+    )
     """)
-    int updateAvatar(long communityId, String avatarId);
+    boolean scopeExists(Long communityId, Short scopeId, UUID userId);
+
+    @Query("SELECT COUNT(DISTINCT(user_id)) FROM scope_link WHERE community_id = :communityId AND user_id IN (:userIds)")
+    long countPermittedUsers(long communityId, Collection<UUID> userIds);
+
+    @Query("""
+    SELECT user_id, array_agg(scope_id)
+    FROM scope_link
+    WHERE community_id = :communityId
+    AND user_id = :userId
+    GROUP BY user_id
+    """)
+    Optional<CommunityScopeResponse> findUserScopes(long communityId, UUID userId);
+
+    boolean existsBySlug(String slug);
 }

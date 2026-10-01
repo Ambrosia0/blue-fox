@@ -24,9 +24,7 @@ public class KafkaOutboxConverterImpl implements KafkaOutboxConverter<CommunityE
         Assert.notNull(source, "Object must be not null!");
         var casted = (CommunityEvent)source;
         var id = switch(casted.getEventCase()){
-            case CREATE -> casted.getCreate().getId();
-            case DELETE -> casted.getDelete().getId();
-            case UPDATE -> casted.getUpdate().getId();
+            case CREATE, DELETE, UPDATE -> casted.getId();
             default -> throw new RuntimeException("Unknown body!");
         };
 

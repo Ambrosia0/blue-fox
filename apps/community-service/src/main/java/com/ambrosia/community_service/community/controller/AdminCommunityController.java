@@ -5,19 +5,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ambrosia.community_service.community.model.dto.request.CommunityEdit;
 import com.ambrosia.community_service.community.model.dto.request.FileMetadata;
-import com.ambrosia.community_service.community.model.dto.request.ScopePair;
 import com.ambrosia.community_service.community.model.dto.response.AvatarUploadResponse;
-import com.ambrosia.community_service.community.model.dto.response.CommunityResponse;
+import com.ambrosia.community_service.community.model.dto.response.CommunityEditResponse;
 import com.ambrosia.community_service.community.model.entity.Community;
 import com.ambrosia.community_service.community.service.CommunityManageService;
 import com.ambrosia.community_service.community.service.admin.AdminCommunityService;
 import com.ambrosia.community_service.community.utils.policy.AdminActor;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,7 +51,7 @@ public class AdminCommunityController {
     }
 
     @PatchMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public CommunityResponse editCommunityInfo(
+    public CommunityEditResponse editCommunityInfo(
         @PathVariable Long communityId,
         @RequestBody @Valid CommunityEdit adminCommunityEdit){
         return communityManageService.editCommunityInfo(
@@ -86,18 +82,4 @@ public class AdminCommunityController {
             new AdminActor()
         );
     }
-    
-    
-    @PutMapping("/{id}/scopes")
-    public void editCommunityScopes(
-        @PathVariable Long id, 
-        @RequestBody @Valid @Size(max = 3) List<@Valid ScopePair> scopes) {
-        communityManageService.editCommunityScopes(
-            id,
-            scopes,
-            new AdminActor()
-        );
-    }
-
-
 }

@@ -25,7 +25,7 @@ public class DatabaseCommunityIndexService implements CommunityIndexService, Com
     public void reIndex(Community t) {}
 
     @Override
-    public void removeFromIndex(Long id) {}
+    public void removeFromIndex(Long id, Long version) {}
 
     @Override
     public List<CommunityPreview> search(CommunityEventFilter communityEventFilter, int pageSize) {

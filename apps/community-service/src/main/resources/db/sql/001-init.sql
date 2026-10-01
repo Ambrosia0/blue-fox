@@ -1,8 +1,16 @@
+CREATE TABLE IF NOT EXISTS user_projection(
+    id UUID PRIMARY KEY,
+    username TEXT NOT NULL,
+    first_name TEXT,
+    last_name TEXT,
+    avatar_id TEXT
+);
+
 CREATE TABLE IF NOT EXISTS community(
     id BIGSERIAL PRIMARY KEY,
     slug TEXT CHECK(char_length(slug) < 32 AND char_length(slug) >= 6) UNIQUE NOT NULL,
     displayed_name TEXT NOT NULL,
-    owner_id UUID,
+    owner_id UUID REFERENCES user_projection(id) ON DELETE SET NULL,
     avatar_id TEXT,
     description TEXT,
     follow_count bigint NOT NULL DEFAULT 0,
@@ -20,29 +28,33 @@ CREATE TABLE IF NOT EXISTS scope(
 );
 
 CREATE TABLE IF NOT EXISTS scope_link(
-    user_id UUID NOT NULL,
+    user_id UUID REFERENCES user_projection(id) ON DELETE CASCADE,
     scope_id SMALLINT REFERENCES scope(id),
     community_id BIGINT REFERENCES community(id) ON DELETE CASCADE,
     PRIMARY KEY(user_id, community_id, scope_id)
 );
 
 CREATE TABLE IF NOT EXISTS community_ban(
-    user_id UUID NOT NULL,
+    user_id UUID REFERENCES user_projection(id) ON DELETE CASCADE,
     community_id BIGINT REFERENCES community(id) ON DELETE CASCADE,
     before_date timestamp CHECK(before_date IS NULL OR before_date > CURRENT_TIMESTAMP),
     PRIMARY KEY(user_id, community_id, before_date)
 );
 
 CREATE TABLE IF NOT EXISTS community_follow(
-    user_id UUID NOT NULL,
+    user_id UUID REFERENCES user_projection(id) ON DELETE CASCADE,
     community_id BIGINT REFERENCES community(id) ON DELETE CASCADE,
     followed_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY(user_id, community_id)
 );
 
 CREATE TABLE IF NOT EXISTS community_follow_request(
-    user_id UUID NOT NULL,
+    user_id UUID REFERENCES user_projection(id) ON DELETE CASCADE,
     community_id BIGINT REFERENCES community(id) ON DELETE CASCADE,
     created_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY(user_id, community_id)
+);
+
+CREATE TABLE IF NOT EXISTS processed_events(
+    id UUID PRIMARY KEY
 );

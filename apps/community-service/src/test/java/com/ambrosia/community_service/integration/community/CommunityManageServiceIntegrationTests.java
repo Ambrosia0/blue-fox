@@ -7,34 +7,26 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.web.client.RestClient;
 
 import com.ambrosia.community_service.BaseIntegrationTest;
-import com.ambrosia.community_service.community.model.dto.request.ScopePair;
-import com.ambrosia.community_service.community.model.entity.Community;
-import com.ambrosia.community_service.community.model.entity.ScopeLink;
+import com.ambrosia.community_service.community.model.dto.request.CommunityEdit;
 import com.ambrosia.community_service.community.repository.CommunityRepository;
-import com.ambrosia.community_service.community.repository.ScopeLinkRepository;
 import com.ambrosia.community_service.community.service.CommunityManageService;
 import com.ambrosia.community_service.community.utils.ScopeEnum;
 import com.ambrosia.community_service.community.utils.policy.UserActor;
@@ -44,50 +36,47 @@ import com.ambrosia.community_service.exception.community.NotEnoughPermissionsEx
 import com.ambrosia.community_service.exception.community.UserDoesntExistException;
 import com.ambrosia.community_service.exception.community.UserIsBannedException;
 import com.ambrosia.community_service.exception.community.UserIsOwnerException;
-import com.ambrosia.community_service.grpc.ProfileService;
-import com.ambrosia.community_service.utils.CommunityEditBuilder;
+import com.ambrosia.community_service.utils.CommunityCreator;
 import com.ambrosia.community_service.utils.Factory;
 import com.ambrosia.community_service.utils.FileMetadataFactory;
 import com.ambrosia.community_service.utils.UserBanCreator;
+import com.ambrosia.community_service.utils.UserCreator;
 import com.ambrosia.library_s3.TestS3Configuration;
 
-@Import(TestS3Configuration.class)
+@Import({TestS3Configuration.class})
 @Transactional
 public class CommunityManageServiceIntegrationTests extends BaseIntegrationTest{
-    @MockitoBean ProfileService profileService;
     @Autowired CommunityRepository communityRepository;
     @Autowired CommunityManageService communityManageService;
-    @Autowired ScopeLinkRepository scopeLinkRepository;
     @Autowired UserBanCreator userBanCreator;
     @Autowired RestClient testRestClient;
-    
 
-    @BeforeEach
-    void init(){
-        when(profileService.isUserExists(any(UUID.class))).thenReturn(false);
-    }
+    @Autowired UserCreator userCreator;
+    @Autowired CommunityCreator communityCreator;
 
     @Test
     void shouldCreateCommunity(){
-        var userId = UUID.randomUUID();
+        var user = userCreator.create();
         var community = Factory.createRequest("TestCommunity", "TestCommunity", false);
         assertDoesNotThrow(
-            () -> communityManageService.createCommunity(community, userId)
+            () -> communityManageService.createCommunity(community, user.getId())
         );
     }
 
     @Test
     void shouldThrowExceededOwnedCommunityLimitException(){
-        var userId = UUID.randomUUID();
-        createCommunity(userId);
-        createCommunity(userId);
-        createCommunity(userId);
+        var user = userCreator.create();
+        communityCreator.createCommunity(user.getId(), false);
+        communityCreator.createCommunity(user.getId(), false);
+        communityCreator.createCommunity(user.getId(), false);
         
         var num = ThreadLocalRandom.current().nextLong(1L, 999_999L);
         assertThrows(
             ExceededOwnedCommunityLimitException.class,
             () -> communityManageService.createCommunity(
-                Factory.createRequest("TestCommunity"+num, "TestCommunity"+num, false), userId)
+                Factory.createRequest("TestCommunity"+num, "TestCommunity"+num, false), 
+                user.getId()
+            )
         );
     }
 
@@ -97,7 +86,7 @@ public class CommunityManageServiceIntegrationTests extends BaseIntegrationTest{
             CommunityDoesntExistException.class,
             () -> communityManageService.editCommunityInfo(
                 ThreadLocalRandom.current().nextLong(),
-                CommunityEditBuilder.builder().setDisplayedName("Test").build(),
+                CommunityEdit.builder().displayedName("Test").build(),
                 new UserActor(UUID.randomUUID())
             )
         );
@@ -105,12 +94,12 @@ public class CommunityManageServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldThrowNotEnoughPermissionsExceptionOnEditInfo(){
-        var community = createCommunity();
+        var community = communityCreator.createCommunity(false);
         assertThrows(
             NotEnoughPermissionsException.class,
             () -> communityManageService.editCommunityInfo(
                 community.getId(), 
-                CommunityEditBuilder.builder().setDisplayedName("TestTest").build(), 
+                CommunityEdit.builder().displayedName("TestTest").build(), 
                 new UserActor(UUID.randomUUID())
             )
         );
@@ -118,12 +107,12 @@ public class CommunityManageServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldEditCommunityInfo(){
-        var community = createCommunity();
+        var community = communityCreator.createCommunity(false);
         var name = "Test name";
         assertDoesNotThrow(
             () -> communityManageService.editCommunityInfo(
                 community.getId(), 
-                CommunityEditBuilder.builder().setDisplayedName(name).build(),
+                CommunityEdit.builder().displayedName(name).build(),
                 new UserActor(community.getOwnerId())
             )
         );
@@ -132,11 +121,16 @@ public class CommunityManageServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldThrowCommunityDoesntExistExceptionOnScopeEdit(){
+        var user = userCreator.create();
         assertThrows(
             CommunityDoesntExistException.class,
-            () -> communityManageService.editCommunityScopes(
+            () -> communityManageService.editCommunityInfo(
                 ThreadLocalRandom.current().nextLong(), 
-                null, 
+                CommunityEdit.builder()
+                    .scopes(Map.of(
+                        user.getId(), Set.of(ScopeEnum.USER_BAN)
+                    ))
+                    .build(), 
                 new UserActor(UUID.randomUUID())
             )
         );
@@ -144,25 +138,34 @@ public class CommunityManageServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldThrowNotEnoughPermissionsExceptionOnScopeEdit(){
-        var community = createCommunity();
+        var community = communityCreator.createCommunity(false);
+        var user = userCreator.create();
         assertThrows(
             NotEnoughPermissionsException.class,
-            () -> communityManageService.editCommunityScopes(
+            () -> communityManageService.editCommunityInfo(
                 community.getId(), 
-                null,
-                new UserActor(UUID.randomUUID())
+                CommunityEdit.builder()
+                    .scopes(Map.of(
+                        user.getId(), Set.of(ScopeEnum.USER_BAN)
+                    ))
+                    .build(),
+                new UserActor(user.getId())
             )
         );
     }
 
     @Test
     void shouldThrowUserIsOwnerExceptionOnScopeEdit(){
-        var community = createCommunity();
+        var community = communityCreator.createCommunity(false);
         assertThrows(
             UserIsOwnerException.class,
-            () -> communityManageService.editCommunityScopes(
+            () -> communityManageService.editCommunityInfo(
                 community.getId(), 
-                List.of(new ScopePair(community.getOwnerId(), List.of(ScopeEnum.POST_DELETE))), 
+                CommunityEdit.builder()
+                    .scopes(Map.of(
+                        community.getOwnerId(), Set.of(ScopeEnum.USER_BAN)
+                    ))
+                    .build(), 
                 new UserActor(community.getOwnerId())
             )
         );
@@ -170,12 +173,16 @@ public class CommunityManageServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldThrowUserDoesntExistException(){
-        var community = createCommunity();
+        var community = communityCreator.createCommunity(false);
         assertThrows(
             UserDoesntExistException.class,
-            () -> communityManageService.editCommunityScopes(
+            () -> communityManageService.editCommunityInfo(
                 community.getId(), 
-                List.of(new ScopePair(UUID.randomUUID(), List.of(ScopeEnum.POST_DELETE))), 
+                CommunityEdit.builder()
+                    .scopes(Map.of(
+                        UUID.randomUUID(), Set.of(ScopeEnum.USER_BAN)
+                    ))
+                    .build(), 
                 new UserActor(community.getOwnerId())
             )
         );
@@ -183,14 +190,18 @@ public class CommunityManageServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldThrowUserIsBannedException(){
-        var community = createCommunity();
-        var userId = UUID.randomUUID();
-        userBanCreator.create(community.getId(), userId);
+        var community = communityCreator.createCommunity(false);
+        var user = userCreator.create();
+        communityCreator.createBan(community.getId(), user.getId());
         assertThrows(
             UserIsBannedException.class,
-            () -> communityManageService.editCommunityScopes(
+            () -> communityManageService.editCommunityInfo(
                 community.getId(),
-                List.of(new ScopePair(userId, List.of(ScopeEnum.USER_BAN))),
+                CommunityEdit.builder()
+                    .scopes(Map.of(
+                        user.getId(), Set.of(ScopeEnum.USER_BAN)
+                    ))
+                    .build(),
                 new UserActor(community.getOwnerId())
             )
         );
@@ -198,30 +209,42 @@ public class CommunityManageServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldEditCommunityScope(){
-        when(profileService.isUsersExists(anyList())).thenReturn(true);
-        var community = createCommunity();
-        var userId = UUID.randomUUID();
+        var community = communityCreator.createCommunity(false);
+        var user = userCreator.create();
         assertDoesNotThrow(
-            () -> communityManageService.editCommunityScopes(
+            () -> communityManageService.editCommunityInfo(
                 community.getId(), 
-                List.of(new ScopePair(userId, List.of(ScopeEnum.POST_DELETE))), 
+                CommunityEdit.builder()
+                    .scopes(Map.of(
+                        user.getId(), Set.of(ScopeEnum.USER_BAN)
+                    ))
+                    .build(), 
                 new UserActor(community.getOwnerId())
             )
         );
-        assertEquals(
-            ScopeEnum.POST_DELETE,
-            scopeLinkRepository.findByUserIdAndCommunityId(userId, community.getId())
-                .get()
-                .scopes()[0]
+        assertTrue(
+            communityRepository.scopeExists(
+                    community.getId(), 
+                    ScopeEnum.USER_BAN.getId(),
+                    user.getId()
+            )
         );
         assertDoesNotThrow(
-            () -> communityManageService.editCommunityScopes(
+            () -> communityManageService.editCommunityInfo(
                 community.getId(),
-                List.<ScopePair>of(),
+                CommunityEdit.builder()
+                    .scopes(Map.of())
+                    .build(),
                 new UserActor(community.getOwnerId())
             )
         );
-        assertTrue(scopeLinkRepository.findByUserIdAndCommunityId(userId, community.getId()).isEmpty());
+        assertFalse(
+            communityRepository.scopeExists(
+                    community.getId(), 
+                    ScopeEnum.USER_BAN.getId(),
+                    user.getId()
+            )
+        );
     }
 
     @Test 
@@ -238,7 +261,7 @@ public class CommunityManageServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test 
     void shouldThrowNotEnoughPermissionsOnUploadAvatar(){
-        var community = createCommunity();
+        var community = communityCreator.createCommunity(false);
         assertThrows(
             NotEnoughPermissionsException.class,
             () -> communityManageService.uploadAvatar(
@@ -251,7 +274,7 @@ public class CommunityManageServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test 
     void shouldUploadAvatarThenDeleteAvatar() throws IOException{
-        var community = createCommunity();
+        var community = communityCreator.createCommunity(false);
         var file = FileMetadataFactory.fileMetadata();
         var resp = communityManageService.uploadAvatar(
             community.getId(),
@@ -285,7 +308,7 @@ public class CommunityManageServiceIntegrationTests extends BaseIntegrationTest{
 
     @Test
     void shouldDeleteCommunity(){
-        var community = createCommunity();
+        var community = communityCreator.createCommunity(false);
         assertDoesNotThrow(
             () -> communityManageService.deleteCommunity(
                 community.getId(),
@@ -293,40 +316,5 @@ public class CommunityManageServiceIntegrationTests extends BaseIntegrationTest{
             )
         );
         assertFalse(communityRepository.findById(community.getId()).isPresent());
-    }
-
-    private Community createCommunity(UUID ownerId){
-        var name = "TestCommunity"+ThreadLocalRandom.current().nextLong(1L, 999_999L);
-        var community = communityRepository.save(Community.builder()
-            .displayedName(name)
-            .slug(name)
-            .ownerId(ownerId)
-            .build()
-        );
-        scopeLinkRepository.saveAll(
-            Arrays.asList(ScopeEnum.values())
-                .stream()
-                .map(scope -> ScopeLink.create(ownerId, scope.getId(), community.getId()))
-                .toList()
-        );
-        return community;
-    }
-
-    private Community createCommunity(){
-        var userId = UUID.randomUUID();
-        var name = "TestCommunity"+ThreadLocalRandom.current().nextLong(1L, 999_999L);
-        var community = communityRepository.save(Community.builder()
-            .displayedName(name)
-            .slug(name)
-            .ownerId(userId)
-            .build()
-        ); 
-        scopeLinkRepository.saveAll(
-            Arrays.asList(ScopeEnum.values())
-                .stream()
-                .map(scope -> ScopeLink.create(userId, scope.getId(), community.getId()))
-                .toList()
-        );
-        return community;
     }
 }

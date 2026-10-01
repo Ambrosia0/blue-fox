@@ -5,8 +5,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -41,29 +39,6 @@ public class CustomCommunityFollowRepositoryImpl implements CustomCommunityFollo
     //     @Query("SELECT * FROM community_follow WHERE user_id = :userId LIMIT :#{pageable.getPageSize} OFFSET :#{pageable.getOffset}")
     // Slice<CommunityFollow> findByUserId(@Param("userId") UUID userId, Pageable pageable);
     
-    @Override
-    public Slice<CommunityFollow> findByUserId(UUID userId, Pageable pageable) {
-        var sql = """
-        SELECT * FROM community_follow
-        WHERE user_id = :userId
-        ORDER BY followed_at
-        LIMIT :pageSize
-        OFFSET :offset
-        """;
-        var res = jdbcClient
-            .sql(sql)
-            .param("userId", userId)
-            .param("pageSize", pageable.getPageSize()+1)
-            .param("offset", pageable.getOffset())
-            .query(CommunityFollow.class)
-            .list();
-        var hasNext = res.size() > pageable.getPageSize();
-        if(hasNext)
-            res.remove(res.size());
-        return new SliceImpl<>(res, pageable, hasNext);
-    }
-
-
     @Override
     public int returningDelete(CommunityFollowKey communityFollowKey) {
         var sql = "DELETE FROM community_follow WHERE user_id = :userId AND community_id = :communityId";

@@ -1,6 +1,6 @@
 package com.ambrosia.community_service.community.repository;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.jdbc.repository.query.Modifying;
@@ -33,7 +33,7 @@ public interface CommunityBanRepository extends CrudRepository<CommunityBan, Com
         before_date > CURRENT_TIMESTAMP
     ) 
     """)
-    boolean isAnyBanned(List<UUID> ids, int size);
+    boolean isAnyBanned(Set<UUID> ids, int size);
 
     @Modifying
     @Query("""

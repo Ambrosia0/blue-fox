@@ -1,6 +1,6 @@
 package com.ambrosia.community_service.community.service.impl;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -16,7 +16,9 @@ public class CommunityBanServiceImpl implements CommunityBanService{
     private final CommunityBanRepository communityBanRepository;
 
     @Override
-    public boolean isAnyBanned(List<UUID> ids) {
+    public boolean isAnyBanned(Set<UUID> ids) {
+        if(ids == null)
+            return false;
         return communityBanRepository.isAnyBanned(ids, ids.size());
     }
 }

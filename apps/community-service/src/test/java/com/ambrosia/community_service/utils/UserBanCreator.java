@@ -6,19 +6,22 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
+import org.springframework.context.annotation.Import;
 
 import com.ambrosia.community_service.community.model.entity.CommunityBan;
 import com.ambrosia.community_service.community.repository.CommunityBanRepository;
 
 @TestComponent
+@Import({CommunityCreator.class, FollowCreator.class})
 public class UserBanCreator {
     @Autowired CommunityCreator communityCreator;
     @Autowired FollowCreator followCreator;
+    @Autowired UserCreator userCreator;
     @Autowired CommunityBanRepository communityBanRepository;
 
-    public CommunityBan createFromScratch(){
-        var community = communityCreator.createCommunity();
-        var userId = UUID.randomUUID();
+    public CommunityBan createFromScratch(boolean isCommunityPrivate){
+        var community = communityCreator.createCommunity(isCommunityPrivate);
+        var userId = userCreator.create().getId();
         followCreator.create(community.getId(), userId);
         return communityBanRepository.save(CommunityBan.create(
             userId, 
@@ -37,5 +40,7 @@ public class UserBanCreator {
 
     public void cleanUp(){
         communityBanRepository.deleteAll();
+        followCreator.cleanUp();
+        communityCreator.cleanUp();
     }
 }

@@ -29,7 +29,7 @@ public class ElasticsearchOutboxHandlerImpl implements ElasticsearchOutboxHandle
     private String ENTITY_TYPE = "community";
 
     @Override
-    public SearchIndexOutbox convert(Object source) {
+    public SearchIndexOutbox convert(ElasticCommunity source) {
         Assert.notNull(source, "Object must not be null!");
         var casted = (ElasticCommunity) source;
         return SearchIndexOutbox.from(
@@ -56,11 +56,15 @@ public class ElasticsearchOutboxHandlerImpl implements ElasticsearchOutboxHandle
             .map(t -> objectMapper.readValue(t, ElasticCommunity.class))
             .collect(Collectors.partitioningBy(t -> t.getSlug() == null));
         
-            var toDelete = partitioned.get(true);
         try {
+            var toDelete = partitioned.get(true);
             if(!toDelete.isEmpty())
                 elasticCommunityRepository.deleteAll(toDelete);
-
+        } catch (OptimisticLockingFailureException e) {
+            // TODO: handle exception
+        }
+        
+        try {
             var toUpsert = partitioned.get(false);
             if(!toUpsert.isEmpty())
                 elasticCommunityRepository.saveAll(toUpsert);

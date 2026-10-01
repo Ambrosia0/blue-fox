@@ -13,9 +13,11 @@ import com.ambrosia.community_service.community.service.CommunityPrivacyService;
 import com.ambrosia.community_service.exception.community.CommunityDoesntExistException;
 import com.ambrosia.community_service.exception.follow.AlreadyFollowedException;
 import com.ambrosia.community_service.exception.follow.DoesntFollowedException;
+import com.ambrosia.community_service.follow.model.dto.response.CommunityFollowResponse;
 import com.ambrosia.community_service.follow.model.entity.CommunityFollow;
 import com.ambrosia.community_service.follow.model.entity.key.CommunityFollowKey;
 import com.ambrosia.community_service.follow.repository.CommunityFollowRepository;
+import com.ambrosia.community_service.follow.service.CommunityFollowQueryService;
 import com.ambrosia.community_service.follow.service.CommunityFollowRequestService;
 import com.ambrosia.community_service.follow.service.CommunityFollowService;
 import com.ambrosia.community_service.kafka.utils.CommunityFollowEventFactory;
@@ -26,6 +28,8 @@ import lombok.AllArgsConstructor;
 @Service
 public class CommunityFollowServiceImpl implements CommunityFollowService{
     private final CommunityFollowRepository communityFollowRepository;
+
+    private final CommunityFollowQueryService communityFollowQueryService;
 
     private final CommunityFollowRequestService communityFollowRequestService;
 
@@ -53,8 +57,8 @@ public class CommunityFollowServiceImpl implements CommunityFollowService{
     }
 
     @Override
-    public Slice<CommunityFollow> getFollows(UUID requestingUser, int page) {
-        return communityFollowRepository.findByUserId(requestingUser, Pageable.ofSize(10).withPage(page));
+    public Slice<CommunityFollowResponse> getFollows(UUID requestingUser, int page) {
+        return communityFollowQueryService.getFollows(requestingUser, Pageable.ofSize(10).withPage(page));
     }
     
     @Override

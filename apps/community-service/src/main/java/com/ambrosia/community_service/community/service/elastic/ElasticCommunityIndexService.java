@@ -45,9 +45,10 @@ public class ElasticCommunityIndexService implements CommunityIndexService, Comm
     }
 
     @Override
-    public void removeFromIndex(@NonNull Long id) {
+    public void removeFromIndex(@NonNull Long id, Long version) {
         searchIndexOutboxService.put(ElasticCommunity.builder()
             .id(id.toString())
+            .version(version)
             .build()
         );
     }

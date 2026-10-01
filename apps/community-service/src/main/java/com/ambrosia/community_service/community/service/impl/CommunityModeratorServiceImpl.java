@@ -1,13 +1,11 @@
 package com.ambrosia.community_service.community.service.impl;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import com.ambrosia.community_service.community.model.dto.response.CommunityScopeResponse;
 import com.ambrosia.community_service.community.model.entity.CommunityBan;
 import com.ambrosia.community_service.community.repository.CommunityBanRepository;
 import com.ambrosia.community_service.community.service.CommunityModeratorService;
@@ -17,8 +15,8 @@ import com.ambrosia.community_service.exception.community.NotEnoughPermissionsEx
 import com.ambrosia.community_service.exception.community.UserDoesntBannedException;
 import com.ambrosia.community_service.exception.community.UserDoesntExistException;
 import com.ambrosia.community_service.exception.community.UserIsModeratorException;
-import com.ambrosia.community_service.grpc.ProfileService;
 import com.ambrosia.community_service.kafka.utils.CommunityBanEventFactory;
+import com.ambrosia.community_service.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,17 +27,16 @@ public class CommunityModeratorServiceImpl implements CommunityModeratorService{
 
     private final CommunityBanRepository communityBanRepository;
 
-    private final ProfileService profileService;
+    private final UserService userService;
 
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public void banUser(long communityId, UUID requestingUser, UUID userToBan, Instant beforeDate) {
-        
         var hasScope = scopeLinkService.hasScope(communityId, ScopeEnum.USER_BAN, requestingUser);
         if(!hasScope)
             throw new NotEnoughPermissionsException();
-        if(!profileService.isUserExists(userToBan))
+        if(!userService.isUserExist(userToBan))
             throw new UserDoesntExistException();
         if(scopeLinkService.hasAnyScope(communityId, userToBan))
             throw new UserIsModeratorException();
@@ -60,12 +57,5 @@ public class CommunityModeratorServiceImpl implements CommunityModeratorService{
         eventPublisher.publishEvent(
             CommunityBanEventFactory.createUnban(communityId, userToUnban)
         );
-    }
-
-    @Override
-    public List<CommunityScopeResponse> getUsersScopesForCommunity(long communityId, UUID requestingUser) {
-        if(!scopeLinkService.hasAnyScope(communityId, requestingUser))
-            throw new NotEnoughPermissionsException();
-        return scopeLinkService.getCommunityScopes(communityId);
     }
 }

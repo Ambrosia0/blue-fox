@@ -5,11 +5,11 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Slice;
 
-import com.ambrosia.community_service.follow.model.entity.CommunityFollow;
+import com.ambrosia.community_service.follow.model.dto.response.CommunityFollowResponse;
 
 public interface CommunityFollowService {
     void followCommunity(long communityId, UUID requestingUser);
     void removeFollow(long communityId, UUID requestingUser);
-    Slice<CommunityFollow> getFollows(UUID requestingUser, int page);
+    Slice<CommunityFollowResponse> getFollows(UUID requestingUser, int page);
     List<UUID> getFollowedUsers(long communityId, int page);
 }

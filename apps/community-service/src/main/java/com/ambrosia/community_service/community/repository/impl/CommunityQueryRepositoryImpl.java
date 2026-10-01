@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -23,17 +22,38 @@ public class CommunityQueryRepositoryImpl implements CommunityQueryRepository{
 
     private final CommunityResponseRowMapper communityResponseRowMapper;
 
-    @Cacheable(cacheNames = "community", key = "#slug")
     @Override
     public Optional<CommunityResponse> findBySlug(String slug) {
         var sql = """
-            SELECT
+            SELECT 
                 c.*,
-                array_agg(DISTINCT sl.user_id) as community_moderators
+                COALESCE(
+                    (
+                        SELECT jsonb_agg(json_build_object(
+                            'id', t.id,
+                            'username', t.username,
+                            'first_name', t.first_name,
+                            'last_name', t.last_name,
+                            'avatar_id', t.avatar_id
+                        ))
+                        FROM (
+                            SELECT DISTINCT ON (up.id)
+                                up.id, 
+                                up.username, 
+                                up.first_name, 
+                                up.last_name, 
+                                up.avatar_id    
+                            FROM user_projection up
+                            JOIN scope_link sl ON sl.user_id = up.id
+                            WHERE sl.community_id = c.id
+                        ) t
+                    ), 
+                    '[]'::jsonb
+                )::text as community_moderators,
+                up.*
             FROM community c
-            LEFT JOIN scope_link sl ON sl.community_id = c.id
+            LEFT JOIN user_projection up ON up.id = c.owner_id
             WHERE c.slug = ?
-            GROUP BY c.id
         """;
         return jdbcClient
             .sql(sql)
@@ -42,7 +62,6 @@ public class CommunityQueryRepositoryImpl implements CommunityQueryRepository{
             .optional();
     }
 
-    @Cacheable(cacheNames = "community-user-data")
     @Override
     public CommunityUserData findCommunityUserData(long communityId, UUID userId) {
         var sql = """

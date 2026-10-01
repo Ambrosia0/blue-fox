@@ -91,14 +91,14 @@ public class KafkaStream {
 
         var postCountStream = builder.stream(Topics.POST_EVENT, Consumed.with(Serdes.String(), postEventSerde))
             .filter((key, value) -> {
-                if((value.hasCreated() && value.getCreated().hasCommunityId())
+                if((value.hasCreated() && value.getCreated().hasCommunity())
                     || (value.hasDeleted() && value.getDeleted().hasCommunityId())){
                     return true;     
                 }
                 return false;
             })
             .selectKey((key, value) -> switch (value.getEventCase()) {
-                    case CREATED -> value.getCreated().getCommunityId();
+                    case CREATED -> value.getCreated().getCommunity().getId();
                     case DELETED -> value.getDeleted().getCommunityId();
                     default -> null;
             })
