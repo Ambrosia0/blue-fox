@@ -1,0 +1,51 @@
+server:
+ port: 8080
+ forward-headers-strategy: framework
+spring:
+ threads:
+    virtual:
+      enabled: true
+ application:
+  name: collaboration-service
+ kafka:
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:unset}
+  producer:
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+  consumer:
+    properties:
+        spring.json.trusted.packages: "*"
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+    auto-offset-reset: earliest
+    group-id: ${spring.application.name}-${random.uuid}
+
+  retry:
+    topic:
+      backoff:
+        multiplier: 1.2
+        delay: 5
+        max-delay: 20
+      attempts: 100
+      
+ security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OIDC_ISSUER_URL:unset}
+ grpc:
+   client:
+     channels:
+      content-channel:
+        address: content-service:9090
+   server:
+    ssl:
+      enabled: false
+---
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  config:
+    activate:
+      on-profile:
+      - test
