@@ -3,7 +3,9 @@ CREATE TABLE IF NOT EXISTS community_projection(
 );
 
 CREATE TABLE IF NOT EXISTS user_projection(
-    id UUID PRIMARY KEY
+    id UUID PRIMARY KEY,
+    username TEXT,
+    avatar_id TEXT
 );
 
 CREATE TABLE IF NOT EXISTS post_projection(
@@ -42,6 +44,6 @@ CREATE TABLE IF NOT EXISTS report(
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS processed_event(
+CREATE TABLE IF NOT EXISTS processed_events(
     id UUID PRIMARY KEY
 );

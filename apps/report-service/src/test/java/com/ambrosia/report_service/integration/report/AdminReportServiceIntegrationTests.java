@@ -33,6 +33,8 @@ import com.ambrosia.report_service.user.entity.UserProjection;
 import com.ambrosia.report_service.user.repository.UserProjectionRepository;
 import com.ambrosia.report_service.util.UserFactory;
 
+import io.github.robsonkades.uuidv7.UUIDv7;
+
 @Transactional
 public class AdminReportServiceIntegrationTests extends BaseIntegrationTest{
     @Autowired AdminReportService adminReportService;
@@ -143,7 +145,7 @@ public class AdminReportServiceIntegrationTests extends BaseIntegrationTest{
     }
 
     private UserProjection createUser(){
-        return userProjectionRepository.save(UserFactory.create());
+        return userProjectionRepository.insert(UserFactory.create(), UUIDv7.randomUUID());
     }
 
     private ReportReason createReason(){

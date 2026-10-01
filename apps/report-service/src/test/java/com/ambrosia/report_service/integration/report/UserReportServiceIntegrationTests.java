@@ -29,6 +29,8 @@ import com.ambrosia.report_service.util.CommentFactory;
 import com.ambrosia.report_service.util.PostFactory;
 import com.ambrosia.report_service.util.UserFactory;
 
+import io.github.robsonkades.uuidv7.UUIDv7;
+
 @Transactional
 public class UserReportServiceIntegrationTests extends BaseIntegrationTest {
     @Autowired UserReportService userReportService;
@@ -131,7 +133,7 @@ public class UserReportServiceIntegrationTests extends BaseIntegrationTest {
     }
 
     private UserProjection createUser(){
-        return userProjectionRepository.save(UserFactory.create());
+        return userProjectionRepository.insert(UserFactory.create(), UUIDv7.randomUUID());
     }
 
     private CommentProjection createComment(){

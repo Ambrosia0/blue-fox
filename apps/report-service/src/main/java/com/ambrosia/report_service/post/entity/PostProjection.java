@@ -19,8 +19,4 @@ public class PostProjection implements Persistable<Long>{
 
     @Transient
     private boolean isNew = true;
-
-    public static PostProjection create(Long id){
-        return new PostProjection(id, true);
-    }
 }
