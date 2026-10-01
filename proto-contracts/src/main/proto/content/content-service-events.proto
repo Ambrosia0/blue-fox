@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package content.v1;
+
+option java_multiple_files = true;
+option java_package = "com.ambrosia.content_service.kafka_events";
+
+import "content/common.proto";
+
+message PostCreated {
+    User author = 1;
+    optional Community community = 2;
+    string title = 3;
+    string preview = 4;
+    optional int64 published_at = 5;
+    int64 reply_id = 6;
+    repeated User collaborators = 7;
+    optional ReplyTo reply_to = 8;
+}
+
+message PostUpdated {
+    optional int64 community_id = 1;
+    bool is_published = 2;
+}
+
+message PostDeleted {
+    optional uint64 community_id = 1;
+}
+
+message PostEvent {
+    string event_id = 1;
+    int64 post_id = 2;
+    oneof event {
+        PostCreated created = 3;
+        PostDeleted deleted = 4;
+        PostUpdated updated = 5;
+    }
+}
+
+message PostLikeNotification {
+    map<uint64, int64> changes = 1;
+}
+
+message UserFollowed {
+    string requesting_user = 1;
+    string followed_user_id = 2;
+}
+
+message UserUnfollowed {
+    string requesting_user = 1;
+    string followed_user_id = 2;
+}
+
+message UserFollowEvent {
+    oneof event {
+        UserFollowed followed = 1;
+        UserUnfollowed unfollowed = 2;
+    }
+}
+
+message PostViewEvent {
+    int64 post_id = 1;
+}
+
+message PostPreviewEvent {
+    repeated int64 post_id = 1;
+}
+
+message AggregatedViewEvent {
+    int64 post_id = 1;
+    int32 delta = 2;
+}
+
+message AggregatedPreviewEvent {
+    int64 post_id = 1;
+    int32 delta = 2;
+}
+
+message PostDelta {
+    int64 post_id = 1;
+    int32 delta = 2;
+}
