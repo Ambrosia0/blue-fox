@@ -17,8 +17,9 @@ public class KafkaUserEventOutboxConverter implements KafkaOutboxConverter<UserE
     @Override
     public KafkaOutbox convert(Object source) {
         var casted = (UserEvent) source;
+
         var key = switch(casted.getPayloadCase()){
-            case CREATED -> casted.getCreated().getId();
+            case CREATED, UPDATED, DELETED -> casted.getUserId();
             default -> throw new RuntimeException("Unknown body payload");
         };
         return KafkaOutbox.from(

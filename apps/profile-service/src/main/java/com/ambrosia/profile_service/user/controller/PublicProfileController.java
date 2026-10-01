@@ -3,10 +3,8 @@ package com.ambrosia.profile_service.user.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ambrosia.profile_service.core.UserInfo;
 import com.ambrosia.profile_service.user.model.dto.response.PublicUserProfileResponse;
 import com.ambrosia.profile_service.user.model.dto.response.UserSearch;
-import com.ambrosia.profile_service.user.service.UserProfileService;
 import com.ambrosia.profile_service.user.service.UserQueryService;
 import com.ambrosia.profile_service.user.service.UserSearchService;
 
@@ -22,8 +20,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -32,8 +28,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/api/public/profile")
 public class PublicProfileController {
-    private final UserProfileService userService;
     private final UserSearchService userSearchService;
+
     private final UserQueryService userQueryService;
 
     @GetMapping("/{username}")
@@ -41,17 +37,12 @@ public class PublicProfileController {
         @PathVariable String username,
         @AuthenticationPrincipal Jwt jwt
     ) {
-        return jwt != null?
-            userQueryService.getPublicProfile(username, UUID.fromString(jwt.getSubject())):
-            userQueryService.getPublicProfile(username, null);
+        UUID id = jwt != null?
+            UUID.fromString(jwt.getSubject()):
+            null;
+        return userQueryService.getPublicProfile(username, id);
     }
 
-    @PostMapping("/info")
-    public List<UserInfo> getUserInformation(
-        @RequestBody @Size(max = 40) List<UUID> userIds) {
-        return userService.getUserInfo(userIds);
-    }
-    
     @GetMapping
     public List<UserSearch> searchUsers(
         @RequestParam(required = true) @Valid @Size(min = 3, max = 32) String searchString) {

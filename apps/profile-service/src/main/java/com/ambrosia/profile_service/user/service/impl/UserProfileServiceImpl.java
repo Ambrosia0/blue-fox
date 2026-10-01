@@ -19,12 +19,11 @@ import com.ambrosia.profile_service.user.model.dto.request.FileMetadata;
 import com.ambrosia.profile_service.user.model.dto.request.FirstLastName;
 import com.ambrosia.profile_service.user.model.dto.request.SettingsRequest;
 import com.ambrosia.profile_service.user.model.dto.response.AvatarUploadResponse;
-import com.ambrosia.profile_service.user.model.entity.UserSettings;
 import com.ambrosia.profile_service.user.model.entity.UsernameHistory;
 import com.ambrosia.profile_service.user.repository.UserRepository;
-import com.ambrosia.profile_service.user.repository.UserSettingsRepository;
 import com.ambrosia.profile_service.user.repository.UsernameHistoryRepository;
 import com.ambrosia.profile_service.user.service.UserProfileService;
+import com.ambrosia.profile_service.user.service.mapper.UserSettingsMapper;
 import com.ambrosia.profile_service.user.utils.AvatarIdGenerator;
 
 import jakarta.annotation.Nullable;
@@ -35,8 +34,6 @@ import lombok.RequiredArgsConstructor;
 public class UserProfileServiceImpl implements UserProfileService {
     private final UserRepository userRepository;
 
-    private final UserSettingsRepository userSettingsRepository;
-
     private final AppConfiguration appConfiguration;
 
     private final UsernameHistoryRepository usernameHistoryRepository;
@@ -44,6 +41,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final AvatarService avatarService;
 
     private final IdpUserService idpUserService;
+
+    private final UserSettingsMapper userSettingsMapper;
 
     // @Override
     // public void createUnbanRequest(UUID id, String requestMsg) {
@@ -134,12 +133,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public void updateSettings(UUID userId, SettingsRequest settingsRequest) {
-        userSettingsRepository.save(UserSettings.builder()
-            .id(userId)
-            .displayEmail(settingsRequest.displayEmail())
-            .displayActivity(settingsRequest.displayActivity())
-            .isNew(false)
-            .build()
-        );
+        var user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserDoesntExistException());
+        user.setUserSettings(userSettingsMapper.toEntity(settingsRequest));
+        userRepository.save(user);
     }
 }

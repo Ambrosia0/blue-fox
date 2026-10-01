@@ -1,5 +1,10 @@
 package com.ambrosia.profile_service;
 
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+import java.time.Duration;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,14 +45,16 @@ class KeycloakUserRegistrationTest extends BaseIntegrationTest{
     void shouldNotThrowException() throws Exception{
         var user = Factory.createUser();
         userRegistration.register(user);
-        Thread.sleep(4000);
-        user = userRepository.findByUsernameIgnoreCase(user.getUsername())
-            .orElseThrow(() -> new Exception("User doesn't created!"));
-        var keycloakUser = keycloakService.get(user.getId())
-            .orElseThrow(() -> new Exception("User doesn't exist!"));
-        keycloakUser.setEmailVerified(true);
-        keycloakUser.getRequiredActions().removeFirst();
-        keycloakService.update(keycloakUser);
+        await().atMost(Duration.ofSeconds(20)).pollDelay(Duration.ofSeconds(5))
+            .untilAsserted(() -> 
+                assertDoesNotThrow(() -> {
+                    var created = userRepository.findByUsernameIgnoreCase(user.getUsername()).get();
+                    var keycloakUser = keycloakService.get(created.getId()).get();
+                    keycloakUser.setEmailVerified(true);
+                    keycloakUser.getRequiredActions().removeFirst();
+                    keycloakService.update(keycloakUser);
+                })
+            );
     }
 
     @AfterAll

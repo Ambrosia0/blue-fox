@@ -46,9 +46,10 @@ public class ElasticUserIndexService implements UserIndexService, UserSearchServ
     }
 
     @Override
-    public void removeFromIndex(String id) {
+    public void removeFromIndex(String id, Long version) {
         searchIndexOutboxService.put(ElasticUser.builder()
             .id(UUID.fromString(id))
+            .version(version)
             .build()
         );
     }

@@ -27,7 +27,7 @@ public class UserSearchIndexOutboxConverter implements ElasticsearchOutboxHandle
     private String ENTITY_TYPE = "user";
 
     @Override
-    public SearchIndexOutbox convert(Object source) {
+    public SearchIndexOutbox convert(ElasticUser source) {
         Assert.notNull(source, "Object must not be null!");
         var casted = (ElasticUser) source;
         return SearchIndexOutbox.from(
@@ -53,15 +53,19 @@ public class UserSearchIndexOutboxConverter implements ElasticsearchOutboxHandle
             .stream()
             .map(t -> objectMapper.readValue(t, ElasticUser.class))
             .collect(Collectors.partitioningBy(t -> t.getUsername() == null));
-        
-            var toDelete = partitioned.get(true);
-        try {
-            if(!toDelete.isEmpty())
-                elasticUserRepository.deleteAll(toDelete);
 
+        try {
             var toUpsert = partitioned.get(false);
             if(!toUpsert.isEmpty())
                 elasticUserRepository.saveAll(toUpsert);
+        } catch (OptimisticLockingFailureException e) {
+            // TODO: handle exception
+        }
+        
+        try {
+            var toDelete = partitioned.get(true);
+            if(!toDelete.isEmpty())
+                elasticUserRepository.deleteAll(toDelete);
         } catch (OptimisticLockingFailureException e) {
             // TODO: handle exception
         }

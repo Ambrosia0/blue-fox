@@ -1,17 +1,12 @@
 package com.ambrosia.profile_service.integration;
 
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.ambrosia.notification_service.kafka_events.ActivityEvent;
 import org.ambrosia.notification_service.kafka_events.ActivityEventType;
@@ -22,14 +17,11 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.ambrosia.comment_service.kafka_events.CommentCreated;
-import com.ambrosia.comment_service.kafka_events.CommentEvent;
 import com.ambrosia.content_service.kafka_events.UserFollowEvent;
 import com.ambrosia.content_service.kafka_events.UserFollowed;
 import com.ambrosia.content_service.kafka_events.UserUnfollowed;
 import com.ambrosia.library_core.dto.Topics;
 import com.ambrosia.profile_service.BaseIntegrationTest;
-import com.ambrosia.profile_service.kafka.consumer.KafkaUserDataAggregation;
 import com.ambrosia.profile_service.kafka.consumer.KafkaUserFollowAggregation;
 import com.ambrosia.profile_service.user.model.entity.User;
 import com.ambrosia.profile_service.user.repository.UserRepository;
@@ -42,7 +34,6 @@ import com.ambrosia.profile_service.util.Factory;
 public class KafkaStreamAggregationIntegrationTests extends BaseIntegrationTest{
     @Autowired KafkaTemplate<String, byte[]> kafkaTemplate;
     @Autowired UserRepository userRepository;
-    @MockitoSpyBean KafkaUserDataAggregation kafkaUserDataAggregation;
     @MockitoSpyBean KafkaUserFollowAggregation kafkaUserFollowAggregation;
 
     private final Duration awaitDuration = Duration.ofSeconds(60);
@@ -50,21 +41,6 @@ public class KafkaStreamAggregationIntegrationTests extends BaseIntegrationTest{
     @AfterEach
     void cleanUp(){
         userRepository.deleteAll();
-    }
-
-    @Test
-    void shouldInvokeUserAggregation() throws Exception{
-        var user = createUser();
-        assertDoesNotThrow(() -> userRepository.findById(user.getId()).get());
-        var event = createCommentMessage(user.getId());
-        kafkaTemplate.send(
-            Topics.COMMENT_EVENT,
-            Long.toString(event.getCreated().getId()),
-            event.toByteArray()
-        );
-        await().pollInterval(Duration.ofSeconds(5)).atMost(awaitDuration).untilAsserted(
-            () -> verify(kafkaUserDataAggregation, times(1)).consumeMessage(any())
-        );
     }
 
     @Test
@@ -104,19 +80,6 @@ public class KafkaStreamAggregationIntegrationTests extends BaseIntegrationTest{
         await().pollInterval(Duration.ofSeconds(5)).atMost(awaitDuration).untilAsserted(
             () -> assertEquals(Status.ONLINE, userRepository.findById(user.getId()).get().getStatus())
         );
-    }
-
-    private CommentEvent createCommentMessage(UUID userId){
-        var created = CommentCreated.newBuilder()
-            .setCreatedAt(Instant.now().toEpochMilli())
-            .setId(ThreadLocalRandom.current().nextLong(1, 9_999_999_999L))
-            .setUserId(userId.toString())
-            .setPostId(ThreadLocalRandom.current().nextLong(1, 9_999_999_999L))
-            .setContent("test content")
-            .build();
-        return CommentEvent.newBuilder()
-            .setCreated(created)
-            .build();
     }
 
     private UserFollowEvent createUserFollowEvent(UUID followedUser){

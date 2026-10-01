@@ -12,6 +12,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ambrosia.profile_service.core.UserInfo;
+import com.ambrosia.profile_service.user.model.dto.DeletedUser;
 import com.ambrosia.profile_service.user.model.dto.response.PublicUserProfileResponse;
 import com.ambrosia.profile_service.user.model.entity.User;
 
@@ -118,4 +119,11 @@ public interface UserRepository extends
     WHERE su.username = LOWER(:username)     
     """)
     Optional<PublicUserProfileResponse> findPublicProfileByUsername(String username);
+
+    @Query("""
+    DELETE FROM service_user
+    WHERE id = :userId
+    RETURNING id, version    
+    """)
+    Optional<DeletedUser> returningDeleteById(UUID userId);
 }

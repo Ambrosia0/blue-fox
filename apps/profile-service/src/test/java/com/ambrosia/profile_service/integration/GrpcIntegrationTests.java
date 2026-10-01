@@ -15,7 +15,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import com.ambrosia.profile_service.BaseIntegrationTest;
 import com.ambrosia.profile_service.grpc.UserBlacklistRequest;
-import com.ambrosia.profile_service.grpc.UserExistenceRequest;
 import com.ambrosia.profile_service.grpc.ProfileServiceGrpc.ProfileServiceBlockingStub;
 import com.ambrosia.profile_service.util.BlacklistCreator;
 import com.ambrosia.profile_service.util.UserCreator;
@@ -30,19 +29,6 @@ public class GrpcIntegrationTests extends BaseIntegrationTest{
     @Autowired UserCreator userCreator;
 
     @Autowired BlacklistCreator blacklistCreator;
-
-    @Test
-    void shouldReturnFalseOnExistanceCheck(){
-        var resp = profileServiceBlockingStub.isUserExist(createExistanceRequest());
-        assertFalse(resp.getIsExist());
-    }
-
-    @Test
-    void shouldReturnTrueOnExistanceCheck(){
-        var user = userCreator.createFromScratch();
-        var resp = profileServiceBlockingStub.isUserExist(createExistanceRequest(user.getId()));
-        assertTrue(resp.getIsExist());
-    }
 
     @Test
     void shouldReturnEmptyList(){
@@ -75,18 +61,6 @@ public class GrpcIntegrationTests extends BaseIntegrationTest{
     void cleanUp(){
         blacklistCreator.cleanUp();
         userCreator.cleanUp();
-    }
-
-    private UserExistenceRequest createExistanceRequest(UUID userId){
-        return UserExistenceRequest.newBuilder()
-            .setUserId(userId.toString())
-            .build();
-    }
-
-    private UserExistenceRequest createExistanceRequest(){
-        return UserExistenceRequest.newBuilder()
-            .setUserId(UUID.randomUUID().toString())
-            .build();
     }
 
     private UserBlacklistRequest createBlacklistRequest(UUID userId){

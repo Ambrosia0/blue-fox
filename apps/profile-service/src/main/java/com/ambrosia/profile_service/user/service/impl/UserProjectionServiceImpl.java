@@ -12,11 +12,9 @@ import com.ambrosia.profile_service.core.UserIndexService;
 import com.ambrosia.profile_service.exception.api.user.UserDoesntExistException;
 import com.ambrosia.profile_service.kafka.utils.UserEventFactory;
 import com.ambrosia.profile_service.user.model.dto.UserProjection;
-import com.ambrosia.profile_service.user.model.entity.User;
-import com.ambrosia.profile_service.user.model.entity.UserSettings;
 import com.ambrosia.profile_service.user.repository.UserRepository;
-import com.ambrosia.profile_service.user.repository.UserSettingsRepository;
 import com.ambrosia.profile_service.user.service.UserProjectionService;
+import com.ambrosia.profile_service.user.service.mapper.UserProjectionMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,36 +25,19 @@ import lombok.extern.slf4j.Slf4j;
 public class UserProjectionServiceImpl implements UserProjectionService{
     private final UserRepository userRepository;
 
-    private final UserSettingsRepository userSettingsRepository;
-
     private final UserIndexService userIndexService;
 
     private final ApplicationEventPublisher eventPublisher;
 
     private final KafkaOutboxService kafkaOutboxService;
 
+    private final UserProjectionMapper userProjectionMapper;
+
     @Transactional
     @Override
     public void create(UserProjection userProjection) {
         try {
-            var user = userRepository.save(User.builder()
-                .id(userProjection.id())
-                .username(userProjection.username())
-                .firstName(userProjection.firstName())
-                .email(userProjection.email())
-                .lastName(userProjection.lastName())
-                .avatarId(userProjection.avatarId())
-                .role(userProjection.role())
-                .isNew(true)
-                .isActive(true)
-                .isEnabled(userProjection.enabled())
-                .build()
-            );
-            userSettingsRepository.save(UserSettings.builder()
-                .id(user.getId())
-                .isNew(true)
-                .build()
-            );
+            var user = userRepository.save(userProjectionMapper.toEntity(userProjection));
             userIndexService.index(user);
 
             var event = UserEventFactory.createdEvent(user);
@@ -75,15 +56,15 @@ public class UserProjectionServiceImpl implements UserProjectionService{
         try {
             var original = userRepository.findById(userProjection.id())
                 .orElseThrow(() -> new UserDoesntExistException());
-            original.setEnabled(userProjection.enabled());
-            original.setEmail(userProjection.email());
-            original.setAvatarId(userProjection.avatarId());
-            original.setUsername(userProjection.username());
-            original.setFirstName(userProjection.firstName());
-            original.setLastName(userProjection.lastName());
-            if(userProjection.role() != null) 
-                original.setRole(userProjection.role());
-            var user = userRepository.save(original);
+                
+            var user = userRepository.save(
+                userProjectionMapper.apply(original, userProjection)
+            );
+
+            var event = UserEventFactory.updatedEvent(user);
+            kafkaOutboxService.put(event);
+            eventPublisher.publishEvent(event);
+
             userIndexService.reIndex(user);
             log.debug("USER UPDATE: {}", user.getId());
         } catch (RuntimeException e) {
@@ -96,8 +77,20 @@ public class UserProjectionServiceImpl implements UserProjectionService{
     @Override
     public void delete(UUID id) {
         try {
-            userRepository.deleteById(id);
-            userIndexService.removeFromIndex(id.toString());
+            var deletedOpt = userRepository.returningDeleteById(id);
+            if(deletedOpt.isEmpty())
+                return;
+
+            var deleted = deletedOpt.get();
+
+            var event = UserEventFactory.deletedEvent(deleted.id());
+            kafkaOutboxService.put(event);
+            eventPublisher.publishEvent(event);
+
+            userIndexService.removeFromIndex(
+                deleted.id().toString(), 
+                deleted.version()
+            );
             log.debug("USER DELETE: {}", id);   
         } catch (RuntimeException e) {
             log.error("Can't delete user!", e);

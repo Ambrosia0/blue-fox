@@ -1,0 +1,16 @@
+FROM gradle:jdk25-ubi AS build
+
+WORKDIR /tmp/app
+COPY . .
+
+RUN --mount=type=cache,target=/home/gradle/.gradle \
+    gradle profile-service:dependencies --no-daemon
+
+RUN --mount=type=cache,target=/home/gradle/.gradle \
+    gradle profile-service:bootJar --no-daemon
+
+FROM eclipse-temurin:25-jre-alpine AS runtime
+
+COPY --from=build ./tmp/app/apps/profile-service/build/libs/*.jar /app.jar
+
+ENTRYPOINT [ "java", "-jar", "/app.jar"]

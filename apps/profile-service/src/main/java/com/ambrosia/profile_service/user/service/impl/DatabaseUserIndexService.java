@@ -29,7 +29,7 @@ public class DatabaseUserIndexService implements UserIndexService, UserSearchSer
     public void reIndex(User user) {}
 
     @Override
-    public void removeFromIndex(String id) {}
+    public void removeFromIndex(String id, Long version) {}
 
     @Override
     public List<UserSearch> search(String searchString, int pageSize) {

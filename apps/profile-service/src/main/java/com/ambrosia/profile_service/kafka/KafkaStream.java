@@ -27,19 +27,13 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties.AckMode;
 
-import com.ambrosia.content_service.kafka_events.PostEvent;
 import com.ambrosia.content_service.kafka_events.UserFollowEvent;
 import com.ambrosia.library_core.dto.Topics;
-import com.ambrosia.comment_service.kafka_events.CommentEvent;
 import com.ambrosia.profile_service.kafka.serde.ActivityEventSerde;
-import com.ambrosia.profile_service.kafka.serde.CommentEventSerde;
-import com.ambrosia.profile_service.kafka.serde.PostEventSerde;
 import com.ambrosia.profile_service.kafka.serde.PresenseStateSerde;
 import com.ambrosia.profile_service.kafka.serde.CompactUuidSerde;
-import com.ambrosia.profile_service.kafka.serde.UserAggregationSerde;
 import com.ambrosia.profile_service.kafka.serde.UserFollowAggregationSerde;
 import com.ambrosia.profile_service.kafka.serde.UserFollowEventSerde;
-import com.ambrosia.profile_service.kafka_events.UserAggregation;
 import com.ambrosia.profile_service.kafka_events.UserFollowAggregation;
 
 import lombok.extern.slf4j.Slf4j;
@@ -53,36 +47,6 @@ import lombok.extern.slf4j.Slf4j;
 @EnableKafkaStreams
 public class KafkaStream{
     private final CompactUuidSerde uuidSerde = new CompactUuidSerde();
-
-    /**
-     * Merges partial data streams and publishes it to a local topic
-     * for enrichment with local user projections
-     */
-    @Bean
-    KStream<String, UserAggregation> kStreamUser(StreamsBuilder streamsBuilder){
-        var commentMessageSerde = new CommentEventSerde();
-        var postMessageSerde = new PostEventSerde();
-        var userAggregationSerde = new UserAggregationSerde();
-        
-        var postStream = streamsBuilder.stream(Topics.POST_EVENT, Consumed.with(Serdes.String(), postMessageSerde))
-            .filter((key, value) -> value.getEventCase() == PostEvent.EventCase.CREATED)
-            .mapValues(postMessage -> UserAggregation.newBuilder()
-                    .setPost(postMessage.getCreated())
-                    .build()
-            );
-
-        var commStream = streamsBuilder.stream(Topics.COMMENT_EVENT, Consumed.with(Serdes.String(), commentMessageSerde))
-            .filter((key, value) -> value.getEventCase() == CommentEvent.EventCase.CREATED)
-            .mapValues(commentMessage -> UserAggregation.newBuilder()
-                    .setComment(commentMessage.getCreated())
-                    .build()
-            )
-            .merge(postStream);
-        commStream.to(Topics.USER_AGGREGATION,
-            Produced.with(Serdes.String(), userAggregationSerde)
-        );
-        return commStream;
-    }
 
     @Bean
     KStream<String, UserFollowEvent> userFollowStream(StreamsBuilder builder){
@@ -213,20 +177,6 @@ public class KafkaStream{
     /**
      * Container factories for batch requests on listeners
      */
-    @Bean
-    ConcurrentKafkaListenerContainerFactory<String, byte[]> kafkaUserAggregationListenerContainerFactory(ConsumerFactory<String, byte[]> cf){
-        var factory = new ConcurrentKafkaListenerContainerFactory<String, byte[]>();
-        var configProps = new HashMap<String, Object>(cf.getConfigurationProperties());
-        configProps.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 300);
-        var customFactory = new DefaultKafkaConsumerFactory<String, byte[]>(configProps);
-        factory.setConsumerFactory(customFactory);
-        factory.setBatchListener(true);
-        factory.setConcurrency(1);
-        factory.getContainerProperties().setAckMode(AckMode.BATCH);
-        factory.getContainerProperties().setPollTimeout(3000);
-        return factory;
-    }
-
     @Bean
     ConcurrentKafkaListenerContainerFactory<String, byte[]> kafkaUserFollowListenerContainerFactory(ConsumerFactory<String, byte[]> cf){
         var factory = new ConcurrentKafkaListenerContainerFactory<String, byte[]>();
