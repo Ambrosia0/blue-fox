@@ -13,5 +13,5 @@ public interface SearchIndexOutboxConverter<T>{
      * @return source object type
      */
     Class<T> getSourceType();
-    SearchIndexOutbox convert(Object source);
+    SearchIndexOutbox convert(T source);
 }

@@ -28,11 +28,14 @@ public class KafkaOutboxService implements OutboxService{
             );
     }
 
+    @SuppressWarnings("unchecked")
     public void put(@NotNull Object event) {
         Assert.notNull(event, "Event must not be null!");
         var converter = converters.get(event.getClass());
         if(converter == null)
             throw new RuntimeException("Converter for class "+event.getClass().toString()+" doesn't exist!");
-        kafkaOutboxRepository.save(converter.convert(event));
+        kafkaOutboxRepository.save(
+            ((KafkaOutboxConverter<Object>)converter).convert(event)
+        );
     }
 }

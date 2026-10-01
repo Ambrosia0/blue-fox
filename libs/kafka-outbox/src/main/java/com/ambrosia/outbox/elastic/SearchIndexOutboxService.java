@@ -29,11 +29,14 @@ public class SearchIndexOutboxService implements OutboxService{
             );
     }
 
+    @SuppressWarnings("unchecked")
     public void put(@NotNull Object obj){
         Assert.notNull(obj, "Object must not be null!");
         var converter = converters.get(obj.getClass());
         if(converter == null)
             throw new RuntimeException("Converter for type "+obj.getClass().toString()+" doesn't exist!");
-        searchIndexOutboxRepository.save(converter.convert(obj));
+        searchIndexOutboxRepository.save(
+            ((SearchIndexOutboxConverter<Object>)converter).convert(obj)
+        );
     }
 }
