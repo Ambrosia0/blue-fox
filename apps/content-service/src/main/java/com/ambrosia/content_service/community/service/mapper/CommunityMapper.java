@@ -44,10 +44,12 @@ public class CommunityMapper {
     private Set<CommunityPermission> toPermissions(Map<String, ModeratorPermissions> permissions){
         return permissions.entrySet()
             .stream()
-            .flatMap(pair -> pair.getValue().getPermissionsList().stream()
-                .map(permission -> new CommunityPermission(permission.name(), UUID.fromString(pair.getKey())))
+            .map(pair -> pair.getValue().getPermissionsList().stream()
+                .filter(p -> Permission.valueOf(p.name()) == Permission.POST_DELETE)
+                .findFirst()
+                .map(t -> new CommunityPermission(t.name(), UUID.fromString(pair.getKey())))
+                .orElse(new CommunityPermission(null, UUID.fromString(pair.getKey())))
             )
-            .filter(t -> Permission.valueOf(t.getPermission()) == Permission.POST_DELETE)
             .collect(Collectors.toSet());
     }
 

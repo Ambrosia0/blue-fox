@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -22,8 +23,8 @@ public class SecurityConfig{
 
     @Profile("dev")
     @Bean
-    JwtDecoder jwtDecoder(@Value("${OIDC_ISSUER_URL}") String issuer){
-        var decoder = NimbusJwtDecoder.withIssuerLocation(issuer).build();
+    JwtDecoder jwtDecoder(@Value ("${OIDC_ISSUER_URL}") String issuer){
+        var decoder = NimbusJwtDecoder.withJwkSetUri(issuer + "/protocol/openid-connect/certs").build();
         var withTimestamp = new JwtTimestampValidator();
         decoder.setJwtValidator(withTimestamp);
         return decoder;
@@ -39,9 +40,10 @@ public class SecurityConfig{
                 .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter))   
             )
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/public/**").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("admin")
-                .requestMatchers("/api/user/**", "/api/me/**").authenticated()
+                .requestMatchers(HttpMethod.POST,"/api/v1/report").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/v1/report/reason").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/v1/report").hasRole("admin")
+                .requestMatchers("/api/v1/report/**").hasRole("admin")
                 .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             )

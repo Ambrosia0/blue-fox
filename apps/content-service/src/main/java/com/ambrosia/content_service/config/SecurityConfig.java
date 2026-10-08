@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.grpc.server.GlobalServerInterceptor;
+import org.springframework.grpc.server.security.AuthenticationProcessInterceptor;
+import org.springframework.grpc.server.security.GrpcSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -25,7 +28,7 @@ public class SecurityConfig {
     @Profile("dev")
     @Bean
     JwtDecoder jwtDecoder(@Value("${OIDC_ISSUER_URL}") String issuer){
-        var decoder = NimbusJwtDecoder.withIssuerLocation(issuer).build();
+        var decoder = NimbusJwtDecoder.withJwkSetUri(issuer + "/protocol/openid-connect/certs").build();
         var withTimestamp = new JwtTimestampValidator();
         decoder.setJwtValidator(withTimestamp);
         return decoder;
@@ -42,9 +45,7 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(
                 authorize -> authorize
-                    .requestMatchers("/api/public/**").permitAll()
-                    .requestMatchers("/api/admin/**").hasRole("admin")
-                    .requestMatchers("/api/user/**", "/api/me/**").authenticated()
+                    .requestMatchers("/api/v1/public/**", "/api/v1/public").permitAll()
                     .requestMatchers("/actuator/**").permitAll()
                     .anyRequest().authenticated())
             .httpBasic(basic -> basic.disable())
@@ -52,4 +53,14 @@ public class SecurityConfig {
             .formLogin(login -> login.disable())
             .build();
         }
+
+    @Bean
+    @GlobalServerInterceptor
+    AuthenticationProcessInterceptor grpcFilterChain(GrpcSecurity grpc) throws Exception{
+        return grpc
+            .authorizeRequests(requests -> requests
+                .allRequests().permitAll()
+            )
+            .build();
+    }
 }

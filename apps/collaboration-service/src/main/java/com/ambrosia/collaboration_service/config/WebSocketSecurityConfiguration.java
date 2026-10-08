@@ -1,10 +1,14 @@
 package com.ambrosia.collaboration_service.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -12,6 +16,16 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration 
 @EnableWebSecurity  
 public class WebSocketSecurityConfiguration {
+    
+    @Profile("dev")
+    @Bean
+    JwtDecoder jwtDecoder(@Value ("${OIDC_ISSUER_URL}") String issuer){
+        var decoder = NimbusJwtDecoder.withJwkSetUri(issuer + "/protocol/openid-connect/certs").build();
+        var withTimestamp = new JwtTimestampValidator();
+        decoder.setJwtValidator(withTimestamp);
+        return decoder;
+    }
+
     @Bean 
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity){
         var jwtAuthenticationConverter = new JwtAuthenticationConverter();

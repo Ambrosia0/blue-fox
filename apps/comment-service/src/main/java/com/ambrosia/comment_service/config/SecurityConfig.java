@@ -17,14 +17,14 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class SecurityConfig {
     @Bean
-    public RestClient restClient(){
+    RestClient restClient(){
         return RestClient.create();
     }
 
     @Profile("dev")
     @Bean
-    public JwtDecoder jwtDecoder(@Value("${OIDC_ISSUER_URL}") String issuer){
-        var decoder = NimbusJwtDecoder.withIssuerLocation(issuer).build();
+    JwtDecoder jwtDecoder(@Value ("${OIDC_ISSUER_URL}") String issuer){
+        var decoder = NimbusJwtDecoder.withJwkSetUri(issuer + "/protocol/openid-connect/certs").build();
         var withTimestamp = new JwtTimestampValidator();
         decoder.setJwtValidator(withTimestamp);
         return decoder;
@@ -41,9 +41,8 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(
                 authorize -> authorize
-                        .requestMatchers("/api/public/**").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/user/**").authenticated()
+                        .requestMatchers("/api/v1/public/**", "/api/v1/public").permitAll()
+                        .requestMatchers("/api/v1/comment/**", "/api/v1/comment").authenticated()
                         .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated()
             )

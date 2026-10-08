@@ -18,29 +18,25 @@ spring:
             proto-append: true
           routes:
           - id: comment_service
-            uri: http://comment-service
+            uri: http://comment-service:8080
             predicates:
-            - Path=/api/user/comment/**,/api/admin/comment/**,/api/public/comment/**,/api/public/post/*/comments
+            - Path=/api/v1/comment/**,/api/v1/public/comment/**,/api/v1/public/post/*/comments
           - id: report_service
-            uri: http://report-service
+            uri: http://report-service:8080
             predicates:
-            - Path=/api/user/report/**,/api/admin/report/**
+            - Path=/api/v1/report/**
           - id: content_service
-            uri: http://content-service
+            uri: http://content-service:8080
             predicates:
-            - Path=/api/public/post/**,/api/user/post/**,/api/admin/post/**,/api/me/post/**
+            - Path=/api/v1/post/**,/api/v1/me/post/**,/api/v1/public/post/**
           - id: community_service
             uri: http://community-service:8080
             predicates:
-            - Path=/api/public/community/**,/api/user/community/**,/api/admin/community/**
+            - Path=/api/v1/public/community/**,/api/v1/community/**
           - id: notification_service
-            uri: http://notification-service
+            uri: http://notification-service:8080
             predicates:
-            - Path=/api/user/notification,/api/public/notification
-          - id: chat_service
-            uri: http://chat-service
-            predicates:
-            - Path=/api/user/chat/**,/api/admin/chat/**
+            - Path=/api/v1/notification,/api/v1/public/notification
           - id: keycloak
             uri: http://keycloak.keycloak.svc.cluster.local:8080
             predicates:
@@ -54,11 +50,15 @@ spring:
             filters:
             - PreserveHostHeader
           - id: profile_service
-            uri: http://profile-service
+            uri: http://profile-service:8080
             predicates:
-            - Path=/api/user/**,/api/public/**,/api/admin/**,/api/me/**
+            - Path=/api/v1/public/**,/api/v1/me/**,/api/v1/profile/**
+          - id: collaboration-service
+            uri: http://collaboration-service:8080
+            predicates:
+            - Path=/ws/**
           - id: frontend_service
-            uri: http://frontend-service
+            uri: http://frontend-service:3000
             predicates:
             - Path=/**
 ---
@@ -94,47 +94,47 @@ spring:
            proto-enabled: true
            proto-append: true
          routes:
-         - id: comment_service
-           uri: http://comment-service:8080
-           predicates:
-           - Path=/api/user/comment/**,/api/admin/comment/**,/api/public/comment/**,/api/public/post/*/comments
-         - id: content_service
-           uri: http://content-service:8080
-           predicates:
-           - Path=/api/public/post/**,/api/user/post/**,/api/admin/post/**,/api/me/post/**
-         - id: community_service
-           uri: http://community-service:8080
-           predicates:
-           - Path=/api/public/community/**,/api/user/community/**,/api/admin/community/**
-         - id: report_service
-           uri: http://report-service:8080
-           predicates:
-           - Path=/api/user/report/**,/api/admin/report/**
-         - id: notification_service
-           uri: http://notification-service:8080
-           predicates:
-           - Path=/api/user/notification,/api/public/notification
-         - id: chat_service
-           uri: http://chat-service:8080
-           predicates:
-           - Path=/api/user/chat/**,/api/admin/chat/**
-         - id: keycloak
-           uri: http://keycloak:8080
-           predicates:
-           - Path=/auth/realms/**,/auth/resources/**
-           filters:
-           - PreserveHostHeader
-         - id: s3
-           uri: ${S3_ENDPOINT}
-           predicates:
-           - Path=/files/**
-           filters:
-           - PreserveHostHeader
-         - id: profile_service
-           uri: http://profile-service:8080
-           predicates:
-           - Path=/api/user/**,/api/public/**,/api/me/**,/api/admin/**
-         - id: frontend_service
-           uri: http://frontend-service:3000
-           predicates:
-           - Path=/**
+          - id: comment_service
+            uri: http://comment-service:8080
+            predicates:
+            - Path=/api/v1/comment/**,/api/v1/public/comment/**,/api/v1/public/post/*/comments
+          - id: report_service
+            uri: http://report-service:8080
+            predicates:
+            - Path=/api/v1/report/**
+          - id: content_service
+            uri: http://content-service:8080
+            predicates:
+            - Path=/api/v1/post/**,/api/v1/me/post/**,/api/v1/public/post/**
+          - id: community_service
+            uri: http://community-service:8080
+            predicates:
+            - Path=/api/v1/public/community/**,/api/v1/community/**
+          - id: notification_service
+            uri: http://notification-service:8080
+            predicates:
+            - Path=/api/v1/notification,/api/v1/public/notification
+          - id: keycloak
+            uri: http://keycloak.keycloak.svc.cluster.local:8080
+            predicates:
+            - Path=/auth/realms/**,/auth/resources/**
+            filters:
+            - PreserveHostHeader
+          - id: s3
+            uri: ${S3_ENDPOINT:http://localhost:9000}
+            predicates:
+            - Path=/files/**
+            filters:
+            - PreserveHostHeader
+          - id: profile_service
+            uri: http://profile-service:8080
+            predicates:
+            - Path=/api/v1/public/**,/api/v1/me/**,/api/v1/profile/**
+          - id: collaboration-service
+            uri: http://collaboration-service:8080
+            predicates:
+            - Path=/ws/**
+          - id: frontend_service
+            uri: http://frontend-service:3000
+            predicates:
+            - Path=/**

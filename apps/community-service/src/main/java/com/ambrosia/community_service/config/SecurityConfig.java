@@ -31,7 +31,7 @@ public class SecurityConfig{
     @Profile("dev")
     @Bean
     JwtDecoder jwtDecoder(@Value("${OIDC_ISSUER_URL}") String issuer){
-        var decoder = NimbusJwtDecoder.withIssuerLocation(issuer).build();
+        var decoder = NimbusJwtDecoder.withJwkSetUri(issuer + "/protocol/openid-connect/certs").build();
         var withTimestamp = new JwtTimestampValidator();
         decoder.setJwtValidator(withTimestamp);
         return decoder;
@@ -48,9 +48,8 @@ public class SecurityConfig{
             )
             .authorizeHttpRequests(
                 authorize -> authorize
-                    .requestMatchers("/api/public/**").permitAll()
-                    .requestMatchers("/api/admin/**").hasRole("admin")
-                    .requestMatchers("/api/user/**").authenticated()
+                    .requestMatchers("/api/v1/public/community/**", "/api/v1/public/community").permitAll()
+                    .requestMatchers("/api/v1/community/**", "/api/v1/community").authenticated()
                     .requestMatchers("/actuator/**").permitAll()
                     .anyRequest().authenticated())
             .httpBasic(basic -> basic.disable())

@@ -3,8 +3,8 @@ package com.ambrosia.community_service.community.utils;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.ambrosia.community_service.community.model.entity.Community;
-import com.ambrosia.community_service.community.model.entity.ScopeLink;
+import com.ambrosia.community_service.community.domain.entity.Community;
+import com.ambrosia.community_service.community.domain.entity.ScopeLink;
 import com.ambrosia.community_service.kafka_events.CommunityCreate;
 import com.ambrosia.community_service.kafka_events.CommunityDelete;
 import com.ambrosia.community_service.kafka_events.CommunityEvent;

@@ -16,9 +16,6 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import com.ambrosia.community_service.config.KafkaTopics;
 import com.ambrosia.community_service.utils.CommunityCreator;
-import com.ambrosia.community_service.utils.CommunityFollowRequestCreator;
-import com.ambrosia.community_service.utils.FollowCreator;
-import com.ambrosia.community_service.utils.UserBanCreator;
 import com.ambrosia.library_core.ElasticIntegrationTest;
 import com.ambrosia.library_core.KafkaIntegrationTest;
 import com.ambrosia.library_core.PostgresIntegrationTest;
@@ -34,9 +31,6 @@ import com.ambrosia.library_s3.S3IntegrationTest;
 @TestInstance(Lifecycle.PER_CLASS)
 @Import({
     CommunityCreator.class,
-    FollowCreator.class,
-    UserBanCreator.class,
-    CommunityFollowRequestCreator.class,
     KafkaIntegrationTest.class,
     PostgresIntegrationTest.class,
     RedisIntegrationTest.class,

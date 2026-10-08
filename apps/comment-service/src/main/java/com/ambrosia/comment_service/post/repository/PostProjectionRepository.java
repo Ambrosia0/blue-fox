@@ -8,7 +8,7 @@ import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import com.ambrosia.comment_service.comment.model.dto.PostCommentTuple;
+import com.ambrosia.comment_service.comment.api.dto.PostCommentTuple;
 import com.ambrosia.comment_service.post.model.entity.PostProjection;
 
 

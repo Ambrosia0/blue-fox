@@ -10,17 +10,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.annotation.Import;
 
-import com.ambrosia.community_service.community.model.entity.Community;
-import com.ambrosia.community_service.community.model.entity.CommunityBan;
-import com.ambrosia.community_service.community.repository.CommunityBanRepository;
-import com.ambrosia.community_service.community.repository.CommunityRepository;
-import com.ambrosia.community_service.community.repository.elastic.ElasticCommunityRepository;
-import com.ambrosia.community_service.core.CommunityIndexService;
+import com.ambrosia.community_service.community.application.CommunityIndexService;
+import com.ambrosia.community_service.community.domain.entity.Community;
+import com.ambrosia.community_service.community.domain.entity.CommunityBan;
+import com.ambrosia.community_service.community.domain.repository.CommunityBanRepository;
+import com.ambrosia.community_service.community.domain.repository.CommunityRepository;
+import com.ambrosia.community_service.community.infrastructure.elastic.ElasticCommunityRepository;
+import com.ambrosia.community_service.community.infrastructure.persistence.JdbcCommunityRepository;
 
 @Import({UserCreator.class})
 @TestComponent
 public class CommunityCreator {
     @Autowired CommunityRepository communityRepository;
+
+    @Autowired JdbcCommunityRepository jdbcCommunityRepository;
 
     @Autowired UserCreator userCreator;
 
@@ -72,7 +75,7 @@ public class CommunityCreator {
 
 
     public void cleanUp(){
-        communityRepository.deleteAll();
+        jdbcCommunityRepository.deleteAll();
         userCreator.cleanUp();
         if(elasticCommunityRepository != null)
             elasticCommunityRepository.deleteAll();

@@ -18,6 +18,7 @@ import com.ambrosia.library_core.KafkaIntegrationTest;
 import com.ambrosia.library_core.PostgresIntegrationTest;
 import com.ambrosia.library_core.RedisIntegrationTest;
 import com.ambrosia.report_service.config.KafkaTopics;
+import com.ambrosia.report_service.util.ReportCreator;
 
 @AutoConfigureMockMvc
 @AutoConfigureInProcessTransport
@@ -29,7 +30,8 @@ import com.ambrosia.report_service.config.KafkaTopics;
     PostgresIntegrationTest.class,
     KafkaIntegrationTest.class,
     RedisIntegrationTest.class,
-    KafkaTopics.class
+    KafkaTopics.class,
+    ReportCreator.class
 })
 public abstract class BaseIntegrationTest {
     @Autowired KafkaTemplate<Integer, byte[]> kafkaTemplate;

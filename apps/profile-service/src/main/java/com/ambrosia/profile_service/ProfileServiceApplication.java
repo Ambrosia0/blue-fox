@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import com.ambrosia.profile_service.core.utils.AppConfiguration;
+import com.ambrosia.profile_service.config.AppConfiguration;
 
 
 @SpringBootApplication

@@ -5,13 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.TopicBuilder;
 
-import com.ambrosia.library_core.dto.Topics;
-
 @Profile("dev")
 @Configuration 
 public class KafkaTopics {
     NewTopic collaborationTopic(){
-        return TopicBuilder.name(Topics.COLLABORATION_EVENT)
+        return TopicBuilder.name("blog.post.collaboration")
             .partitions(1)
             .replicas(1)
             .build();
