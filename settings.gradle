@@ -15,7 +15,8 @@ include(
     "library-s3",
     "kafka-outbox",
     "proto-contracts",
-    "collaboration-service"
+    "collaboration-service",
+    "library-policy"
 )
 
 project(":api-gateway").projectDir = file('apps/api-gateway')
@@ -28,3 +29,4 @@ project(":library-core").projectDir = file('libs/library-core')
 project(":library-s3").projectDir = file('libs/library-s3')
 project(":kafka-outbox").projectDir = file('libs/kafka-outbox')
 project(":collaboration-service").projectDir = file("apps/collaboration-service")
+project(":library-policy").projectDir = file("libs/library-policy")
