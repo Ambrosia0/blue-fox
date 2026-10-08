@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package content.v1;
+
+option java_multiple_files = true;
+option java_package = "com.ambrosia.content_service.grpc";
+
+import "content/common.proto";
+
+message CollaborationContentRequest {
+    int64 post_id = 1;
+}
+
+message CollaborationContentResponse {
+    int64 post_id = 1;
+    User author = 2;
+    repeated User collaboration_users = 3;
+    string content = 4;
+    int64 last_update = 5;
+    repeated string attachment_ids = 6;
+}
+
+message CollaborationSaveRequest {
+    int64 post_id = 1;
+    string content = 2;
+}
+
+message CollaborationSaveResponse {}
+
+service ContentService {
+    rpc GetCollaborationPost(CollaborationContentRequest) returns (CollaborationContentResponse);
+    rpc SaveCollaborationPost(CollaborationSaveRequest) returns (CollaborationSaveResponse);
+}

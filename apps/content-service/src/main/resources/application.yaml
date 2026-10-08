@@ -21,6 +21,9 @@ spring:
  data:
   redis:
    url: ${REDIS_URL:unset}
+  web:
+   pageable:
+    max-page-size: 50
  cloud:
     aws:
       s3:
@@ -61,8 +64,6 @@ spring:
      channels:
       profile-channel:
         address: profile-service:9090
-      community-channel:
-        address: community-service:9090
 app:
  default:
   number-of-partitions: 3

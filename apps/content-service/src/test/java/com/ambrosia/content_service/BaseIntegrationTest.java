@@ -1,7 +1,9 @@
 package com.ambrosia.content_service;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.grpc.test.autoconfigure.AutoConfigureInProcessTransport;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -13,6 +15,9 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import com.ambrosia.content_service.config.KafkaTopics;
+import com.ambrosia.content_service.util.CommunityCreator;
+import com.ambrosia.content_service.util.FollowCreator;
+import com.ambrosia.content_service.util.PostCreator;
 import com.ambrosia.library_core.ElasticIntegrationTest;
 import com.ambrosia.library_core.KafkaIntegrationTest;
 import com.ambrosia.library_core.PostgresRumIntegrationTest;
@@ -31,12 +36,17 @@ import com.ambrosia.library_s3.TestS3Configuration;
     RedisIntegrationTest.class,
     S3IntegrationTest.class,
     KafkaTopics.class,
-    TestS3Configuration.class
+    TestS3Configuration.class,
+    PostCreator.class,
+    FollowCreator.class
 })
 @AutoConfigureInProcessTransport
 @TestInstance(Lifecycle.PER_CLASS)
 @EnableScheduling
 public abstract class BaseIntegrationTest {
+
+    @Autowired PostCreator postCreator;
+    @Autowired CommunityCreator communityCreator;
 
     @DynamicPropertySource
     static public void props(DynamicPropertyRegistry registry){
@@ -47,5 +57,11 @@ public abstract class BaseIntegrationTest {
         registry.add("app.s3.base-prefix", () -> "files/post");
         registry.add("app.s3.temp-prefix", () -> "temp/files/post");
         S3IntegrationTest.registerProperties(registry);
+    }
+
+    @AfterEach 
+    void postCleanUp(){
+        postCreator.cleanUp();
+        communityCreator.cleanUp();
     }
 }

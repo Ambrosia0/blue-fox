@@ -5,13 +5,22 @@ CREATE TABLE IF NOT EXISTS community_projection(
 
 CREATE TABLE IF NOT EXISTS post_projection(
     post_id bigint PRIMARY KEY,
-    community_id bigint REFERENCES community_projection(id) ON DELETE CASCADE
+    community_id bigint REFERENCES community_projection(id) ON DELETE CASCADE,
+    is_published boolean NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_projection(
+    id UUID PRIMARY KEY,
+    username TEXT NOT NULL,
+    first_name TEXT,
+    last_name TEXT,
+    avatar_id TEXT
 );
 
 CREATE TABLE IF NOT EXISTS comment(
     id bigserial PRIMARY KEY,
     post_id bigint REFERENCES post_projection(post_id) ON DELETE CASCADE,
-    user_id UUID,
+    user_id UUID REFERENCES user_projection(id) ON DELETE SET NULL,
     content text,
     parent_comment_id bigint, -- null if root
     like_count integer DEFAULT 0,
@@ -31,7 +40,7 @@ CREATE TABLE IF NOT EXISTS comment_attachment(
 
 CREATE TABLE IF NOT EXISTS comment_like(
     comment_id bigint REFERENCES comment(id) ON DELETE CASCADE,
-    user_id UUID,
+    user_id UUID REFERENCES user_projection(id) ON DELETE SET NULL,
     PRIMARY KEY(comment_id, user_id)
 );
 
@@ -47,6 +56,13 @@ CREATE TABLE IF NOT EXISTS community_follow_projection(
     PRIMARY KEY(user_id, community_id)
 );
 
-CREATE TABLE IF NOT EXISTS processed_event(
+CREATE TABLE IF NOT EXISTS processed_events(
     id UUID PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS community_permission(
+    community_id BIGINT REFERENCES community_projection(id) ON DELETE CASCADE,
+    permission TEXT,
+    user_id UUID REFERENCES user_projection(id) ON DELETE CASCADE,
+    PRIMARY KEY(community_id, user_id, permission)
 );

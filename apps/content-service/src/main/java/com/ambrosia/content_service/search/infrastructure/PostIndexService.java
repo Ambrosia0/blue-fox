@@ -1,0 +1,9 @@
+package com.ambrosia.content_service.search.infrastructure;
+
+import com.ambrosia.content_service.search.infrastructure.dto.PostIndex;
+
+public interface PostIndexService {
+    void index(PostIndex postIndex);
+    void reIndex(PostIndex postIndex);
+    void deleteFromIndex(Long id, Long version);
+}

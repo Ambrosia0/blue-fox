@@ -84,33 +84,33 @@ export async function getCommunities(
     if (filter?.direction) params.append('direction', filter.direction);
 
     const queryString = params.toString();
-    const url = queryString ? `/api/public/community?${queryString}` : '/api/public/community';
+    const url = queryString ? `/api/v1/public/community?${queryString}` : '/api/v1/public/community';
     return (await apiClient.get<CommunityPreview[]>(url)).data;
 }
 
 export async function getCommunity(
     communityId: number
 ): Promise<CommunityResponse> {
-    return (await apiClient.get<CommunityResponse>(`/api/public/community/${communityId}`)).data;
+    return (await apiClient.get<CommunityResponse>(`/api/v1/public/community/${communityId}`)).data;
 }
 
 export async function getCommunityModerators(
     id: number
 ): Promise<string[]> {
-    return (await apiClient.get<string[]>(`/api/public/community/${id}/moderators`)).data;
+    return (await apiClient.get<string[]>(`/api/v1/public/community/${id}/moderators`)).data;
 }
 
 export async function createCommunity(
     data: CommunityCreate
 ): Promise<CommunityResponse> {
-    return (await apiClient.post<CommunityResponse>("/api/user/community", data)).data;
+    return (await apiClient.post<CommunityResponse>("/api/v1/community", data)).data;
 }
 
 export async function editCommunity(
     id: number,
     data: CommunityEdit
 ): Promise<CommunityResponse> {
-    return (await apiClient.patch<CommunityResponse>(`/api/user/community/${id}`, data)).data;
+    return (await apiClient.patch<CommunityResponse>(`/api/v1/community/${id}`, data)).data;
 }
 
 export async function uploadCommunityAvatar(
@@ -119,7 +119,7 @@ export async function uploadCommunityAvatar(
 ): Promise<CommunityResponse> {
     const formData = new FormData();
     formData.append("file", file);
-    return (await apiClient.post<CommunityResponse>(`/api/user/community/${id}/avatar`, formData, {
+    return (await apiClient.post<CommunityResponse>(`/api/v1/community/${id}/avatar`, formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         },
@@ -131,47 +131,41 @@ export async function banUser(
     userId: string,
     beforeDate: string
 ): Promise<void> {
-    await apiClient.post(`/api/user/community/${communityId}/ban/${userId}`, beforeDate);
+    await apiClient.post(`/api/v1/community/${communityId}/ban/${userId}`, beforeDate);
 }
 
 export async function unbanUser(
     communityId: number,
     userId: string
 ): Promise<void> {
-    await apiClient.delete(`/api/user/community/${communityId}/ban/${userId}`);
+    await apiClient.delete(`/api/v1/community/${communityId}/ban/${userId}`);
 }
 
 export async function editCommunityScopes(
     id: number,
     scopes: ScopePair[]
 ): Promise<void> {
-    await apiClient.put<void>(`/api/user/community/${id}/scopes`, scopes);
+    await apiClient.put<void>(`/api/v1/community/${id}/scopes`, scopes);
 }
 
 export async function getMyScopes(
     id: number
 ): Promise<UserScope[]> {
-    return (await apiClient.get<UserScope[]>(`/api/user/community/${id}/me/scopes`)).data;
+    return (await apiClient.get<UserScope[]>(`/api/v1/community/${id}/me/scopes`)).data;
 }
 
 export async function getCommunityScopes(
     id: number
 ): Promise<ScopePair[]>{
-    return (await apiClient.get<ScopePair[]>(`/api/user/community/${id}/scopes`)).data;
-}
-
-export async function deletePost(
-    id: number
-): Promise<void>{
-    return (await apiClient.delete(`/api/user/post/${id}`)).data;
+    return (await apiClient.get<ScopePair[]>(`/api/v1/community/${id}/scopes`)).data;
 }
 
 export async function getCommunityScopesList(): Promise<Scope[]> {
-    return (await apiClient.get<Scope[]>("/api/user/community/scopes")).data;
+    return (await apiClient.get<Scope[]>("/api/v1/community/scopes")).data;
 }
 
 export async function checkSlug(slug: string) {
-    return (await apiClient.post<boolean>(`/api/user/community/slugcheck`,
+    return (await apiClient.post<boolean>(`/api/v1/community/slugcheck`,
         {
             slug: slug
         }

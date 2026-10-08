@@ -5,8 +5,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 
-import com.ambrosia.content_service.follow.model.entity.CommunityFollowProjection;
-import com.ambrosia.content_service.follow.repository.CommunityFollowProjectionRepository;
+import com.ambrosia.content_service.community.repository.CommunityFollowProjectionRepository;
+import com.ambrosia.content_service.follow.infrastructure.entity.CommunityFollowProjection;
 
 @TestComponent 
 public class FollowCreator {

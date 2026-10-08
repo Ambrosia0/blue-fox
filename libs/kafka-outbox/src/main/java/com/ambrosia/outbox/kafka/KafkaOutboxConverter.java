@@ -13,5 +13,5 @@ public interface KafkaOutboxConverter<T> {
      * @return source object type
      */
     Class<T> getSourceType();
-    KafkaOutbox convert(Object source);
+    KafkaOutbox convert(T source);
 }

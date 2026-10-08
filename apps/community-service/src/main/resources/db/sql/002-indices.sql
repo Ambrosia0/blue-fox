@@ -1,5 +1,4 @@
 CREATE INDEX idx_community_owner ON community(owner_id, id);
-CREATE INDEX idx_community_slug ON community(slug);
 
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 

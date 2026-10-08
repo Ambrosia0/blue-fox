@@ -6,8 +6,10 @@ import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
+import com.ambrosia.comment_service.community.model.dto.CommentUserData;
 import com.ambrosia.comment_service.community.model.dto.CommunityUserData;
 import com.ambrosia.comment_service.community.repository.CommunityQueryRepository;
+import com.ambrosia.community_service.kafka_events.Permission;
 
 import lombok.RequiredArgsConstructor;
 
@@ -70,6 +72,30 @@ public class CommunityQueryRepositoryImpl implements CommunityQueryRepository{
             .param("commentId", commentId)
             .param("userId", userId)
             .query(CommunityUserData.class)
+            .optional();
+    }
+    
+    @Override
+    public Optional<CommentUserData> findCommentUserDataByCommentId(long commentId, UUID userId) {
+        var sql = """
+        SELECT
+            c.user_id,
+            EXISTS(
+                SELECT 1 FROM community_permission c_per
+                WHERE c_per.user_id = :userId
+                AND c_per.community_id = pp.community_id
+                AND c_per.permission = :permission
+            ) as is_moderator
+        FROM comment c
+        JOIN post_projection pp ON pp.post_id = c.post_id
+        WHERE c.id = :commentId
+        """;
+        return jdbcClient
+            .sql(sql)
+            .param("userId", userId)
+            .param("permission", Permission.COMMENT_DELETE.name())
+            .param("commentId", commentId)
+            .query(CommentUserData.class)
             .optional();
     }
 }

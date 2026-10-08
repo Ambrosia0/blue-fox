@@ -90,17 +90,17 @@ export async function getPosts(filter?: PostFilter): Promise<Post[]> {
 }
 
 export async function getPostContent(id: number): Promise<PostContentResponse> {
-    return (await apiClient.get<PostContentResponse>(`/api/public/post/${id}`)).data;
+    return (await apiClient.get<PostContentResponse>(`/api/v1/public/post/${id}`)).data;
 }
 
 export async function likePost(id: number) {
-    return apiClient.post(`/api/user/post/${id}/like`);
+    return apiClient.post(`/api/v1/post/${id}/like`);
 }
 
 export async function unlikePost(id: number) {
-    return apiClient.delete(`/api/user/post/${id}/like`);
+    return apiClient.delete(`/api/v1/post/${id}/like`);
 }
 
 export async function getLike(id: number) {
-    return (await apiClient.get<boolean>(`/api/user/post/${id}/like`)).data;
+    return (await apiClient.get<boolean>(`/api/v1/post/${id}/like`)).data;
 }

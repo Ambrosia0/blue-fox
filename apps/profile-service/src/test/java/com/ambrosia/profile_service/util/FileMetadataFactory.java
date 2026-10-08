@@ -6,7 +6,7 @@ import java.util.Base64;
 
 import org.springframework.util.DigestUtils;
 
-import com.ambrosia.profile_service.user.model.dto.request.FileMetadata;
+import com.ambrosia.profile_service.user.api.dto.request.FileMetadata;
 import com.ambrosia.profile_service.user.utils.SupportedFileTypes;
 
 public class FileMetadataFactory {

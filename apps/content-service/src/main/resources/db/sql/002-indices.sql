@@ -6,3 +6,5 @@ CREATE INDEX IF NOT EXISTS idx_gin_tags ON post USING gin (tags);
 
 CREATE INDEX IF NOT EXISTS idx_post_attachment ON post_attachment(post_id);
 CREATE INDEX IF NOT EXISTS idx_post_attachment_delete ON post_attachment(claimed_at) WHERE to_delete = 'true';
+
+CREATE INDEX IF NOT EXISTS idx_permissions ON community_permission(community_id, user_id);

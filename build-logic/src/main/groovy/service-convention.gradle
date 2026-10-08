@@ -20,6 +20,7 @@ configurations {
 dependencies {
     implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
     implementation project(':library-core')
+    implementation project(':library-policy')
     implementation "io.github.resilience4j:resilience4j-spring-boot4:${resilience4j}"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "io.micrometer:micrometer-registry-prometheus"

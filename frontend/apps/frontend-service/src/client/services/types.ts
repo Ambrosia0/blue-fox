@@ -5,3 +5,11 @@ export interface Slice<T>{
     number: number;
     size: number;
 }
+
+export type UserResponse = {
+    id: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    avatarId: string;
+}

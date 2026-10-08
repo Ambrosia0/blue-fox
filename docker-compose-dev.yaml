@@ -1,23 +1,42 @@
 services:
   api-gateway:
     image: ghcr.io/ambrosia0/api-gateway:0.0.1-SNAPSHOT
+    build: 
+      context: .
+      dockerfile: /apps/api-gateway/dockerfile
     pull_policy: never
     ports:
       - "44556:8080"
     environment:
       SPRING_PROFILES_ACTIVE: dev
-      JAVA_TOOL_OPTIONS: -XX:MaxDirectMemorySize=256m
+      JAVA_TOOL_OPTIONS: -XX:MaxDirectMemorySize=1G
       S3_ENDPOINT: http://s3-storage:9000
   frontend-service:
     image: frontend-service:v1
-    build:
+    build: 
       context: ./frontend
       dockerfile: Dockerfile
     pull_policy: never
     ports:
       - "45555:3000"
+  collaboration-service:
+    image: ghcr.io/ambrosia0/collaboration-service:0.0.1-SNAPSHOT
+    build:
+      context: .
+      dockerfile: /apps/collaboration-service/dockerfile
+    pull_policy: never
+    depends_on:
+      - kafka
+      - content-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/blog
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
   report-service:
     image: ghcr.io/ambrosia0/report-service:0.0.1-SNAPSHOT
+    build:
+      context: .
+      dockerfile: /apps/report-service/dockerfile
     pull_policy: never
     ports:
       - "44901:8080"
@@ -29,12 +48,15 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
       - OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/blog
       - DB_URL=jdbc:postgresql://postgres:5432/reportdb
-      - DB_USER=postgres
-      - DB_PASSWORD=1111
+      - DB_USER=${DEV_DB_USER}
+      - DB_PASSWORD=${DEV_DB_PASSWORD}
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - REDIS_URL=redis://redis:6379
   community-service:
     image: ghcr.io/ambrosia0/community-service:0.0.1-SNAPSHOT
+    build:
+      context: .
+      dockerfile: /apps/community-service/dockerfile
     pull_policy: never
     ports:
       - "44800:8080"
@@ -45,8 +67,8 @@ services:
       - elasticsearch
       - s3-storage
     environment:
-      - S3_ACCESS_KEY=minioadmin
-      - S3_SECRET_KEY=minioadmin
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY_DEV}
+      - S3_SECRET_KEY=${S3_SECRET_KEY_DEV}
       - S3_BUCKET=publicbucket
       - S3_ENDPOINT=http://s3-storage:9000
       - S3_PRESIGN_ENDPOINT=http://localhost:44470
@@ -54,12 +76,15 @@ services:
       - OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/blog
       - ELASTIC_URIS=http://elasticsearch:9200
       - DB_URL=jdbc:postgresql://postgres:5432/communitydb
-      - DB_USER=postgres
-      - DB_PASSWORD=1111
+      - DB_USER=${DEV_DB_USER}
+      - DB_PASSWORD=${DEV_DB_PASSWORD}
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - REDIS_URL=redis://redis:6379
   comment-service:
     image: ghcr.io/ambrosia0/comment-service:0.0.1-SNAPSHOT
+    build:
+      context: .
+      dockerfile: /apps/comment-service/dockerfile
     pull_policy: never
     ports:
       - "44801:8080"
@@ -69,20 +94,23 @@ services:
       - kafka
       - s3-storage
     environment:
-      - S3_ACCESS_KEY=minioadmin
-      - S3_SECRET_KEY=minioadmin
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY_DEV}
+      - S3_SECRET_KEY=${S3_SECRET_KEY_DEV}
       - S3_BUCKET=publicbucket
       - S3_ENDPOINT=http://s3-storage:9000
       - S3_PRESIGN_ENDPOINT=http://localhost:44470
       - SPRING_PROFILES_ACTIVE=dev
       - OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/blog
       - DB_URL=jdbc:postgresql://postgres:5432/commentdb
-      - DB_USER=postgres
-      - DB_PASSWORD=1111
+      - DB_USER=${DEV_DB_USER}
+      - DB_PASSWORD=${DEV_DB_PASSWORD}
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - REDIS_URL=redis://redis:6379
   content-service:
     image: ghcr.io/ambrosia0/content-service:0.0.1-SNAPSHOT
+    build:
+      context: .
+      dockerfile: /apps/content-service/dockerfile
     pull_policy: never
     ports:
       - "44802:8080"
@@ -93,16 +121,16 @@ services:
       - elasticsearch
       - s3-storage
     environment:
-      - S3_ACCESS_KEY=minioadmin
-      - S3_SECRET_KEY=minioadmin
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY_DEV}
+      - S3_SECRET_KEY=${S3_SECRET_KEY_DEV}
       - S3_BUCKET=publicbucket
       - S3_ENDPOINT=http://s3-storage:9000
       - S3_PRESIGN_ENDPOINT=http://localhost:44470
       - SPRING_PROFILES_ACTIVE=dev
       - OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/blog
       - DB_URL=jdbc:postgresql://postgres:5432/contentdb
-      - DB_USER=postgres
-      - DB_PASSWORD=1111
+      - DB_USER=${DEV_DB_USER}
+      - DB_PASSWORD=${DEV_DB_PASSWORD}
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - REDIS_URL=redis://redis:6379
       - ELASTIC_URIS=http://elasticsearch:9200
@@ -120,9 +148,11 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
   profile-service:
     image: ghcr.io/ambrosia0/profile-service:0.0.1-SNAPSHOT
+    build:
+      context: .
+      dockerfile: /apps/profile-service/dockerfile
     pull_policy: never
     ports:
-      - "44804:8080"
       - "9090"
     depends_on:
       - postgres
@@ -132,8 +162,8 @@ services:
       - elasticsearch
       - s3-storage
     environment:
-      - S3_ACCESS_KEY=minioadmin
-      - S3_SECRET_KEY=minioadmin
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY_DEV}
+      - S3_SECRET_KEY=${S3_SECRET_KEY_DEV}
       - S3_BUCKET=publicbucket
       - S3_ENDPOINT=http://s3-storage:9000
       - S3_PRESIGN_ENDPOINT=http://localhost:44470
@@ -145,8 +175,8 @@ services:
       - KC_SECRET=XWaoMLR9qctOSvsY1EsHUo8WjYDIOz2o
       - ELASTIC_URIS=http://elasticsearch:9200
       - DB_URL=jdbc:postgresql://postgres:5432/profiledb
-      - DB_USER=postgres
-      - DB_PASSWORD=1111
+      - DB_USER=${DEV_DB_USER}
+      - DB_PASSWORD=${DEV_DB_PASSWORD}
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - REDIS_URL=redis://redis:6379
   keycloak:
@@ -161,7 +191,6 @@ services:
     ports:
       - "44447:8080"
       - "44448:7800"
-      - "44449:57800"
     depends_on:
       - postgres
     environment:
@@ -176,8 +205,8 @@ services:
       - KC_DB_URL_HOST=postgres
       - KC_DB=postgres
       - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloakdb
-      - KC_DB_PASSWORD=1111
-      - KC_DB_USERNAME=postgres
+      - KC_DB_PASSWORD=${DEV_DB_PASSWORD}
+      - KC_DB_USERNAME=${DEV_DB_USER}
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - KAFKA_TOPIC=blog.keycloak.event
       - KAFKA_EVENTS=REGISTER,DELETE_ACCOUNT
@@ -242,29 +271,27 @@ services:
   #   volumes:
   #     - ./infra/kafka/connector.json:/config/connector.json:ro
   s3-storage:
-    image: minio/minio:RELEASE.2025-09-07T16-13-09Z-cpuv1
+    image: rustfs/rustfs:latest
     ports:
       - "44470:9000"
       - 9001
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
-    command: server /data --console-address ":9001"
+      - RUSTFS_ACCESS_KEY=${S3_ACCESS_KEY_DEV}
+      - RUSTFS_SECRET_KEY=${S3_SECRET_KEY_DEV}
     volumes:
-      - minio_data:/data
-  minio-init:
-    image: minio/mc
+      - s3_data:/data
+  s3-init:
+    image: amazon/aws-cli
     depends_on:
       - s3-storage
-    volumes:
-      - ./infra/minio/init.sh:/init-minio.sh:ro
     environment:
-      BUCKET: publicbucket
-      MINIO_ALIAS: s3-storage
-      MINIO_ENDPOINT: http://s3-storage:9000
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
-    entrypoint: ["/bin/sh", "/init-minio.sh"]
+      AWS_ENDPOINT_URL: http://s3-storage:9000
+      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY_DEV}
+      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_KEY_DEV}
+      AWS_DEFAULT_REGION: eu-central-1
+    command: >
+      s3api create-bucket
+      --bucket publicbucket
   kafka-init:
     image: apache/kafka:latest
     depends_on:
@@ -310,4 +337,4 @@ services:
 volumes:
   postgres_data:
   elastic_data:
-  minio_data:
+  s3_data:

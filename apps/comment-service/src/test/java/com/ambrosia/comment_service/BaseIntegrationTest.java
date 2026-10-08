@@ -1,7 +1,9 @@
 package com.ambrosia.comment_service;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -43,5 +45,15 @@ public abstract class BaseIntegrationTest {
         PostgresIntegrationTest.registerProperties(registry);
         RedisIntegrationTest.registerProperties(registry);
         S3IntegrationTest.registerProperties(registry);
+    }
+
+    @Autowired CommentCreator commentCreator;
+
+    @Autowired PostProjectionCreator postProjectionCreator;
+
+    @AfterEach 
+    void creatorsCleanUp(){
+        commentCreator.cleanUp();
+        postProjectionCreator.cleanUp();
     }
 }

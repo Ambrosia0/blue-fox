@@ -7,7 +7,9 @@ import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
+import com.ambrosia.community_service.kafka_events.Permission;
 import com.ambrosia.content_service.community.model.dto.CommunityUserData;
+import com.ambrosia.content_service.community.model.dto.PostUserData;
 import com.ambrosia.content_service.community.repository.CommunityQueryRepository;
 
 import jakarta.annotation.Nullable;
@@ -90,5 +92,30 @@ public class CommunityQueryRepositoryImpl implements CommunityQueryRepository{
             .param("communityId", communityId)
             .query(CommunityUserData.class)
             .list();
+    }
+
+    @Override
+    public Optional<PostUserData> findPostUserDataByPostId(long postId, UUID userId) {
+        var sql = """
+        SELECT
+            p.author_id,
+            EXISTS(
+                SELECT 1 FROM community_permission c_per
+                WHERE c_per.user_id = :userId
+                AND c_per.community_id = p.community_id
+                AND c_per.permission = :permission
+            ) as is_moderator
+        FROM post p
+        WHERE p.id = :postId
+        AND p.published = 'true'
+        """;
+        return jdbcClient
+            .sql(sql)
+            .param("userId", userId)
+            .param("permission", Permission.POST_DELETE.name())
+            .param("postId", postId)
+            .query(PostUserData.class)
+            .optional();
+            
     }
 }

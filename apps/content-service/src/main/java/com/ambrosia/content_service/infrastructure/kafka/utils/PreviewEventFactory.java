@@ -1,0 +1,18 @@
+package com.ambrosia.content_service.infrastructure.kafka.utils;
+
+import java.util.Collection;
+
+import com.ambrosia.content_service.kafka_events.PostPreviewEvent;
+import com.ambrosia.content_service.post.api.dto.response.PreviewWithScoreResponse;
+
+public class PreviewEventFactory {
+    public static PostPreviewEvent from(Collection<PreviewWithScoreResponse> preview){
+        return PostPreviewEvent.newBuilder()
+            .addAllPostId(preview.stream()
+                .filter(t -> t.postViewResponse() != null)
+                .map(t -> t.postViewResponse().id())
+                .toList()
+            )
+            .build();
+    }
+}

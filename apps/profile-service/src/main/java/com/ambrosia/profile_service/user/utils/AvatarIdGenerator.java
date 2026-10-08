@@ -2,7 +2,7 @@ package com.ambrosia.profile_service.user.utils;
 
 import java.time.Instant;
 
-import com.ambrosia.profile_service.user.model.dto.request.FileMetadata;
+import com.ambrosia.profile_service.user.api.dto.request.FileMetadata;
 
 public class AvatarIdGenerator {
     public static String generate(FileMetadata fileMetadata){

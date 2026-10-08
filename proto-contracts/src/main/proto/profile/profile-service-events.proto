@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package profile.v1;
+
+option java_multiple_files = true;
+option java_package = "com.ambrosia.profile_service.kafka_events";
+
+message NotificationMetadata {
+    repeated string to_notify = 1;
+    optional string key = 2;
+}
+
+message UserFollowAggregation {
+    string user_id = 1;
+    int32 delta = 2;
+}
+
+message UserCreated {
+    string username = 1;
+    string first_name = 2;
+    string last_name = 3;
+    optional string avatar_id = 4;
+}
+
+message UserUpdated {
+    string username = 1;
+    string first_name = 2;
+    string last_name = 3;
+    optional string avatar_id = 4;
+}
+
+message UserDeleted {}
+
+message UserEvent {
+    string event_id = 1;
+    string user_id = 2;
+    oneof payload {
+        UserCreated created = 3;
+        UserUpdated updated = 4;
+        UserDeleted deleted = 5;
+    }
+}

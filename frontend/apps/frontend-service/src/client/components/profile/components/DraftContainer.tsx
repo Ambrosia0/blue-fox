@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { ChangeEvent, useEffect, useState } from "react";
 import { DraftPreview } from "../../post/DraftPreview";
-import { createDraft, deletePost, Draft, getUnpublished } from "../../../services/user/userEditorApi";
+import { createDraft, deleteDraftPost, deletePost, Draft, getUnpublished } from "../../../services/user/userEditorApi";
 import { TransitionGroup } from "react-transition-group";
 import { Page, Pageable } from "../../../types/types";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -65,7 +65,7 @@ export const DraftContainer: React.FC<DraftContainerProps> = ({setDraftCreation,
 
     async function deleteDraftFunc(postId: number){
         try {
-            await deletePost(postId);
+            await deleteDraftPost(postId);
             fetchDrafts({
                 page: drafts?.number ?? 0,
                 size: drafts?.size ?? 10

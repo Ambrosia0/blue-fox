@@ -1,7 +1,5 @@
 package com.ambrosia.report_service.kafka.consumer;
 
-import java.util.UUID;
-
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -26,16 +24,7 @@ public class KafkaCommentEventConsumer {
     public void on(byte[] message){
         try {
             var parsedMessage = CommentEvent.parseFrom(message);
-            if(parsedMessage.hasCreated())
-                commentProjectionService.create(
-                    parsedMessage.getCreated(),
-                    UUID.fromString(parsedMessage.getEventId())
-                );
-            else if(parsedMessage.hasDeleted())
-                commentProjectionService.delete(
-                    parsedMessage.getDeleted(),
-                    UUID.fromString(parsedMessage.getEventId())
-                );
+            commentProjectionService.process(parsedMessage);
         } catch (InvalidProtocolBufferException e) {
             log.error("Invalid message format!", e);
             throw new RuntimeException(e);

@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
-import com.ambrosia.profile_service.user.repository.UserRepository;
+import com.ambrosia.profile_service.user.infrastructure.persistence.JdbcUserRepository;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
     matchIfMissing = false
 )
 public class LazyUserCreationFilter implements Filter{
-    private final UserRepository userRepository;
+    private final JdbcUserRepository userRepository;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 

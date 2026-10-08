@@ -4,10 +4,10 @@ package com.ambrosia.profile_service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 
-import com.ambrosia.profile_service.core.idp.IdpUserService;
 import com.ambrosia.profile_service.exception.api.user.UsernameAlreadyClaimedException;
-import com.ambrosia.profile_service.user.model.entity.User;
-import com.ambrosia.profile_service.user.repository.UserRepository;
+import com.ambrosia.profile_service.user.application.IdpUserService;
+import com.ambrosia.profile_service.user.domain.entity.User;
+import com.ambrosia.profile_service.user.domain.repository.UserRepository;
 
 
 @TestComponent

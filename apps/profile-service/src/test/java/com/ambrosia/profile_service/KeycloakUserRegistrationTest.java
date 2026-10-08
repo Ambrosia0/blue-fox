@@ -1,58 +1,63 @@
 package com.ambrosia.profile_service;
 
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+import java.time.Duration;
+import java.util.UUID;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.ambrosia.profile_service.kafka.consumer.KafkaKeycloakAdminEvent;
-import com.ambrosia.profile_service.kafka.consumer.KafkaKeycloakUserEvent;
-import com.ambrosia.profile_service.keycloak.service.KeycloakAdminClient;
-import com.ambrosia.profile_service.user.model.dto.request.RegisterRequest;
-import com.ambrosia.profile_service.user.repository.UserRepository;
-import com.ambrosia.profile_service.user.service.UserProfileService;
-import com.ambrosia.profile_service.util.Factory;
-
-import tools.jackson.databind.ObjectMapper;
+import com.ambrosia.profile_service.user.api.dto.request.RegisterRequest;
+import com.ambrosia.profile_service.user.application.UserProfileService;
+import com.ambrosia.profile_service.user.domain.entity.User;
+import com.ambrosia.profile_service.user.infrastructure.keycloak.service.KeycloakAdminClient;
+import com.ambrosia.profile_service.user.infrastructure.persistence.JdbcUserRepository;
+import com.ambrosia.profile_service.util.UserCreator;
 
 @ActiveProfiles(profiles = "es-disabled", inheritProfiles = true)
 class KeycloakUserRegistrationTest extends BaseIntegrationTest{
-    @MockitoSpyBean KafkaKeycloakUserEvent kafkaKeycloakEvent;
-    @MockitoSpyBean KafkaKeycloakAdminEvent kafkaKeycloakAdminEvent;
-
-    @Autowired ObjectMapper objectMapper;
     @Autowired UserProfileService userService;
-    @Autowired UserRepository userRepository;
+    @Autowired JdbcUserRepository userRepository;
     @Autowired KeycloakAdminClient keycloakService;
 
     @Autowired UserRegistration userRegistration;
 
-    @Autowired
-    KafkaTemplate<String, Object> kafkaTemplate;
-
+    @Autowired UserCreator userCreator;
 
     public final static RegisterRequest registerRequest = 
         new RegisterRequest("TestUsername", "testtest", "testtest", "testpassword", "testemail@testemail.com");
     
     @Test
     void shouldNotThrowException() throws Exception{
-        var user = Factory.createUser();
+        var user = User.builder()
+            .id(UUID.randomUUID())
+            .username("testUsername")
+            .firstName("testfirstName")
+            .lastName("testLastName")
+            .email("test@test.com")
+            .isEnabled(true)
+            .password("testPassword")
+            .build();
         userRegistration.register(user);
-        Thread.sleep(4000);
-        user = userRepository.findByUsernameIgnoreCase(user.getUsername())
-            .orElseThrow(() -> new Exception("User doesn't created!"));
-        var keycloakUser = keycloakService.get(user.getId())
-            .orElseThrow(() -> new Exception("User doesn't exist!"));
-        keycloakUser.setEmailVerified(true);
-        keycloakUser.getRequiredActions().removeFirst();
-        keycloakService.update(keycloakUser);
+        await().atMost(Duration.ofSeconds(20)).pollInterval(Duration.ofSeconds(2))
+            .untilAsserted(() -> 
+                assertDoesNotThrow(() -> {
+                    var created = userRepository.findByUsernameIgnoreCase(user.getUsername()).get();
+                    var keycloakUser = keycloakService.get(created.getId()).get();
+                    keycloakUser.setEmailVerified(true);
+                    keycloakUser.getRequiredActions().removeFirst();
+                    keycloakService.update(keycloakUser);
+                })
+            );
     }
 
     @AfterAll
     void cleanUp(){
-        userRepository.deleteAll();
+        userCreator.cleanUp();
     }
 
 }

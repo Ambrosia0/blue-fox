@@ -2,9 +2,9 @@ package com.ambrosia.report_service.user.service;
 
 import java.util.UUID;
 
-import com.ambrosia.profile_service.kafka_events.UserCreated;
+import com.ambrosia.profile_service.kafka_events.UserEvent;
 
 public interface UserProjectionService {
-    void create(UserCreated userCreated, UUID eventId);
+    void process(UserEvent userEvent);
     boolean exist(UUID id);
 }

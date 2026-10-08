@@ -47,14 +47,6 @@ public class KafkaTopics {
     }
 
     @Bean
-    NewTopic aggr(){
-       return TopicBuilder.name(Topics.NOTIFICATION_AGGR)
-            .partitions(2)
-            .replicas(1)
-            .build();
-    }
-
-    @Bean
     NewTopic userFollow(){
        return TopicBuilder.name(Topics.USER_FOLLOW_EVENT)
             .partitions(2)
@@ -69,14 +61,6 @@ public class KafkaTopics {
             .replicas(1)
             .build();
     }
-
-    @Bean
-    NewTopic localUserAggregation(){
-        return TopicBuilder.name(Topics.USER_AGGREGATION)
-             .partitions(2)
-             .replicas(1)
-             .build();
-     }
 
     @Bean
     NewTopic localUserFollowAggregation(){

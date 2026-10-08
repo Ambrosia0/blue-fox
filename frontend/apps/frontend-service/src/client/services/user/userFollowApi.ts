@@ -7,7 +7,7 @@ export type UserFollowResponse = {
 }
 
 export async function getUserFollows(page?: number) {
-    return (await apiClient.get<Slice<UserFollowResponse>>(`/api/me/follow/user`, {
+    return (await apiClient.get<Slice<UserFollowResponse>>(`/api/v1/follow/user`, {
         params: {
             page
         }
@@ -15,9 +15,9 @@ export async function getUserFollows(page?: number) {
 }
 
 export async function followUser(userId: string): Promise<void> {
-    return (await apiClient.post<Promise<void>>(`/api/me/follow/user/${userId}`)).data;
+    return (await apiClient.post<Promise<void>>(`/api/v1/follow/user/${userId}`)).data;
 }
 
 export async function removeFollow(userId: string): Promise<void> {
-    return (await apiClient.delete(`/api/me/follow/user/${userId}`)).data;
+    return (await apiClient.delete(`/api/v1/follow/user/${userId}`)).data;
 }

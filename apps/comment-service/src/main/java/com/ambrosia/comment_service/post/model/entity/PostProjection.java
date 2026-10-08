@@ -10,11 +10,11 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Table(name = "post_projection")
-@Data
+@Getter 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +25,9 @@ public class PostProjection implements Persistable<Long>, Serializable {
 
     @Column("community_id")
     private Long communityId;
+
+    @Column("is_published")
+    private boolean isPublished;
 
     @Transient
     @Builder.Default
