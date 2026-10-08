@@ -2,7 +2,7 @@ import { Box, IconButton, Paper, Tooltip, Typography } from "@mui/material"
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Draft } from "../../services/user/userEditorApi";
-import { useNavigate, useNavigation } from "react-router";
+import { useNavigate } from "react-router";
 import { useTranslation } from 'react-i18next';
 
 type DraftProps = {

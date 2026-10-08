@@ -5,9 +5,7 @@ import { PostSkeleton } from "./components/PostSkeleton";
 import { PostEmpty } from "./components/PostEmpty";
 import { useAuth } from "../../context/AuthContext";
 import { Scope } from "@services/user/userCommunityApi";
-import { deletePost as adminDeletePost } from "@services/admin/adminPostApi";
-import { deletePost as moderatorDeletePost } from "@services/user/userCommunityApi";
-import { deletePost as userDeletePost } from "@services/user/userEditorApi";
+import { deletePost } from "@services/user/userEditorApi";
 
 type PostPreviewContainerProps = {
     postFilter?: PostFilter;
@@ -54,14 +52,9 @@ export const PostPreviewContainer: React.FC<PostPreviewContainerProps> = ({
         }
     }
 
-    async function handleDelete(postId: number) {
+    async function handleDelete(postIdx: number) {
         try {
-            if(auth.user && auth.user.scopes.includes('admin'))
-                await adminDeletePost(postId);
-            else if(scopes.has('POST_DELETE'))
-                await moderatorDeletePost(postId);
-            else
-                await userDeletePost(postId);
+            await deletePost(posts[postIdx].post.id);
         } catch (error) {
             console.log(error);
         }

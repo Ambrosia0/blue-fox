@@ -1,11 +1,12 @@
 import { apiClient } from "@services/apiClient"
 import { getUserInfo } from "./userProfileApi"
 import { UserInfo } from "../../types/user"
+import { UserResponse } from "@services/types"
 
 type CommentData = {
     commentId: number,
     postId: number,
-    userId: string,
+    user: UserResponse,
     content: string,
     likeCount: number,
     parentComment?: number,
@@ -23,11 +24,6 @@ type CreateComment = {
 }
 
 type CommentCreateResponse = Omit<CommentData, 'likeCount' & 'numberOfChildren' & 'isLiked' & 'score'>
-
-export type Comment = {
-    comment: Omit<CommentData, 'userId'>,
-    user: UserInfo,
-}
 
 export type SortField = "DATE" | "LIKES" | "HOT";
 
@@ -48,50 +44,20 @@ export function isTreeComment(val: any): val is CommentData {
     return val && typeof val.parentComment === 'number';
 };
 
-export async function getRootCommentsForPost(postId: number, filter?: RootCommentFilter): Promise<Comment[]> {
-    const res = await apiClient.get<CommentData[]>(`/api/public/post/${postId}/comments`, {
+export async function getRootCommentsForPost(postId: number, filter?: RootCommentFilter) {
+    return await apiClient.get<CommentData[]>(`/api/v1/public/post/${postId}/comments`, {
         params: {
             ...filter
         }
     });
-    if (!res.data[0])
-        return [];
-    const users = new Set<string>();
-    res.data.forEach((val) => users.add(val.userId));
-    const userData = await getUserInfo(Array.from(users));
-    return res.data
-        .filter(isRootComment)
-        .map((val) => {
-            return {
-                comment: val,
-                user: userData.get(val.userId) ?? { id: "", avatarId: "", username: "" }
-            }
-        })
 }
 
-export async function getComment(commentId: number): Promise<Comment> {
-    const res = await apiClient.get<CommentData>(`/api/public/comment/${commentId}`);
-    return {
-        comment: { ...res.data },
-        user: { id: res.data.userId, username: "", avatarId: "" }
-    };
+export async function getComment(commentId: number) {
+    return await apiClient.get<CommentData>(`/api/v1/public/comment/${commentId}`);
 }
 
-export async function getCommentTree(postId: number, commentId: number): Promise<Comment[]> {
-    const res = await apiClient.get<CommentData[]>(`/api/public/comment/${commentId}/tree`);
-    if (!res.data[0])
-        return [];
-    const users = new Set<string>();
-    res.data.forEach((val) => users.add(val.userId));
-    const userData = await getUserInfo(Array.from(users));
-    return res.data
-        .filter(isTreeComment)
-        .map((val) => {
-            return {
-                comment: val,
-                user: userData.get(val.userId) ?? { id: "", avatarId: "", username: "" }
-            }
-        })
+export async function getCommentTree(commentId: number) {
+    return await apiClient.get<CommentData[]>(`/api/v1/public/comment/${commentId}/tree`);
 }
 
 export async function createComment(createComment: CreateComment, file?: File): Promise<CommentCreateResponse> {
@@ -101,13 +67,17 @@ export async function createComment(createComment: CreateComment, file?: File): 
             type: 'application/json'
         }));
     if (file) form.append('attachment', file);
-    return (await apiClient.post<CommentCreateResponse>('/api/user/comment', form)).data;
+    return (await apiClient.post<CommentCreateResponse>('/api/v1/comment', form)).data;
 }
 
 export async function likeComment(commentId: number) {
-    return apiClient.post(`/api/user/comment/${commentId}/like`);
+    return apiClient.post(`/api/v1/comment/${commentId}/like`);
 }
 
 export async function unlikeComment(commentId: number) {
-    return apiClient.delete(`/api/user/comment/${commentId}/like`);
+    return apiClient.delete(`/api/v1/comment/${commentId}/like`);
+}
+
+export async function deleteComment(commentId: number) {
+    return await apiClient.delete(`/api/v1/comment/${commentId}`);
 }

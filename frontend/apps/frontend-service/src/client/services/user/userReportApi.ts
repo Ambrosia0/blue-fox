@@ -17,9 +17,9 @@ export type ReportRequest = {
 }
 
 export async function getReportReasons() {
-    return (await apiClient.get<ReportReason[]>("/api/user/report")).data;
+    return (await apiClient.get<ReportReason[]>("/api/v1/report")).data;
 }
 
 export async function sendReport(request: ReportRequest) {
-    return (await apiClient.post("/api/user/report", request)).data;
+    return (await apiClient.post("/api/v1/report", request)).data;
 }

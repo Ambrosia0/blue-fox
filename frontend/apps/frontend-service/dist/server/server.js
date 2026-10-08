@@ -215,7 +215,7 @@ var tryDecode$1 = (str, decoder) => {
   }
 };
 var tryDecodeURI$1 = (str) => tryDecode$1(str, decodeURI);
-var getPath$1 = (request) => {
+var getPath$2 = (request) => {
   const url2 = request.url;
   const start2 = url2.indexOf("/", url2.indexOf(":") + 4);
   let i = start2;
@@ -234,7 +234,7 @@ var getPath$1 = (request) => {
   return url2.slice(start2, i);
 };
 var getPathNoStrict = (request) => {
-  const result2 = getPath$1(request);
+  const result2 = getPath$2(request);
   return result2.length > 1 && result2.at(-1) === "/" ? result2.slice(0, -1) : result2;
 };
 var mergePath = (base2, sub, ...rest) => {
@@ -1129,7 +1129,7 @@ var Hono$1 = class _Hono {
     };
     const { strict, ...optionsWithoutStrict } = options2;
     Object.assign(this, optionsWithoutStrict);
-    this.getPath = strict ?? true ? options2.getPath ?? getPath$1 : getPathNoStrict;
+    this.getPath = strict ?? true ? options2.getPath ?? getPath$2 : getPathNoStrict;
   }
   #clone() {
     const clone = new _Hono({
@@ -3020,7 +3020,7 @@ function requireReact_production() {
   function isValidElement(object) {
     return "object" === typeof object && null !== object && object.$$typeof === REACT_ELEMENT_TYPE;
   }
-  function escape(key) {
+  function escape2(key) {
     var escaperLookup = { "=": "=0", ":": "=2" };
     return "$" + key.replace(/[=:]/g, function(match2) {
       return escaperLookup[match2];
@@ -3028,7 +3028,7 @@ function requireReact_production() {
   }
   var userProvidedKeyEscapeRegex = /\/+/g;
   function getElementKey(element, index) {
-    return "object" === typeof element && null !== element && null != element.key ? escape("" + element.key) : index.toString(36);
+    return "object" === typeof element && null !== element && null != element.key ? escape2("" + element.key) : index.toString(36);
   }
   function resolveThenable(thenable) {
     switch (thenable.status) {
@@ -3596,14 +3596,14 @@ function requireReact_development() {
       function isValidElement(object) {
         return "object" === typeof object && null !== object && object.$$typeof === REACT_ELEMENT_TYPE;
       }
-      function escape(key) {
+      function escape2(key) {
         var escaperLookup = { "=": "=0", ":": "=2" };
         return "$" + key.replace(/[=:]/g, function(match2) {
           return escaperLookup[match2];
         });
       }
       function getElementKey(element, index) {
-        return "object" === typeof element && null !== element && null != element.key ? (checkKeyStringCoercion(element.key), escape("" + element.key)) : index.toString(36);
+        return "object" === typeof element && null !== element && null != element.key ? (checkKeyStringCoercion(element.key), escape2("" + element.key)) : index.toString(36);
       }
       function resolveThenable(thenable) {
         switch (thenable.status) {
@@ -7150,11 +7150,6 @@ function useOutlet(context) {
     () => outlet && /* @__PURE__ */ reactExports.createElement(OutletContext.Provider, { value: context }, outlet),
     [outlet, context]
   );
-}
-function useParams() {
-  let { matches: matches2 } = reactExports.useContext(RouteContext);
-  let routeMatch = matches2[matches2.length - 1];
-  return routeMatch?.params ?? {};
 }
 function useResolvedPath(to, { relative } = {}) {
   let { matches: matches2 } = reactExports.useContext(RouteContext);
@@ -23704,21 +23699,21 @@ function requireReactDomServerLegacy_node_development() {
             );
           }
           "object" === typeof contextType && null !== contextType && (context = contextType._currentValue2);
-          var instance = new type2(resolvedProps, context);
-          if ("function" === typeof type2.getDerivedStateFromProps && (null === instance.state || void 0 === instance.state)) {
+          var instance2 = new type2(resolvedProps, context);
+          if ("function" === typeof type2.getDerivedStateFromProps && (null === instance2.state || void 0 === instance2.state)) {
             var componentName = getComponentNameFromType(type2) || "Component";
             didWarnAboutUninitializedState.has(componentName) || (didWarnAboutUninitializedState.add(componentName), console.error(
               "`%s` uses `getDerivedStateFromProps` but its initial state is %s. This is not recommended. Instead, define the initial state by assigning an object to `this.state` in the constructor of `%s`. This ensures that `getDerivedStateFromProps` arguments have a consistent shape.",
               componentName,
-              null === instance.state ? "null" : "undefined",
+              null === instance2.state ? "null" : "undefined",
               componentName
             ));
           }
-          if ("function" === typeof type2.getDerivedStateFromProps || "function" === typeof instance.getSnapshotBeforeUpdate) {
+          if ("function" === typeof type2.getDerivedStateFromProps || "function" === typeof instance2.getSnapshotBeforeUpdate) {
             var foundWillMountName = null, foundWillReceivePropsName = null, foundWillUpdateName = null;
-            "function" === typeof instance.componentWillMount && true !== instance.componentWillMount.__suppressDeprecationWarning ? foundWillMountName = "componentWillMount" : "function" === typeof instance.UNSAFE_componentWillMount && (foundWillMountName = "UNSAFE_componentWillMount");
-            "function" === typeof instance.componentWillReceiveProps && true !== instance.componentWillReceiveProps.__suppressDeprecationWarning ? foundWillReceivePropsName = "componentWillReceiveProps" : "function" === typeof instance.UNSAFE_componentWillReceiveProps && (foundWillReceivePropsName = "UNSAFE_componentWillReceiveProps");
-            "function" === typeof instance.componentWillUpdate && true !== instance.componentWillUpdate.__suppressDeprecationWarning ? foundWillUpdateName = "componentWillUpdate" : "function" === typeof instance.UNSAFE_componentWillUpdate && (foundWillUpdateName = "UNSAFE_componentWillUpdate");
+            "function" === typeof instance2.componentWillMount && true !== instance2.componentWillMount.__suppressDeprecationWarning ? foundWillMountName = "componentWillMount" : "function" === typeof instance2.UNSAFE_componentWillMount && (foundWillMountName = "UNSAFE_componentWillMount");
+            "function" === typeof instance2.componentWillReceiveProps && true !== instance2.componentWillReceiveProps.__suppressDeprecationWarning ? foundWillReceivePropsName = "componentWillReceiveProps" : "function" === typeof instance2.UNSAFE_componentWillReceiveProps && (foundWillReceivePropsName = "UNSAFE_componentWillReceiveProps");
+            "function" === typeof instance2.componentWillUpdate && true !== instance2.componentWillUpdate.__suppressDeprecationWarning ? foundWillUpdateName = "componentWillUpdate" : "function" === typeof instance2.UNSAFE_componentWillUpdate && (foundWillUpdateName = "UNSAFE_componentWillUpdate");
             if (null !== foundWillMountName || null !== foundWillReceivePropsName || null !== foundWillUpdateName) {
               var _componentName = getComponentNameFromType(type2) || "Component", newApiName = "function" === typeof type2.getDerivedStateFromProps ? "getDerivedStateFromProps()" : "getSnapshotBeforeUpdate()";
               didWarnAboutLegacyLifecyclesAndDerivedState.has(_componentName) || (didWarnAboutLegacyLifecyclesAndDerivedState.add(
@@ -23734,22 +23729,22 @@ function requireReactDomServerLegacy_node_development() {
             }
           }
           var name2 = getComponentNameFromType(type2) || "Component";
-          instance.render || (type2.prototype && "function" === typeof type2.prototype.render ? console.error(
+          instance2.render || (type2.prototype && "function" === typeof type2.prototype.render ? console.error(
             "No `render` method found on the %s instance: did you accidentally return an object from the constructor?",
             name2
           ) : console.error(
             "No `render` method found on the %s instance: you may have forgotten to define `render`.",
             name2
           ));
-          !instance.getInitialState || instance.getInitialState.isReactClassApproved || instance.state || console.error(
+          !instance2.getInitialState || instance2.getInitialState.isReactClassApproved || instance2.state || console.error(
             "getInitialState was defined on %s, a plain JavaScript class. This is only supported for classes created using React.createClass. Did you mean to define a state property instead?",
             name2
           );
-          instance.getDefaultProps && !instance.getDefaultProps.isReactClassApproved && console.error(
+          instance2.getDefaultProps && !instance2.getDefaultProps.isReactClassApproved && console.error(
             "getDefaultProps was defined on %s, a plain JavaScript class. This is only supported for classes created using React.createClass. Use a static property to define defaultProps instead.",
             name2
           );
-          instance.contextType && console.error(
+          instance2.contextType && console.error(
             "contextType was defined as an instance property on %s. Use a static property to define contextType instead.",
             name2
           );
@@ -23761,49 +23756,49 @@ function requireReactDomServerLegacy_node_development() {
             "%s uses the legacy contextTypes API which was removed in React 19. Use React.createContext() with static contextType instead. (https://react.dev/link/legacy-context)",
             name2
           ));
-          "function" === typeof instance.componentShouldUpdate && console.error(
+          "function" === typeof instance2.componentShouldUpdate && console.error(
             "%s has a method called componentShouldUpdate(). Did you mean shouldComponentUpdate()? The name is phrased as a question because the function is expected to return a value.",
             name2
           );
-          type2.prototype && type2.prototype.isPureReactComponent && "undefined" !== typeof instance.shouldComponentUpdate && console.error(
+          type2.prototype && type2.prototype.isPureReactComponent && "undefined" !== typeof instance2.shouldComponentUpdate && console.error(
             "%s has a method called shouldComponentUpdate(). shouldComponentUpdate should not be used when extending React.PureComponent. Please extend React.Component if shouldComponentUpdate is used.",
             getComponentNameFromType(type2) || "A pure component"
           );
-          "function" === typeof instance.componentDidUnmount && console.error(
+          "function" === typeof instance2.componentDidUnmount && console.error(
             "%s has a method called componentDidUnmount(). But there is no such lifecycle method. Did you mean componentWillUnmount()?",
             name2
           );
-          "function" === typeof instance.componentDidReceiveProps && console.error(
+          "function" === typeof instance2.componentDidReceiveProps && console.error(
             "%s has a method called componentDidReceiveProps(). But there is no such lifecycle method. If you meant to update the state in response to changing props, use componentWillReceiveProps(). If you meant to fetch data or run side-effects or mutations after React has updated the UI, use componentDidUpdate().",
             name2
           );
-          "function" === typeof instance.componentWillRecieveProps && console.error(
+          "function" === typeof instance2.componentWillRecieveProps && console.error(
             "%s has a method called componentWillRecieveProps(). Did you mean componentWillReceiveProps()?",
             name2
           );
-          "function" === typeof instance.UNSAFE_componentWillRecieveProps && console.error(
+          "function" === typeof instance2.UNSAFE_componentWillRecieveProps && console.error(
             "%s has a method called UNSAFE_componentWillRecieveProps(). Did you mean UNSAFE_componentWillReceiveProps()?",
             name2
           );
-          var hasMutatedProps = instance.props !== resolvedProps;
-          void 0 !== instance.props && hasMutatedProps && console.error(
+          var hasMutatedProps = instance2.props !== resolvedProps;
+          void 0 !== instance2.props && hasMutatedProps && console.error(
             "When calling super() in `%s`, make sure to pass up the same props that your component's constructor was passed.",
             name2
           );
-          instance.defaultProps && console.error(
+          instance2.defaultProps && console.error(
             "Setting defaultProps as an instance property on %s is not supported and will be ignored. Instead, define defaultProps as a static property on %s.",
             name2,
             name2
           );
-          "function" !== typeof instance.getSnapshotBeforeUpdate || "function" === typeof instance.componentDidUpdate || didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.has(type2) || (didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.add(type2), console.error(
+          "function" !== typeof instance2.getSnapshotBeforeUpdate || "function" === typeof instance2.componentDidUpdate || didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.has(type2) || (didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.add(type2), console.error(
             "%s: getSnapshotBeforeUpdate() should be used with componentDidUpdate(). This component defines getSnapshotBeforeUpdate() only.",
             getComponentNameFromType(type2)
           ));
-          "function" === typeof instance.getDerivedStateFromProps && console.error(
+          "function" === typeof instance2.getDerivedStateFromProps && console.error(
             "%s: getDerivedStateFromProps() is defined as an instance method and will be ignored. Instead, declare it as a static method.",
             name2
           );
-          "function" === typeof instance.getDerivedStateFromError && console.error(
+          "function" === typeof instance2.getDerivedStateFromError && console.error(
             "%s: getDerivedStateFromError() is defined as an instance method and will be ignored. Instead, declare it as a static method.",
             name2
           );
@@ -23811,21 +23806,21 @@ function requireReactDomServerLegacy_node_development() {
             "%s: getSnapshotBeforeUpdate() is defined as a static method and will be ignored. Instead, declare it as an instance method.",
             name2
           );
-          var state2 = instance.state;
+          var state2 = instance2.state;
           state2 && ("object" !== typeof state2 || isArrayImpl(state2)) && console.error("%s.state: must be set to an object or null", name2);
-          "function" === typeof instance.getChildContext && "object" !== typeof type2.childContextTypes && console.error(
+          "function" === typeof instance2.getChildContext && "object" !== typeof type2.childContextTypes && console.error(
             "%s.getChildContext(): childContextTypes must be defined in order to use getChildContext().",
             name2
           );
-          var initialState = void 0 !== instance.state ? instance.state : null;
-          instance.updater = classComponentUpdater;
-          instance.props = resolvedProps;
-          instance.state = initialState;
+          var initialState = void 0 !== instance2.state ? instance2.state : null;
+          instance2.updater = classComponentUpdater;
+          instance2.props = resolvedProps;
+          instance2.state = initialState;
           var internalInstance = { queue: [], replace: false };
-          instance._reactInternals = internalInstance;
+          instance2._reactInternals = internalInstance;
           var contextType$jscomp$0 = type2.contextType;
-          instance.context = "object" === typeof contextType$jscomp$0 && null !== contextType$jscomp$0 ? contextType$jscomp$0._currentValue2 : emptyContextObject;
-          if (instance.state === resolvedProps) {
+          instance2.context = "object" === typeof contextType$jscomp$0 && null !== contextType$jscomp$0 ? contextType$jscomp$0._currentValue2 : emptyContextObject;
+          if (instance2.state === resolvedProps) {
             var componentName$jscomp$0 = getComponentNameFromType(type2) || "Component";
             didWarnAboutDirectlyAssigningPropsToState.has(
               componentName$jscomp$0
@@ -23850,27 +23845,27 @@ function requireReactDomServerLegacy_node_development() {
               ));
             }
             var JSCompiler_inline_result = null === partialState || void 0 === partialState ? initialState : assign2({}, initialState, partialState);
-            instance.state = JSCompiler_inline_result;
+            instance2.state = JSCompiler_inline_result;
           }
-          if ("function" !== typeof type2.getDerivedStateFromProps && "function" !== typeof instance.getSnapshotBeforeUpdate && ("function" === typeof instance.UNSAFE_componentWillMount || "function" === typeof instance.componentWillMount)) {
-            var oldState = instance.state;
-            if ("function" === typeof instance.componentWillMount) {
-              if (true !== instance.componentWillMount.__suppressDeprecationWarning) {
+          if ("function" !== typeof type2.getDerivedStateFromProps && "function" !== typeof instance2.getSnapshotBeforeUpdate && ("function" === typeof instance2.UNSAFE_componentWillMount || "function" === typeof instance2.componentWillMount)) {
+            var oldState = instance2.state;
+            if ("function" === typeof instance2.componentWillMount) {
+              if (true !== instance2.componentWillMount.__suppressDeprecationWarning) {
                 var componentName$jscomp$2 = getComponentNameFromType(type2) || "Unknown";
                 didWarnAboutDeprecatedWillMount[componentName$jscomp$2] || (console.warn(
                   "componentWillMount has been renamed, and is not recommended for use. See https://react.dev/link/unsafe-component-lifecycles for details.\n\n* Move code from componentWillMount to componentDidMount (preferred in most cases) or the constructor.\n\nPlease update the following components: %s",
                   componentName$jscomp$2
                 ), didWarnAboutDeprecatedWillMount[componentName$jscomp$2] = true);
               }
-              instance.componentWillMount();
+              instance2.componentWillMount();
             }
-            "function" === typeof instance.UNSAFE_componentWillMount && instance.UNSAFE_componentWillMount();
-            oldState !== instance.state && (console.error(
+            "function" === typeof instance2.UNSAFE_componentWillMount && instance2.UNSAFE_componentWillMount();
+            oldState !== instance2.state && (console.error(
               "%s.componentWillMount(): Assigning directly to this.state is deprecated (except inside a component's constructor). Use setState instead.",
               getComponentNameFromType(type2) || "Component"
             ), classComponentUpdater.enqueueReplaceState(
-              instance,
-              instance.state,
+              instance2,
+              instance2.state,
               null
             ));
             if (null !== internalInstance.queue && 0 < internalInstance.queue.length) {
@@ -23878,11 +23873,11 @@ function requireReactDomServerLegacy_node_development() {
               internalInstance.queue = null;
               internalInstance.replace = false;
               if (oldReplace && 1 === oldQueue.length)
-                instance.state = oldQueue[0];
+                instance2.state = oldQueue[0];
               else {
-                for (var nextState = oldReplace ? oldQueue[0] : instance.state, dontMutate = true, i = oldReplace ? 1 : 0; i < oldQueue.length; i++) {
+                for (var nextState = oldReplace ? oldQueue[0] : instance2.state, dontMutate = true, i = oldReplace ? 1 : 0; i < oldQueue.length; i++) {
                   var partial = oldQueue[i], partialState$jscomp$0 = "function" === typeof partial ? partial.call(
-                    instance,
+                    instance2,
                     nextState,
                     resolvedProps,
                     void 0
@@ -23893,13 +23888,13 @@ function requireReactDomServerLegacy_node_development() {
                     partialState$jscomp$0
                   )) : assign2(nextState, partialState$jscomp$0));
                 }
-                instance.state = nextState;
+                instance2.state = nextState;
               }
             } else internalInstance.queue = null;
           }
-          var nextChildren = callRenderInDEV(instance);
+          var nextChildren = callRenderInDEV(instance2);
           if (12 === request.status) throw null;
-          instance.props !== resolvedProps && (didWarnAboutReassigningProps || console.error(
+          instance2.props !== resolvedProps && (didWarnAboutReassigningProps || console.error(
             "It looks like %s is reassigning its own `this.props` while rendering. This is not supported and can lead to confusing bugs.",
             getComponentNameFromType(type2) || "a component"
           ), didWarnAboutReassigningProps = true);
@@ -27003,8 +26998,8 @@ function requireReactDomServerLegacy_node_development() {
         return Component(props, secondArg);
       }
     }, callComponentInDEV = callComponent.react_stack_bottom_frame.bind(callComponent), callRender = {
-      react_stack_bottom_frame: function(instance) {
-        return instance.render();
+      react_stack_bottom_frame: function(instance2) {
+        return instance2.render();
       }
     }, callRenderInDEV = callRender.react_stack_bottom_frame.bind(callRender), callLazyInit = {
       react_stack_bottom_frame: function(lazy) {
@@ -30977,21 +30972,21 @@ function requireReactDomServer_node_development() {
             );
           }
           "object" === typeof contextType && null !== contextType && (context = contextType._currentValue);
-          var instance = new type2(resolvedProps, context);
-          if ("function" === typeof type2.getDerivedStateFromProps && (null === instance.state || void 0 === instance.state)) {
+          var instance2 = new type2(resolvedProps, context);
+          if ("function" === typeof type2.getDerivedStateFromProps && (null === instance2.state || void 0 === instance2.state)) {
             var componentName = getComponentNameFromType(type2) || "Component";
             didWarnAboutUninitializedState.has(componentName) || (didWarnAboutUninitializedState.add(componentName), console.error(
               "`%s` uses `getDerivedStateFromProps` but its initial state is %s. This is not recommended. Instead, define the initial state by assigning an object to `this.state` in the constructor of `%s`. This ensures that `getDerivedStateFromProps` arguments have a consistent shape.",
               componentName,
-              null === instance.state ? "null" : "undefined",
+              null === instance2.state ? "null" : "undefined",
               componentName
             ));
           }
-          if ("function" === typeof type2.getDerivedStateFromProps || "function" === typeof instance.getSnapshotBeforeUpdate) {
+          if ("function" === typeof type2.getDerivedStateFromProps || "function" === typeof instance2.getSnapshotBeforeUpdate) {
             var foundWillMountName = null, foundWillReceivePropsName = null, foundWillUpdateName = null;
-            "function" === typeof instance.componentWillMount && true !== instance.componentWillMount.__suppressDeprecationWarning ? foundWillMountName = "componentWillMount" : "function" === typeof instance.UNSAFE_componentWillMount && (foundWillMountName = "UNSAFE_componentWillMount");
-            "function" === typeof instance.componentWillReceiveProps && true !== instance.componentWillReceiveProps.__suppressDeprecationWarning ? foundWillReceivePropsName = "componentWillReceiveProps" : "function" === typeof instance.UNSAFE_componentWillReceiveProps && (foundWillReceivePropsName = "UNSAFE_componentWillReceiveProps");
-            "function" === typeof instance.componentWillUpdate && true !== instance.componentWillUpdate.__suppressDeprecationWarning ? foundWillUpdateName = "componentWillUpdate" : "function" === typeof instance.UNSAFE_componentWillUpdate && (foundWillUpdateName = "UNSAFE_componentWillUpdate");
+            "function" === typeof instance2.componentWillMount && true !== instance2.componentWillMount.__suppressDeprecationWarning ? foundWillMountName = "componentWillMount" : "function" === typeof instance2.UNSAFE_componentWillMount && (foundWillMountName = "UNSAFE_componentWillMount");
+            "function" === typeof instance2.componentWillReceiveProps && true !== instance2.componentWillReceiveProps.__suppressDeprecationWarning ? foundWillReceivePropsName = "componentWillReceiveProps" : "function" === typeof instance2.UNSAFE_componentWillReceiveProps && (foundWillReceivePropsName = "UNSAFE_componentWillReceiveProps");
+            "function" === typeof instance2.componentWillUpdate && true !== instance2.componentWillUpdate.__suppressDeprecationWarning ? foundWillUpdateName = "componentWillUpdate" : "function" === typeof instance2.UNSAFE_componentWillUpdate && (foundWillUpdateName = "UNSAFE_componentWillUpdate");
             if (null !== foundWillMountName || null !== foundWillReceivePropsName || null !== foundWillUpdateName) {
               var _componentName = getComponentNameFromType(type2) || "Component", newApiName = "function" === typeof type2.getDerivedStateFromProps ? "getDerivedStateFromProps()" : "getSnapshotBeforeUpdate()";
               didWarnAboutLegacyLifecyclesAndDerivedState.has(_componentName) || (didWarnAboutLegacyLifecyclesAndDerivedState.add(
@@ -31007,22 +31002,22 @@ function requireReactDomServer_node_development() {
             }
           }
           var name2 = getComponentNameFromType(type2) || "Component";
-          instance.render || (type2.prototype && "function" === typeof type2.prototype.render ? console.error(
+          instance2.render || (type2.prototype && "function" === typeof type2.prototype.render ? console.error(
             "No `render` method found on the %s instance: did you accidentally return an object from the constructor?",
             name2
           ) : console.error(
             "No `render` method found on the %s instance: you may have forgotten to define `render`.",
             name2
           ));
-          !instance.getInitialState || instance.getInitialState.isReactClassApproved || instance.state || console.error(
+          !instance2.getInitialState || instance2.getInitialState.isReactClassApproved || instance2.state || console.error(
             "getInitialState was defined on %s, a plain JavaScript class. This is only supported for classes created using React.createClass. Did you mean to define a state property instead?",
             name2
           );
-          instance.getDefaultProps && !instance.getDefaultProps.isReactClassApproved && console.error(
+          instance2.getDefaultProps && !instance2.getDefaultProps.isReactClassApproved && console.error(
             "getDefaultProps was defined on %s, a plain JavaScript class. This is only supported for classes created using React.createClass. Use a static property to define defaultProps instead.",
             name2
           );
-          instance.contextType && console.error(
+          instance2.contextType && console.error(
             "contextType was defined as an instance property on %s. Use a static property to define contextType instead.",
             name2
           );
@@ -31034,49 +31029,49 @@ function requireReactDomServer_node_development() {
             "%s uses the legacy contextTypes API which was removed in React 19. Use React.createContext() with static contextType instead. (https://react.dev/link/legacy-context)",
             name2
           ));
-          "function" === typeof instance.componentShouldUpdate && console.error(
+          "function" === typeof instance2.componentShouldUpdate && console.error(
             "%s has a method called componentShouldUpdate(). Did you mean shouldComponentUpdate()? The name is phrased as a question because the function is expected to return a value.",
             name2
           );
-          type2.prototype && type2.prototype.isPureReactComponent && "undefined" !== typeof instance.shouldComponentUpdate && console.error(
+          type2.prototype && type2.prototype.isPureReactComponent && "undefined" !== typeof instance2.shouldComponentUpdate && console.error(
             "%s has a method called shouldComponentUpdate(). shouldComponentUpdate should not be used when extending React.PureComponent. Please extend React.Component if shouldComponentUpdate is used.",
             getComponentNameFromType(type2) || "A pure component"
           );
-          "function" === typeof instance.componentDidUnmount && console.error(
+          "function" === typeof instance2.componentDidUnmount && console.error(
             "%s has a method called componentDidUnmount(). But there is no such lifecycle method. Did you mean componentWillUnmount()?",
             name2
           );
-          "function" === typeof instance.componentDidReceiveProps && console.error(
+          "function" === typeof instance2.componentDidReceiveProps && console.error(
             "%s has a method called componentDidReceiveProps(). But there is no such lifecycle method. If you meant to update the state in response to changing props, use componentWillReceiveProps(). If you meant to fetch data or run side-effects or mutations after React has updated the UI, use componentDidUpdate().",
             name2
           );
-          "function" === typeof instance.componentWillRecieveProps && console.error(
+          "function" === typeof instance2.componentWillRecieveProps && console.error(
             "%s has a method called componentWillRecieveProps(). Did you mean componentWillReceiveProps()?",
             name2
           );
-          "function" === typeof instance.UNSAFE_componentWillRecieveProps && console.error(
+          "function" === typeof instance2.UNSAFE_componentWillRecieveProps && console.error(
             "%s has a method called UNSAFE_componentWillRecieveProps(). Did you mean UNSAFE_componentWillReceiveProps()?",
             name2
           );
-          var hasMutatedProps = instance.props !== resolvedProps;
-          void 0 !== instance.props && hasMutatedProps && console.error(
+          var hasMutatedProps = instance2.props !== resolvedProps;
+          void 0 !== instance2.props && hasMutatedProps && console.error(
             "When calling super() in `%s`, make sure to pass up the same props that your component's constructor was passed.",
             name2
           );
-          instance.defaultProps && console.error(
+          instance2.defaultProps && console.error(
             "Setting defaultProps as an instance property on %s is not supported and will be ignored. Instead, define defaultProps as a static property on %s.",
             name2,
             name2
           );
-          "function" !== typeof instance.getSnapshotBeforeUpdate || "function" === typeof instance.componentDidUpdate || didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.has(type2) || (didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.add(type2), console.error(
+          "function" !== typeof instance2.getSnapshotBeforeUpdate || "function" === typeof instance2.componentDidUpdate || didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.has(type2) || (didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.add(type2), console.error(
             "%s: getSnapshotBeforeUpdate() should be used with componentDidUpdate(). This component defines getSnapshotBeforeUpdate() only.",
             getComponentNameFromType(type2)
           ));
-          "function" === typeof instance.getDerivedStateFromProps && console.error(
+          "function" === typeof instance2.getDerivedStateFromProps && console.error(
             "%s: getDerivedStateFromProps() is defined as an instance method and will be ignored. Instead, declare it as a static method.",
             name2
           );
-          "function" === typeof instance.getDerivedStateFromError && console.error(
+          "function" === typeof instance2.getDerivedStateFromError && console.error(
             "%s: getDerivedStateFromError() is defined as an instance method and will be ignored. Instead, declare it as a static method.",
             name2
           );
@@ -31084,21 +31079,21 @@ function requireReactDomServer_node_development() {
             "%s: getSnapshotBeforeUpdate() is defined as a static method and will be ignored. Instead, declare it as an instance method.",
             name2
           );
-          var state2 = instance.state;
+          var state2 = instance2.state;
           state2 && ("object" !== typeof state2 || isArrayImpl(state2)) && console.error("%s.state: must be set to an object or null", name2);
-          "function" === typeof instance.getChildContext && "object" !== typeof type2.childContextTypes && console.error(
+          "function" === typeof instance2.getChildContext && "object" !== typeof type2.childContextTypes && console.error(
             "%s.getChildContext(): childContextTypes must be defined in order to use getChildContext().",
             name2
           );
-          var initialState = void 0 !== instance.state ? instance.state : null;
-          instance.updater = classComponentUpdater;
-          instance.props = resolvedProps;
-          instance.state = initialState;
+          var initialState = void 0 !== instance2.state ? instance2.state : null;
+          instance2.updater = classComponentUpdater;
+          instance2.props = resolvedProps;
+          instance2.state = initialState;
           var internalInstance = { queue: [], replace: false };
-          instance._reactInternals = internalInstance;
+          instance2._reactInternals = internalInstance;
           var contextType$jscomp$0 = type2.contextType;
-          instance.context = "object" === typeof contextType$jscomp$0 && null !== contextType$jscomp$0 ? contextType$jscomp$0._currentValue : emptyContextObject;
-          if (instance.state === resolvedProps) {
+          instance2.context = "object" === typeof contextType$jscomp$0 && null !== contextType$jscomp$0 ? contextType$jscomp$0._currentValue : emptyContextObject;
+          if (instance2.state === resolvedProps) {
             var componentName$jscomp$0 = getComponentNameFromType(type2) || "Component";
             didWarnAboutDirectlyAssigningPropsToState.has(
               componentName$jscomp$0
@@ -31123,27 +31118,27 @@ function requireReactDomServer_node_development() {
               ));
             }
             var JSCompiler_inline_result = null === partialState || void 0 === partialState ? initialState : assign2({}, initialState, partialState);
-            instance.state = JSCompiler_inline_result;
+            instance2.state = JSCompiler_inline_result;
           }
-          if ("function" !== typeof type2.getDerivedStateFromProps && "function" !== typeof instance.getSnapshotBeforeUpdate && ("function" === typeof instance.UNSAFE_componentWillMount || "function" === typeof instance.componentWillMount)) {
-            var oldState = instance.state;
-            if ("function" === typeof instance.componentWillMount) {
-              if (true !== instance.componentWillMount.__suppressDeprecationWarning) {
+          if ("function" !== typeof type2.getDerivedStateFromProps && "function" !== typeof instance2.getSnapshotBeforeUpdate && ("function" === typeof instance2.UNSAFE_componentWillMount || "function" === typeof instance2.componentWillMount)) {
+            var oldState = instance2.state;
+            if ("function" === typeof instance2.componentWillMount) {
+              if (true !== instance2.componentWillMount.__suppressDeprecationWarning) {
                 var componentName$jscomp$2 = getComponentNameFromType(type2) || "Unknown";
                 didWarnAboutDeprecatedWillMount[componentName$jscomp$2] || (console.warn(
                   "componentWillMount has been renamed, and is not recommended for use. See https://react.dev/link/unsafe-component-lifecycles for details.\n\n* Move code from componentWillMount to componentDidMount (preferred in most cases) or the constructor.\n\nPlease update the following components: %s",
                   componentName$jscomp$2
                 ), didWarnAboutDeprecatedWillMount[componentName$jscomp$2] = true);
               }
-              instance.componentWillMount();
+              instance2.componentWillMount();
             }
-            "function" === typeof instance.UNSAFE_componentWillMount && instance.UNSAFE_componentWillMount();
-            oldState !== instance.state && (console.error(
+            "function" === typeof instance2.UNSAFE_componentWillMount && instance2.UNSAFE_componentWillMount();
+            oldState !== instance2.state && (console.error(
               "%s.componentWillMount(): Assigning directly to this.state is deprecated (except inside a component's constructor). Use setState instead.",
               getComponentNameFromType(type2) || "Component"
             ), classComponentUpdater.enqueueReplaceState(
-              instance,
-              instance.state,
+              instance2,
+              instance2.state,
               null
             ));
             if (null !== internalInstance.queue && 0 < internalInstance.queue.length) {
@@ -31151,11 +31146,11 @@ function requireReactDomServer_node_development() {
               internalInstance.queue = null;
               internalInstance.replace = false;
               if (oldReplace && 1 === oldQueue.length)
-                instance.state = oldQueue[0];
+                instance2.state = oldQueue[0];
               else {
-                for (var nextState = oldReplace ? oldQueue[0] : instance.state, dontMutate = true, i = oldReplace ? 1 : 0; i < oldQueue.length; i++) {
+                for (var nextState = oldReplace ? oldQueue[0] : instance2.state, dontMutate = true, i = oldReplace ? 1 : 0; i < oldQueue.length; i++) {
                   var partial = oldQueue[i], partialState$jscomp$0 = "function" === typeof partial ? partial.call(
-                    instance,
+                    instance2,
                     nextState,
                     resolvedProps,
                     void 0
@@ -31166,13 +31161,13 @@ function requireReactDomServer_node_development() {
                     partialState$jscomp$0
                   )) : assign2(nextState, partialState$jscomp$0));
                 }
-                instance.state = nextState;
+                instance2.state = nextState;
               }
             } else internalInstance.queue = null;
           }
-          var nextChildren = callRenderInDEV(instance);
+          var nextChildren = callRenderInDEV(instance2);
           if (12 === request.status) throw null;
-          instance.props !== resolvedProps && (didWarnAboutReassigningProps || console.error(
+          instance2.props !== resolvedProps && (didWarnAboutReassigningProps || console.error(
             "It looks like %s is reassigning its own `this.props` while rendering. This is not supported and can lead to confusing bugs.",
             getComponentNameFromType(type2) || "a component"
           ), didWarnAboutReassigningProps = true);
@@ -34466,8 +34461,8 @@ function requireReactDomServer_node_development() {
         return Component(props, secondArg);
       }
     }, callComponentInDEV = callComponent.react_stack_bottom_frame.bind(callComponent), callRender = {
-      react_stack_bottom_frame: function(instance) {
-        return instance.render();
+      react_stack_bottom_frame: function(instance2) {
+        return instance2.render();
       }
     }, callRenderInDEV = callRender.react_stack_bottom_frame.bind(callRender), callLazyInit = {
       react_stack_bottom_frame: function(lazy) {
@@ -35152,7 +35147,7 @@ var characters = "";
 function node(value2, root, parent2, type2, props, children2, length2) {
   return { value: value2, root, parent: parent2, type: type2, props, children: children2, line, column, length: length2, return: "" };
 }
-function copy$1(root, props) {
+function copy$2(root, props) {
   return assign(node("", null, null, "", null, null, 0), root, { length: -root.length }, props);
 }
 function char() {
@@ -35721,7 +35716,7 @@ var prefixer = function prefixer2(element, index, children2, callback) {
         element["return"] = prefix$1(element.value, element.length);
         break;
       case KEYFRAMES:
-        return serialize([copy$1(element, {
+        return serialize([copy$2(element, {
           value: replace$1(element.value, "@", "@" + WEBKIT)
         })], callback);
       case RULESET:
@@ -35730,16 +35725,16 @@ var prefixer = function prefixer2(element, index, children2, callback) {
             // :read-(only|write)
             case ":read-only":
             case ":read-write":
-              return serialize([copy$1(element, {
+              return serialize([copy$2(element, {
                 props: [replace$1(value2, /:(read-\w+)/, ":" + MOZ + "$1")]
               })], callback);
             // :placeholder
             case "::placeholder":
-              return serialize([copy$1(element, {
+              return serialize([copy$2(element, {
                 props: [replace$1(value2, /:(plac\w+)/, ":" + WEBKIT + "input-$1")]
-              }), copy$1(element, {
+              }), copy$2(element, {
                 props: [replace$1(value2, /:(plac\w+)/, ":" + MOZ + "$1")]
-              }), copy$1(element, {
+              }), copy$2(element, {
                 props: [replace$1(value2, /:(plac\w+)/, MS + "input-$1")]
               })], callback);
           }
@@ -38236,7 +38231,7 @@ function capitalize(string) {
   }
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
-function getPath(obj, path, checkVars = true) {
+function getPath$1(obj, path, checkVars = true) {
   if (!path || typeof path !== "string") {
     return null;
   }
@@ -38260,7 +38255,7 @@ function getStyleValue$1(themeMapping, transform2, propValueFinal, userValue = p
   } else if (Array.isArray(themeMapping)) {
     value2 = themeMapping[propValueFinal] || userValue;
   } else {
-    value2 = getPath(themeMapping, propValueFinal) || userValue;
+    value2 = getPath$1(themeMapping, propValueFinal) || userValue;
   }
   if (transform2) {
     value2 = transform2(value2, userValue, themeMapping);
@@ -38280,7 +38275,7 @@ function style$3(options2) {
     }
     const propValue = props[prop];
     const theme = props.theme;
-    const themeMapping = getPath(theme, themeKey) || {};
+    const themeMapping = getPath$1(theme, themeKey) || {};
     const styleFromPropValue = (propValueFinal) => {
       let value2 = getStyleValue$1(themeMapping, transform2, propValueFinal);
       if (propValueFinal === value2 && typeof propValueFinal === "string") {
@@ -38345,7 +38340,7 @@ const marginKeys = ["m", "mt", "mr", "mb", "ml", "mx", "my", "margin", "marginTo
 const paddingKeys = ["p", "pt", "pr", "pb", "pl", "px", "py", "padding", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft", "paddingX", "paddingY", "paddingInline", "paddingInlineStart", "paddingInlineEnd", "paddingBlock", "paddingBlockStart", "paddingBlockEnd"];
 const spacingKeys = [...marginKeys, ...paddingKeys];
 function createUnaryUnit(theme, themeKey, defaultValue2, propName) {
-  const themeSpacing = getPath(theme, themeKey, true) ?? defaultValue2;
+  const themeSpacing = getPath$1(theme, themeKey, true) ?? defaultValue2;
   if (typeof themeSpacing === "number" || typeof themeSpacing === "string") {
     return (val) => {
       if (typeof val === "string") {
@@ -39005,7 +39000,7 @@ function unstable_createStyleFunctionSx() {
         [prop]: val
       };
     }
-    const themeMapping = getPath(theme, themeKey) || {};
+    const themeMapping = getPath$1(theme, themeKey) || {};
     if (style2) {
       return style2(props);
     }
@@ -40291,7 +40286,7 @@ try {
     }
   }, "mui-color-scheme-init");
 }
-function noop$5() {
+function noop$6() {
 }
 const localStorageManager = ({
   key,
@@ -40325,7 +40320,7 @@ const localStorageManager = ({
     },
     subscribe: (handler2) => {
       if (!storageWindow) {
-        return noop$5;
+        return noop$6;
       }
       const listener = (event) => {
         const value2 = event.newValue;
@@ -40340,7 +40335,7 @@ const localStorageManager = ({
     }
   };
 };
-function noop$4() {
+function noop$5() {
 }
 function getSystemMode(mode2) {
   if (typeof window !== "undefined" && typeof window.matchMedia === "function" && mode2 === "system") {
@@ -40521,21 +40516,21 @@ function useCurrentColorScheme(options2) {
         if (!value2 || ["light", "dark", "system"].includes(value2)) {
           setMode(value2 || defaultMode);
         }
-      }) || noop$4;
+      }) || noop$5;
       const unsubscribeLight = lightStorage?.subscribe((value2) => {
         if (!value2 || joinedColorSchemes.match(value2)) {
           setColorScheme({
             light: value2
           });
         }
-      }) || noop$4;
+      }) || noop$5;
       const unsubscribeDark = darkStorage?.subscribe((value2) => {
         if (!value2 || joinedColorSchemes.match(value2)) {
           setColorScheme({
             dark: value2
           });
         }
-      }) || noop$4;
+      }) || noop$5;
       return () => {
         unsubscribeMode();
         unsubscribeLight();
@@ -41157,8 +41152,8 @@ function composeClasses(slots, getUtilityClass, classes2 = void 0) {
   }
   return output;
 }
-const defaultTheme$4 = createTheme$1();
-const defaultCreateStyledComponent$2 = styled$1("div", {
+const defaultTheme$3 = createTheme$1();
+const defaultCreateStyledComponent$1 = styled$1("div", {
   name: "MuiContainer",
   slot: "Root",
   overridesResolver: (props, styles2) => {
@@ -41168,12 +41163,12 @@ const defaultCreateStyledComponent$2 = styled$1("div", {
     return [styles2.root, styles2[`maxWidth${capitalize(String(ownerState.maxWidth))}`], ownerState.fixed && styles2.fixed, ownerState.disableGutters && styles2.disableGutters];
   }
 });
-const useThemePropsDefault$2 = (inProps) => useThemeProps({
+const useThemePropsDefault$1 = (inProps) => useThemeProps({
   props: inProps,
   name: "MuiContainer",
-  defaultTheme: defaultTheme$4
+  defaultTheme: defaultTheme$3
 });
-const useUtilityClasses$V = (ownerState, componentName) => {
+const useUtilityClasses$_ = (ownerState, componentName) => {
   const getContainerUtilityClass = (slot) => {
     return generateUtilityClass(componentName, slot);
   };
@@ -41191,8 +41186,8 @@ const useUtilityClasses$V = (ownerState, componentName) => {
 function createContainer(options2 = {}) {
   const {
     // This will allow adding custom styled fn (for example for custom sx style function)
-    createStyledComponent = defaultCreateStyledComponent$2,
-    useThemeProps: useThemeProps2 = useThemePropsDefault$2,
+    createStyledComponent = defaultCreateStyledComponent$1,
+    useThemeProps: useThemeProps2 = useThemePropsDefault$1,
     componentName = "MuiContainer"
   } = options2;
   const ContainerRoot = createStyledComponent(({
@@ -41263,7 +41258,7 @@ function createContainer(options2 = {}) {
       fixed,
       maxWidth: maxWidth2
     };
-    const classes2 = useUtilityClasses$V(ownerState, componentName);
+    const classes2 = useUtilityClasses$_(ownerState, componentName);
     return (
       // @ts-ignore theme is injected by the styled util
       /* @__PURE__ */ jsxRuntimeExports.jsx(ContainerRoot, {
@@ -41294,400 +41289,6 @@ function isMuiElement(element, muiNames) {
     // eslint-disable-next-line no-underscore-dangle
     element.type.muiName ?? element.type?._payload?.value?.muiName
   ) !== -1;
-}
-const filterBreakpointKeys = (breakpointsKeys, responsiveKeys) => breakpointsKeys.filter((key) => responsiveKeys.includes(key));
-const traverseBreakpoints = (breakpoints2, responsive, iterator) => {
-  const smallestBreakpoint = breakpoints2.keys[0];
-  if (Array.isArray(responsive)) {
-    responsive.forEach((breakpointValue, index) => {
-      iterator((responsiveStyles, style2) => {
-        if (index <= breakpoints2.keys.length - 1) {
-          if (index === 0) {
-            Object.assign(responsiveStyles, style2);
-          } else {
-            responsiveStyles[breakpoints2.up(breakpoints2.keys[index])] = style2;
-          }
-        }
-      }, breakpointValue);
-    });
-  } else if (responsive && typeof responsive === "object") {
-    const keys2 = Object.keys(responsive).length > breakpoints2.keys.length ? breakpoints2.keys : filterBreakpointKeys(breakpoints2.keys, Object.keys(responsive));
-    keys2.forEach((key) => {
-      if (breakpoints2.keys.includes(key)) {
-        const breakpointValue = responsive[key];
-        if (breakpointValue !== void 0) {
-          iterator((responsiveStyles, style2) => {
-            if (smallestBreakpoint === key) {
-              Object.assign(responsiveStyles, style2);
-            } else {
-              responsiveStyles[breakpoints2.up(key)] = style2;
-            }
-          }, breakpointValue);
-        }
-      }
-    });
-  } else if (typeof responsive === "number" || typeof responsive === "string") {
-    iterator((responsiveStyles, style2) => {
-      Object.assign(responsiveStyles, style2);
-    }, responsive);
-  }
-};
-function getSelfSpacingVar(axis) {
-  return `--Grid-${axis}Spacing`;
-}
-function getParentSpacingVar(axis) {
-  return `--Grid-parent-${axis}Spacing`;
-}
-const selfColumnsVar = "--Grid-columns";
-const parentColumnsVar = "--Grid-parent-columns";
-const generateGridSizeStyles = ({
-  theme,
-  ownerState
-}) => {
-  const styles2 = {};
-  traverseBreakpoints(theme.breakpoints, ownerState.size, (appendStyle, value2) => {
-    let style2 = {};
-    if (value2 === "grow") {
-      style2 = {
-        flexBasis: 0,
-        flexGrow: 1,
-        maxWidth: "100%"
-      };
-    }
-    if (value2 === "auto") {
-      style2 = {
-        flexBasis: "auto",
-        flexGrow: 0,
-        flexShrink: 0,
-        maxWidth: "none",
-        width: "auto"
-      };
-    }
-    if (typeof value2 === "number") {
-      style2 = {
-        flexGrow: 0,
-        flexBasis: "auto",
-        width: `calc(100% * ${value2} / var(${parentColumnsVar}) - (var(${parentColumnsVar}) - ${value2}) * (var(${getParentSpacingVar("column")}) / var(${parentColumnsVar})))`
-      };
-    }
-    appendStyle(styles2, style2);
-  });
-  return styles2;
-};
-const generateGridOffsetStyles = ({
-  theme,
-  ownerState
-}) => {
-  const styles2 = {};
-  traverseBreakpoints(theme.breakpoints, ownerState.offset, (appendStyle, value2) => {
-    let style2 = {};
-    if (value2 === "auto") {
-      style2 = {
-        marginLeft: "auto"
-      };
-    }
-    if (typeof value2 === "number") {
-      style2 = {
-        marginLeft: value2 === 0 ? "0px" : `calc(100% * ${value2} / var(${parentColumnsVar}) + var(${getParentSpacingVar("column")}) * ${value2} / var(${parentColumnsVar}))`
-      };
-    }
-    appendStyle(styles2, style2);
-  });
-  return styles2;
-};
-const generateGridColumnsStyles = ({
-  theme,
-  ownerState
-}) => {
-  if (!ownerState.container) {
-    return {};
-  }
-  const styles2 = {
-    [selfColumnsVar]: 12
-  };
-  traverseBreakpoints(theme.breakpoints, ownerState.columns, (appendStyle, value2) => {
-    const columns = value2 ?? 12;
-    appendStyle(styles2, {
-      [selfColumnsVar]: columns,
-      "> *": {
-        [parentColumnsVar]: columns
-      }
-    });
-  });
-  return styles2;
-};
-const generateGridRowSpacingStyles = ({
-  theme,
-  ownerState
-}) => {
-  if (!ownerState.container) {
-    return {};
-  }
-  const styles2 = {};
-  traverseBreakpoints(theme.breakpoints, ownerState.rowSpacing, (appendStyle, value2) => {
-    const spacing2 = typeof value2 === "string" ? value2 : theme.spacing?.(value2);
-    appendStyle(styles2, {
-      [getSelfSpacingVar("row")]: spacing2,
-      "> *": {
-        [getParentSpacingVar("row")]: spacing2
-      }
-    });
-  });
-  return styles2;
-};
-const generateGridColumnSpacingStyles = ({
-  theme,
-  ownerState
-}) => {
-  if (!ownerState.container) {
-    return {};
-  }
-  const styles2 = {};
-  traverseBreakpoints(theme.breakpoints, ownerState.columnSpacing, (appendStyle, value2) => {
-    const spacing2 = typeof value2 === "string" ? value2 : theme.spacing?.(value2);
-    appendStyle(styles2, {
-      [getSelfSpacingVar("column")]: spacing2,
-      "> *": {
-        [getParentSpacingVar("column")]: spacing2
-      }
-    });
-  });
-  return styles2;
-};
-const generateGridDirectionStyles = ({
-  theme,
-  ownerState
-}) => {
-  if (!ownerState.container) {
-    return {};
-  }
-  const styles2 = {};
-  traverseBreakpoints(theme.breakpoints, ownerState.direction, (appendStyle, value2) => {
-    appendStyle(styles2, {
-      flexDirection: value2
-    });
-  });
-  return styles2;
-};
-const generateGridStyles = ({
-  ownerState
-}) => {
-  return {
-    minWidth: 0,
-    boxSizing: "border-box",
-    ...ownerState.container && {
-      display: "flex",
-      flexWrap: "wrap",
-      ...ownerState.wrap && ownerState.wrap !== "wrap" && {
-        flexWrap: ownerState.wrap
-      },
-      gap: `var(${getSelfSpacingVar("row")}) var(${getSelfSpacingVar("column")})`
-    }
-  };
-};
-const generateSizeClassNames = (size) => {
-  const classNames = [];
-  Object.entries(size).forEach(([key, value2]) => {
-    if (value2 !== false && value2 !== void 0) {
-      classNames.push(`grid-${key}-${String(value2)}`);
-    }
-  });
-  return classNames;
-};
-const generateSpacingClassNames = (spacing2, smallestBreakpoint = "xs") => {
-  function isValidSpacing(val) {
-    if (val === void 0) {
-      return false;
-    }
-    return typeof val === "string" && !Number.isNaN(Number(val)) || typeof val === "number" && val > 0;
-  }
-  if (isValidSpacing(spacing2)) {
-    return [`spacing-${smallestBreakpoint}-${String(spacing2)}`];
-  }
-  if (typeof spacing2 === "object" && !Array.isArray(spacing2)) {
-    const classNames = [];
-    Object.entries(spacing2).forEach(([key, value2]) => {
-      if (isValidSpacing(value2)) {
-        classNames.push(`spacing-${key}-${String(value2)}`);
-      }
-    });
-    return classNames;
-  }
-  return [];
-};
-const generateDirectionClasses = (direction2) => {
-  if (direction2 === void 0) {
-    return [];
-  }
-  if (typeof direction2 === "object") {
-    return Object.entries(direction2).map(([key, value2]) => `direction-${key}-${value2}`);
-  }
-  return [`direction-xs-${String(direction2)}`];
-};
-const getLegacyGridWarning = (propName) => {
-  if (["item", "zeroMinWidth"].includes(propName)) {
-    return `The \`${propName}\` prop has been removed and is no longer necessary. You can safely remove it.`;
-  }
-  return `The \`${propName}\` prop has been removed. See https://v7.mui.com/material-ui/migration/upgrade-to-grid-v2/ for migration instructions.`;
-};
-const warnedAboutProps = [];
-function deleteLegacyGridProps(props, breakpoints2) {
-  const propsToWarn = [];
-  if (props.item !== void 0) {
-    delete props.item;
-    propsToWarn.push("item");
-  }
-  if (props.zeroMinWidth !== void 0) {
-    delete props.zeroMinWidth;
-    propsToWarn.push("zeroMinWidth");
-  }
-  breakpoints2.keys.forEach((breakpoint) => {
-    if (props[breakpoint] !== void 0) {
-      propsToWarn.push(breakpoint);
-      delete props[breakpoint];
-    }
-  });
-  if (process.env.NODE_ENV !== "production") {
-    propsToWarn.forEach((prop) => {
-      if (!warnedAboutProps.includes(prop)) {
-        warnedAboutProps.push(prop);
-        console.warn(`MUI Grid: ${getLegacyGridWarning(prop)}
-`);
-      }
-    });
-  }
-}
-const defaultTheme$3 = createTheme$1();
-const defaultCreateStyledComponent$1 = styled$1("div", {
-  name: "MuiGrid",
-  slot: "Root"
-});
-function useThemePropsDefault$1(props) {
-  return useThemeProps({
-    props,
-    name: "MuiGrid",
-    defaultTheme: defaultTheme$3
-  });
-}
-function createGrid(options2 = {}) {
-  const {
-    // This will allow adding custom styled fn (for example for custom sx style function)
-    createStyledComponent = defaultCreateStyledComponent$1,
-    useThemeProps: useThemeProps2 = useThemePropsDefault$1,
-    useTheme: useTheme2 = useTheme$3,
-    componentName = "MuiGrid"
-  } = options2;
-  const useUtilityClasses2 = (ownerState, theme) => {
-    const {
-      container,
-      direction: direction2,
-      spacing: spacing2,
-      wrap: wrap2,
-      size
-    } = ownerState;
-    const slots = {
-      root: ["root", container && "container", wrap2 !== "wrap" && `wrap-xs-${String(wrap2)}`, ...generateDirectionClasses(direction2), ...generateSizeClassNames(size), ...container ? generateSpacingClassNames(spacing2, theme.breakpoints.keys[0]) : []]
-    };
-    return composeClasses(slots, (slot) => generateUtilityClass(componentName, slot), {});
-  };
-  function parseResponsiveProp(propValue, breakpoints2, shouldUseValue = () => true) {
-    const parsedProp = {};
-    if (propValue === null) {
-      return parsedProp;
-    }
-    if (Array.isArray(propValue)) {
-      propValue.forEach((value2, index) => {
-        if (value2 !== null && shouldUseValue(value2) && breakpoints2.keys[index]) {
-          parsedProp[breakpoints2.keys[index]] = value2;
-        }
-      });
-    } else if (typeof propValue === "object") {
-      Object.keys(propValue).forEach((key) => {
-        const value2 = propValue[key];
-        if (value2 !== null && value2 !== void 0 && shouldUseValue(value2)) {
-          parsedProp[key] = value2;
-        }
-      });
-    } else {
-      parsedProp[breakpoints2.keys[0]] = propValue;
-    }
-    return parsedProp;
-  }
-  const GridRoot = createStyledComponent(generateGridColumnsStyles, generateGridColumnSpacingStyles, generateGridRowSpacingStyles, generateGridSizeStyles, generateGridDirectionStyles, generateGridStyles, generateGridOffsetStyles);
-  const Grid2 = /* @__PURE__ */ reactExports.forwardRef(function Grid3(inProps, ref) {
-    const theme = useTheme2();
-    const themeProps = useThemeProps2(inProps);
-    const props = extendSxProp$1(themeProps);
-    deleteLegacyGridProps(props, theme.breakpoints);
-    const {
-      className,
-      children: children2,
-      columns: columnsProp = 12,
-      container = false,
-      component = "div",
-      direction: direction2 = "row",
-      wrap: wrap2 = "wrap",
-      size: sizeProp = {},
-      offset: offsetProp = {},
-      spacing: spacingProp = 0,
-      rowSpacing: rowSpacingProp = spacingProp,
-      columnSpacing: columnSpacingProp = spacingProp,
-      unstable_level: level2 = 0,
-      ...other
-    } = props;
-    const size = parseResponsiveProp(sizeProp, theme.breakpoints, (val) => val !== false);
-    const offset2 = parseResponsiveProp(offsetProp, theme.breakpoints);
-    const columns = inProps.columns ?? (level2 ? void 0 : columnsProp);
-    const spacing2 = inProps.spacing ?? (level2 ? void 0 : spacingProp);
-    const rowSpacing = inProps.rowSpacing ?? inProps.spacing ?? (level2 ? void 0 : rowSpacingProp);
-    const columnSpacing = inProps.columnSpacing ?? inProps.spacing ?? (level2 ? void 0 : columnSpacingProp);
-    const ownerState = {
-      ...props,
-      level: level2,
-      columns,
-      container,
-      direction: direction2,
-      wrap: wrap2,
-      spacing: spacing2,
-      rowSpacing,
-      columnSpacing,
-      size,
-      offset: offset2
-    };
-    const classes2 = useUtilityClasses2(ownerState, theme);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(GridRoot, {
-      ref,
-      as: component,
-      ownerState,
-      className: clsx$1(classes2.root, className),
-      ...other,
-      children: reactExports.Children.map(children2, (child) => {
-        if (/* @__PURE__ */ reactExports.isValidElement(child) && isMuiElement(child, ["Grid"]) && container && child.props.container) {
-          return /* @__PURE__ */ reactExports.cloneElement(child, {
-            unstable_level: child.props?.unstable_level ?? level2 + 1
-          });
-        }
-        return child;
-      })
-    });
-  });
-  process.env.NODE_ENV !== "production" ? Grid2.propTypes = {
-    children: PropTypes.node,
-    className: PropTypes.string,
-    columns: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.number), PropTypes.number, PropTypes.object]),
-    columnSpacing: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])), PropTypes.number, PropTypes.object, PropTypes.string]),
-    component: PropTypes.elementType,
-    container: PropTypes.bool,
-    direction: PropTypes.oneOfType([PropTypes.oneOf(["column-reverse", "column", "row-reverse", "row"]), PropTypes.arrayOf(PropTypes.oneOf(["column-reverse", "column", "row-reverse", "row"])), PropTypes.object]),
-    offset: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])), PropTypes.object]),
-    rowSpacing: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])), PropTypes.number, PropTypes.object, PropTypes.string]),
-    size: PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.number, PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.number])), PropTypes.object]),
-    spacing: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])), PropTypes.number, PropTypes.object, PropTypes.string]),
-    sx: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])), PropTypes.func, PropTypes.object]),
-    wrap: PropTypes.oneOf(["nowrap", "wrap-reverse", "wrap"])
-  } : void 0;
-  Grid2.muiName = "Grid";
-  return Grid2;
 }
 const defaultTheme$2 = createTheme$1();
 const defaultCreateStyledComponent = styled$1("div", {
@@ -41800,7 +41401,7 @@ function createStack(options2 = {}) {
     return composeClasses(slots, (slot) => generateUtilityClass(componentName, slot), {});
   };
   const StackRoot = createStyledComponent(style$1);
-  const Stack2 = /* @__PURE__ */ reactExports.forwardRef(function Grid2(inProps, ref) {
+  const Stack2 = /* @__PURE__ */ reactExports.forwardRef(function Grid(inProps, ref) {
     const themeProps = useThemeProps2(inProps);
     const props = extendSxProp$1(themeProps);
     const {
@@ -43442,7 +43043,7 @@ function getSvgIconUtilityClass(slot) {
   return generateUtilityClass("MuiSvgIcon", slot);
 }
 generateUtilityClasses("MuiSvgIcon", ["root", "colorPrimary", "colorSecondary", "colorAction", "colorError", "colorDisabled", "fontSizeInherit", "fontSizeSmall", "fontSizeMedium", "fontSizeLarge"]);
-const useUtilityClasses$U = (ownerState) => {
+const useUtilityClasses$Z = (ownerState) => {
   const {
     color: color2,
     fontSize,
@@ -43581,7 +43182,7 @@ const SvgIcon$1 = /* @__PURE__ */ reactExports.forwardRef(function SvgIcon(inPro
   if (!inheritViewBox) {
     more.viewBox = viewBox2;
   }
-  const classes2 = useUtilityClasses$U(ownerState);
+  const classes2 = useUtilityClasses$Z(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(SvgIconRoot, {
     as: component,
     className: clsx$1(classes2.root, className),
@@ -43708,29 +43309,6 @@ function ownerWindow$1(node2) {
   const doc2 = ownerDocument$2(node2);
   return doc2.defaultView || window;
 }
-function requirePropFactory(componentNameInError, Component) {
-  if (process.env.NODE_ENV === "production") {
-    return () => () => null;
-  }
-  const prevPropTypes = Component ? {
-    ...Component.propTypes
-  } : null;
-  const requireProp = (requiredProp) => (props, propName, componentName, location2, propFullName, ...args) => {
-    const propFullNameSafe = propFullName || propName;
-    const defaultTypeChecker = prevPropTypes?.[propFullNameSafe];
-    if (defaultTypeChecker) {
-      const typeCheckerResult = defaultTypeChecker(props, propName, componentName, location2, propFullName, ...args);
-      if (typeCheckerResult) {
-        return typeCheckerResult;
-      }
-    }
-    if (typeof props[propName] !== "undefined" && !props[requiredProp]) {
-      return new Error(`The prop \`${propFullNameSafe}\` of \`${componentNameInError}\` can only be used together with the \`${requiredProp}\` prop.`);
-    }
-    return null;
-  };
-  return requireProp;
-}
 function setRef$1(ref, value2) {
   if (typeof ref === "function") {
     ref(value2);
@@ -43794,19 +43372,19 @@ function useEventCallback$1(fn2) {
 }
 function useForkRef$1(...refs) {
   const cleanupRef = reactExports.useRef(void 0);
-  const refEffect = reactExports.useCallback((instance) => {
+  const refEffect = reactExports.useCallback((instance2) => {
     const cleanups = refs.map((ref) => {
       if (ref == null) {
         return null;
       }
       if (typeof ref === "function") {
         const refCallback = ref;
-        const refCleanup = refCallback(instance);
+        const refCleanup = refCallback(instance2);
         return typeof refCleanup === "function" ? refCleanup : () => {
           refCallback(null);
         };
       }
-      ref.current = instance;
+      ref.current = instance2;
       return () => {
         ref.current = null;
       };
@@ -44351,7 +43929,7 @@ Transition$1.propTypes = process.env.NODE_ENV !== "production" ? {
    */
   onExited: PropTypes.func
 } : {};
-function noop$3() {
+function noop$4() {
 }
 Transition$1.defaultProps = {
   in: false,
@@ -44360,12 +43938,12 @@ Transition$1.defaultProps = {
   appear: false,
   enter: true,
   exit: true,
-  onEnter: noop$3,
-  onEntering: noop$3,
-  onEntered: noop$3,
-  onExit: noop$3,
-  onExiting: noop$3,
-  onExited: noop$3
+  onEnter: noop$4,
+  onEntering: noop$4,
+  onEntered: noop$4,
+  onExit: noop$4,
+  onExiting: noop$4,
+  onExited: noop$4
 };
 Transition$1.UNMOUNTED = UNMOUNTED$1;
 Transition$1.EXITED = EXITED$1;
@@ -44862,7 +44440,7 @@ function getCollapseUtilityClass(slot) {
   return generateUtilityClass("MuiCollapse", slot);
 }
 generateUtilityClasses("MuiCollapse", ["root", "horizontal", "vertical", "entered", "hidden", "wrapper", "wrapperInner"]);
-const useUtilityClasses$T = (ownerState) => {
+const useUtilityClasses$Y = (ownerState) => {
   const {
     orientation,
     classes: classes2
@@ -44990,7 +44568,7 @@ const Collapse$1 = /* @__PURE__ */ reactExports.forwardRef(function Collapse(inP
     orientation,
     collapsedSize: collapsedSizeProp
   };
-  const classes2 = useUtilityClasses$T(ownerState);
+  const classes2 = useUtilityClasses$Y(ownerState);
   const theme = useTheme$1();
   const timer = useTimeout();
   const wrapperRef = reactExports.useRef(null);
@@ -45320,7 +44898,7 @@ function getPaperUtilityClass(slot) {
   return generateUtilityClass("MuiPaper", slot);
 }
 generateUtilityClasses("MuiPaper", ["root", "rounded", "outlined", "elevation", "elevation0", "elevation1", "elevation2", "elevation3", "elevation4", "elevation5", "elevation6", "elevation7", "elevation8", "elevation9", "elevation10", "elevation11", "elevation12", "elevation13", "elevation14", "elevation15", "elevation16", "elevation17", "elevation18", "elevation19", "elevation20", "elevation21", "elevation22", "elevation23", "elevation24"]);
-const useUtilityClasses$S = (ownerState) => {
+const useUtilityClasses$X = (ownerState) => {
   const {
     square,
     elevation: elevation2,
@@ -45392,7 +44970,7 @@ const Paper = /* @__PURE__ */ reactExports.forwardRef(function Paper2(inProps, r
     square,
     variant
   };
-  const classes2 = useUtilityClasses$S(ownerState);
+  const classes2 = useUtilityClasses$X(ownerState);
   if (process.env.NODE_ENV !== "production") {
     if (theme.shadows[elevation2] === void 0) {
       console.error([`MUI: The elevation provided <Paper elevation={${elevation2}}> is not available in the theme.`, `Please make sure that \`theme.shadows[${elevation2}]\` is defined.`].join("\n"));
@@ -45916,7 +45494,7 @@ function getButtonBaseUtilityClass(slot) {
   return generateUtilityClass("MuiButtonBase", slot);
 }
 const buttonBaseClasses = generateUtilityClasses("MuiButtonBase", ["root", "disabled", "focusVisible"]);
-const useUtilityClasses$R = (ownerState) => {
+const useUtilityClasses$W = (ownerState) => {
   const {
     disabled: disabled2,
     focusVisible,
@@ -46139,7 +45717,7 @@ const ButtonBase = /* @__PURE__ */ reactExports.forwardRef(function ButtonBase2(
     tabIndex,
     focusVisible
   };
-  const classes2 = useUtilityClasses$R(ownerState);
+  const classes2 = useUtilityClasses$W(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(ButtonBaseRoot, {
     as: ComponentProp,
     className: clsx$1(classes2.root, className),
@@ -46395,7 +45973,7 @@ const rotateAnimation = typeof circularRotateKeyframe !== "string" ? css`
 const dashAnimation = typeof circularDashKeyframe !== "string" ? css`
         animation: ${circularDashKeyframe} 1.4s ease-in-out infinite;
       ` : null;
-const useUtilityClasses$Q = (ownerState) => {
+const useUtilityClasses$V = (ownerState) => {
   const {
     classes: classes2,
     variant,
@@ -46529,7 +46107,7 @@ const CircularProgress = /* @__PURE__ */ reactExports.forwardRef(function Circul
     variant,
     enableTrackSlot
   };
-  const classes2 = useUtilityClasses$Q(ownerState);
+  const classes2 = useUtilityClasses$V(ownerState);
   const circleStyle = {};
   const rootStyle = {};
   const rootProps = {};
@@ -46653,7 +46231,7 @@ function getIconButtonUtilityClass(slot) {
   return generateUtilityClass("MuiIconButton", slot);
 }
 const iconButtonClasses = generateUtilityClasses("MuiIconButton", ["root", "disabled", "colorInherit", "colorPrimary", "colorSecondary", "colorError", "colorInfo", "colorSuccess", "colorWarning", "edgeStart", "edgeEnd", "sizeSmall", "sizeMedium", "sizeLarge", "loading", "loadingIndicator", "loadingWrapper"]);
-const useUtilityClasses$P = (ownerState) => {
+const useUtilityClasses$U = (ownerState) => {
   const {
     classes: classes2,
     disabled: disabled2,
@@ -46838,7 +46416,7 @@ const IconButton = /* @__PURE__ */ reactExports.forwardRef(function IconButton2(
     loadingIndicator,
     size
   };
-  const classes2 = useUtilityClasses$P(ownerState);
+  const classes2 = useUtilityClasses$U(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(IconButtonRoot, {
     id: loading2 ? loadingId : idProp,
     className: clsx$1(classes2.root, className),
@@ -46962,7 +46540,7 @@ const v6Colors = {
   textDisabled: true
 };
 const extendSxProp = internal_createExtendSxProp();
-const useUtilityClasses$O = (ownerState) => {
+const useUtilityClasses$T = (ownerState) => {
   const {
     align,
     gutterBottom,
@@ -47102,7 +46680,7 @@ const Typography$1 = /* @__PURE__ */ reactExports.forwardRef(function Typography
     variantMapping
   };
   const Component = component || (paragraph ? "p" : variantMapping[variant] || defaultVariantMapping[variant]) || "span";
-  const classes2 = useUtilityClasses$O(ownerState);
+  const classes2 = useUtilityClasses$T(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(TypographyRoot, {
     as: Component,
     ref,
@@ -47207,7 +46785,7 @@ function getAppBarUtilityClass(slot) {
   return generateUtilityClass("MuiAppBar", slot);
 }
 generateUtilityClasses("MuiAppBar", ["root", "positionFixed", "positionAbsolute", "positionSticky", "positionStatic", "positionRelative", "colorDefault", "colorPrimary", "colorSecondary", "colorInherit", "colorTransparent", "colorError", "colorInfo", "colorSuccess", "colorWarning"]);
-const useUtilityClasses$N = (ownerState) => {
+const useUtilityClasses$S = (ownerState) => {
   const {
     color: color2,
     position: position2,
@@ -47365,7 +46943,7 @@ const AppBar = /* @__PURE__ */ reactExports.forwardRef(function AppBar2(inProps,
     position: position2,
     enableColorOnDark
   };
-  const classes2 = useUtilityClasses$N(ownerState);
+  const classes2 = useUtilityClasses$S(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(AppBarRoot, {
     square: true,
     component: "header",
@@ -47926,26 +47504,26 @@ var passive = {
   passive: true
 };
 function effect(_ref) {
-  var state2 = _ref.state, instance = _ref.instance, options2 = _ref.options;
+  var state2 = _ref.state, instance2 = _ref.instance, options2 = _ref.options;
   var _options$scroll = options2.scroll, scroll = _options$scroll === void 0 ? true : _options$scroll, _options$resize = options2.resize, resize = _options$resize === void 0 ? true : _options$resize;
   var window2 = getWindow(state2.elements.popper);
   var scrollParents = [].concat(state2.scrollParents.reference, state2.scrollParents.popper);
   if (scroll) {
     scrollParents.forEach(function(scrollParent) {
-      scrollParent.addEventListener("scroll", instance.update, passive);
+      scrollParent.addEventListener("scroll", instance2.update, passive);
     });
   }
   if (resize) {
-    window2.addEventListener("resize", instance.update, passive);
+    window2.addEventListener("resize", instance2.update, passive);
   }
   return function() {
     if (scroll) {
       scrollParents.forEach(function(scrollParent) {
-        scrollParent.removeEventListener("scroll", instance.update, passive);
+        scrollParent.removeEventListener("scroll", instance2.update, passive);
       });
     }
     if (resize) {
-      window2.removeEventListener("resize", instance.update, passive);
+      window2.removeEventListener("resize", instance2.update, passive);
     }
   };
 }
@@ -48682,7 +48260,7 @@ function popperGenerator(generatorOptions) {
     };
     var effectCleanupFns = [];
     var isDestroyed = false;
-    var instance = {
+    var instance2 = {
       state: state2,
       setOptions: function setOptions(setOptionsAction) {
         var options3 = typeof setOptionsAction === "function" ? setOptionsAction(state2.options) : setOptionsAction;
@@ -48697,7 +48275,7 @@ function popperGenerator(generatorOptions) {
           return m.enabled;
         });
         runModifierEffects();
-        return instance.update();
+        return instance2.update();
       },
       // Sync update – it will always be executed, even if not necessary. This
       // is useful for low frequency updates where sync behavior simplifies the
@@ -48733,7 +48311,7 @@ function popperGenerator(generatorOptions) {
               state: state2,
               options: _options,
               name: name2,
-              instance
+              instance: instance2
             }) || state2;
           }
         }
@@ -48742,7 +48320,7 @@ function popperGenerator(generatorOptions) {
       // not necessary (debounced to run at most once-per-tick)
       update: debounce$1(function() {
         return new Promise(function(resolve) {
-          instance.forceUpdate();
+          instance2.forceUpdate();
           resolve(state2);
         });
       }),
@@ -48752,9 +48330,9 @@ function popperGenerator(generatorOptions) {
       }
     };
     if (!areValidElements(reference2, popper2)) {
-      return instance;
+      return instance2;
     }
-    instance.setOptions(options2).then(function(state3) {
+    instance2.setOptions(options2).then(function(state3) {
       if (!isDestroyed && options2.onFirstUpdate) {
         options2.onFirstUpdate(state3);
       }
@@ -48766,7 +48344,7 @@ function popperGenerator(generatorOptions) {
           var cleanupFn = effect2({
             state: state2,
             name: name2,
-            instance,
+            instance: instance2,
             options: options3
           });
           var noopFn = function noopFn2() {
@@ -48781,7 +48359,7 @@ function popperGenerator(generatorOptions) {
       });
       effectCleanupFns = [];
     }
-    return instance;
+    return instance2;
   };
 }
 var defaultModifiers = [eventListeners, popperOffsets$1, computeStyles$1, applyStyles$1, offset$2, flip$1, preventOverflow$1, arrow$2, hide$1];
@@ -48917,7 +48495,7 @@ function isHTMLElement(element) {
 function isVirtualElement(element) {
   return !isHTMLElement(element);
 }
-const useUtilityClasses$M = (ownerState) => {
+const useUtilityClasses$R = (ownerState) => {
   const {
     classes: classes2
   } = ownerState;
@@ -49026,7 +48604,7 @@ const PopperTooltip = /* @__PURE__ */ reactExports.forwardRef(function PopperToo
   if (TransitionProps !== null) {
     childProps.TransitionProps = TransitionProps;
   }
-  const classes2 = useUtilityClasses$M(props);
+  const classes2 = useUtilityClasses$R(props);
   const Root2 = slots.root ?? "div";
   const rootProps = useSlotProps({
     elementType: Root2,
@@ -49430,7 +49008,7 @@ function getChipUtilityClass(slot) {
   return generateUtilityClass("MuiChip", slot);
 }
 const chipClasses = generateUtilityClasses("MuiChip", ["root", "sizeSmall", "sizeMedium", "colorDefault", "colorError", "colorInfo", "colorPrimary", "colorSecondary", "colorSuccess", "colorWarning", "disabled", "clickable", "clickableColorPrimary", "clickableColorSecondary", "deletable", "deletableColorPrimary", "deletableColorSecondary", "outlined", "filled", "outlinedPrimary", "outlinedSecondary", "filledPrimary", "filledSecondary", "avatar", "avatarSmall", "avatarMedium", "avatarColorPrimary", "avatarColorSecondary", "icon", "iconSmall", "iconMedium", "iconColorPrimary", "iconColorSecondary", "label", "labelSmall", "labelMedium", "deleteIcon", "deleteIconSmall", "deleteIconMedium", "deleteIconColorPrimary", "deleteIconColorSecondary", "deleteIconOutlinedColorPrimary", "deleteIconOutlinedColorSecondary", "deleteIconFilledColorPrimary", "deleteIconFilledColorSecondary", "focusVisible"]);
-const useUtilityClasses$L = (ownerState) => {
+const useUtilityClasses$Q = (ownerState) => {
   const {
     classes: classes2,
     disabled: disabled2,
@@ -49822,7 +49400,7 @@ const Chip = /* @__PURE__ */ reactExports.forwardRef(function Chip2(inProps, ref
     clickable,
     variant
   };
-  const classes2 = useUtilityClasses$L(ownerState);
+  const classes2 = useUtilityClasses$Q(ownerState);
   const moreProps = component === ButtonBase ? {
     component: ComponentProp || "div",
     focusVisibleClassName: classes2.focusVisible,
@@ -50287,7 +49865,7 @@ const inputOverridesResolver = (props, styles2) => {
   } = props;
   return [styles2.input, ownerState.size === "small" && styles2.inputSizeSmall, ownerState.multiline && styles2.inputMultiline, ownerState.type === "search" && styles2.inputTypeSearch, ownerState.startAdornment && styles2.inputAdornedStart, ownerState.endAdornment && styles2.inputAdornedEnd, ownerState.hiddenLabel && styles2.inputHiddenLabel];
 };
-const useUtilityClasses$K = (ownerState) => {
+const useUtilityClasses$P = (ownerState) => {
   const {
     classes: classes2,
     color: color2,
@@ -50537,9 +50115,9 @@ const InputBase = /* @__PURE__ */ reactExports.forwardRef(function InputBase2(in
     current: isControlled
   } = reactExports.useRef(value2 != null);
   const inputRef = reactExports.useRef();
-  const handleInputRefWarning = reactExports.useCallback((instance) => {
+  const handleInputRefWarning = reactExports.useCallback((instance2) => {
     if (process.env.NODE_ENV !== "production") {
-      if (instance && instance.nodeName !== "INPUT" && !instance.focus) {
+      if (instance2 && instance2.nodeName !== "INPUT" && !instance2.focus) {
         console.error(["MUI: You have provided a `inputComponent` to the input component", "that does not correctly handle the `ref` prop.", "Make sure the `ref` prop is called with a HTMLInputElement."].join("\n"));
       }
     }
@@ -50691,7 +50269,7 @@ const InputBase = /* @__PURE__ */ reactExports.forwardRef(function InputBase2(in
     startAdornment,
     type: type2
   };
-  const classes2 = useUtilityClasses$K(ownerState);
+  const classes2 = useUtilityClasses$P(ownerState);
   const Root2 = slots.root || components.Root || InputBaseRoot;
   const rootProps = slotProps.root || componentsProps.root || {};
   const Input3 = slots.input || components.Input || InputBaseInput;
@@ -51014,7 +50592,7 @@ function getAvatarUtilityClass(slot) {
   return generateUtilityClass("MuiAvatar", slot);
 }
 generateUtilityClasses("MuiAvatar", ["root", "colorDefault", "circular", "rounded", "square", "img", "fallback"]);
-const useUtilityClasses$J = (ownerState) => {
+const useUtilityClasses$O = (ownerState) => {
   const {
     classes: classes2,
     variant,
@@ -51142,7 +50720,7 @@ function useLoaded({
   }, [crossOrigin2, referrerPolicy2, src, srcSet]);
   return loaded;
 }
-const Avatar = /* @__PURE__ */ reactExports.forwardRef(function Avatar2(inProps, ref) {
+const Avatar$1 = /* @__PURE__ */ reactExports.forwardRef(function Avatar(inProps, ref) {
   const props = useDefaultProps({
     props: inProps,
     name: "MuiAvatar"
@@ -51177,7 +50755,7 @@ const Avatar = /* @__PURE__ */ reactExports.forwardRef(function Avatar2(inProps,
   const hasImgNotFailing = hasImg && loaded !== "error";
   ownerState.colorDefault = !hasImgNotFailing;
   delete ownerState.ownerState;
-  const classes2 = useUtilityClasses$J(ownerState);
+  const classes2 = useUtilityClasses$O(ownerState);
   const [RootSlot, rootSlotProps] = useSlot("root", {
     ref,
     className: clsx$1(classes2.root, className),
@@ -51238,7 +50816,7 @@ const Avatar = /* @__PURE__ */ reactExports.forwardRef(function Avatar2(inProps,
     children: children2
   });
 });
-process.env.NODE_ENV !== "production" ? Avatar.propTypes = {
+process.env.NODE_ENV !== "production" ? Avatar$1.propTypes = {
   // ┌────────────────────────────── Warning ──────────────────────────────┐
   // │ These PropTypes are generated from the TypeScript type definitions. │
   // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
@@ -51529,7 +51107,7 @@ function getBackdropUtilityClass(slot) {
   return generateUtilityClass("MuiBackdrop", slot);
 }
 generateUtilityClasses("MuiBackdrop", ["root", "invisible"]);
-const useUtilityClasses$I = (ownerState) => {
+const useUtilityClasses$N = (ownerState) => {
   const {
     classes: classes2,
     invisible
@@ -51592,7 +51170,7 @@ const Backdrop = /* @__PURE__ */ reactExports.forwardRef(function Backdrop2(inPr
     component,
     invisible
   };
-  const classes2 = useUtilityClasses$I(ownerState);
+  const classes2 = useUtilityClasses$N(ownerState);
   const backwardCompatibleSlots = {
     transition: TransitionComponentProp,
     root: components.Root,
@@ -51760,7 +51338,7 @@ const ButtonGroupButtonContext = /* @__PURE__ */ reactExports.createContext(void
 if (process.env.NODE_ENV !== "production") {
   ButtonGroupButtonContext.displayName = "ButtonGroupButtonContext";
 }
-const useUtilityClasses$H = (ownerState) => {
+const useUtilityClasses$M = (ownerState) => {
   const {
     color: color2,
     disableElevation,
@@ -52260,7 +51838,7 @@ const Button = /* @__PURE__ */ reactExports.forwardRef(function Button2(inProps,
     type: type2,
     variant
   };
-  const classes2 = useUtilityClasses$H(ownerState);
+  const classes2 = useUtilityClasses$M(ownerState);
   const startIcon = (startIconProp || loading2 && loadingPosition === "start") && /* @__PURE__ */ jsxRuntimeExports.jsx(ButtonStartIcon, {
     className: classes2.startIcon,
     ownerState,
@@ -52430,7 +52008,7 @@ function getCardUtilityClass(slot) {
   return generateUtilityClass("MuiCard", slot);
 }
 generateUtilityClasses("MuiCard", ["root"]);
-const useUtilityClasses$G = (ownerState) => {
+const useUtilityClasses$L = (ownerState) => {
   const {
     classes: classes2
   } = ownerState;
@@ -52459,7 +52037,7 @@ const Card = /* @__PURE__ */ reactExports.forwardRef(function Card2(inProps, ref
     ...props,
     raised
   };
-  const classes2 = useUtilityClasses$G(ownerState);
+  const classes2 = useUtilityClasses$L(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(CardRoot, {
     className: clsx$1(classes2.root, className),
     elevation: raised ? 8 : void 0,
@@ -52504,7 +52082,7 @@ function getCardContentUtilityClass(slot) {
   return generateUtilityClass("MuiCardContent", slot);
 }
 generateUtilityClasses("MuiCardContent", ["root"]);
-const useUtilityClasses$F = (ownerState) => {
+const useUtilityClasses$K = (ownerState) => {
   const {
     classes: classes2
   } = ownerState;
@@ -52536,7 +52114,7 @@ const CardContent = /* @__PURE__ */ reactExports.forwardRef(function CardContent
     ...props,
     component
   };
-  const classes2 = useUtilityClasses$F(ownerState);
+  const classes2 = useUtilityClasses$K(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(CardContentRoot, {
     as: component,
     className: clsx$1(classes2.root, className),
@@ -52572,148 +52150,11 @@ process.env.NODE_ENV !== "production" ? CardContent.propTypes = {
    */
   sx: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])), PropTypes.func, PropTypes.object])
 } : void 0;
-function getCardMediaUtilityClass(slot) {
-  return generateUtilityClass("MuiCardMedia", slot);
-}
-generateUtilityClasses("MuiCardMedia", ["root", "media", "img"]);
-const useUtilityClasses$E = (ownerState) => {
-  const {
-    classes: classes2,
-    isMediaComponent,
-    isImageComponent
-  } = ownerState;
-  const slots = {
-    root: ["root", isMediaComponent && "media", isImageComponent && "img"]
-  };
-  return composeClasses(slots, getCardMediaUtilityClass, classes2);
-};
-const CardMediaRoot = styled("div", {
-  name: "MuiCardMedia",
-  slot: "Root",
-  overridesResolver: (props, styles2) => {
-    const {
-      ownerState
-    } = props;
-    const {
-      isMediaComponent,
-      isImageComponent
-    } = ownerState;
-    return [styles2.root, isMediaComponent && styles2.media, isImageComponent && styles2.img];
-  }
-})({
-  display: "block",
-  backgroundSize: "cover",
-  backgroundRepeat: "no-repeat",
-  backgroundPosition: "center",
-  variants: [{
-    props: {
-      isMediaComponent: true
-    },
-    style: {
-      width: "100%"
-    }
-  }, {
-    props: {
-      isImageComponent: true
-    },
-    style: {
-      objectFit: "cover"
-    }
-  }]
-});
-const MEDIA_COMPONENTS = ["video", "audio", "picture", "iframe", "img"];
-const IMAGE_COMPONENTS = ["picture", "img"];
-const CardMedia = /* @__PURE__ */ reactExports.forwardRef(function CardMedia2(inProps, ref) {
-  const props = useDefaultProps({
-    props: inProps,
-    name: "MuiCardMedia"
-  });
-  const {
-    children: children2,
-    className,
-    component = "div",
-    image,
-    src,
-    style: style2,
-    ...other
-  } = props;
-  const isMediaComponent = MEDIA_COMPONENTS.includes(component);
-  const composedStyle = !isMediaComponent && image ? {
-    backgroundImage: `url("${image}")`,
-    ...style2
-  } : style2;
-  const ownerState = {
-    ...props,
-    component,
-    isMediaComponent,
-    isImageComponent: IMAGE_COMPONENTS.includes(component)
-  };
-  const classes2 = useUtilityClasses$E(ownerState);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(CardMediaRoot, {
-    className: clsx$1(classes2.root, className),
-    as: component,
-    role: !isMediaComponent && image ? "img" : void 0,
-    ref,
-    style: composedStyle,
-    ownerState,
-    src: isMediaComponent ? image || src : void 0,
-    ...other,
-    children: children2
-  });
-});
-process.env.NODE_ENV !== "production" ? CardMedia.propTypes = {
-  // ┌────────────────────────────── Warning ──────────────────────────────┐
-  // │ These PropTypes are generated from the TypeScript type definitions. │
-  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
-  // └─────────────────────────────────────────────────────────────────────┘
-  /**
-   * The content of the component.
-   */
-  children: chainPropTypes(PropTypes.node, (props) => {
-    if (!props.children && !props.image && !props.src && !props.component) {
-      return new Error("MUI: Either `children`, `image`, `src` or `component` prop must be specified.");
-    }
-    return null;
-  }),
-  /**
-   * Override or extend the styles applied to the component.
-   */
-  classes: PropTypes.object,
-  /**
-   * @ignore
-   */
-  className: PropTypes.string,
-  /**
-   * The component used for the root node.
-   * Either a string to use a HTML element or a component.
-   */
-  component: PropTypes.elementType,
-  /**
-   * Image to be displayed as a background image.
-   * Either `image` or `src` prop must be specified.
-   * Note that caller must specify height otherwise the image will not be visible.
-   */
-  image: PropTypes.string,
-  /**
-   * An alias for `image` property.
-   * Available only with media components.
-   * Media components: `video`, `audio`, `picture`, `iframe`, `img`.
-   */
-  src: PropTypes.string,
-  /**
-   * @ignore
-   */
-  style: PropTypes.object,
-  /**
-   * The system prop that allows defining system overrides as well as additional CSS styles.
-   */
-  sx: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])), PropTypes.func, PropTypes.object])
-} : void 0;
 function getSwitchBaseUtilityClass(slot) {
   return generateUtilityClass("PrivateSwitchBase", slot);
 }
 generateUtilityClasses("PrivateSwitchBase", ["root", "checked", "disabled", "input", "edgeStart", "edgeEnd"]);
-const useUtilityClasses$D = (ownerState) => {
+const useUtilityClasses$J = (ownerState) => {
   const {
     classes: classes2,
     checked: checked2,
@@ -52853,7 +52294,7 @@ const SwitchBase = /* @__PURE__ */ reactExports.forwardRef(function SwitchBase2(
     disableFocusRipple,
     edge
   };
-  const classes2 = useUtilityClasses$D(ownerState);
+  const classes2 = useUtilityClasses$J(ownerState);
   const externalForwardedProps = {
     slots,
     slotProps: {
@@ -53573,7 +53014,7 @@ function getContainer(container) {
 function getHasTransition(children2) {
   return children2 ? children2.props.hasOwnProperty("in") : false;
 }
-const noop$2 = () => {
+const noop$3 = () => {
 };
 const manager = new ModalManager();
 function useModal(parameters) {
@@ -53716,8 +53157,8 @@ function useModal(parameters) {
       }
     };
     return {
-      onEnter: createChainedFunction$1(handleEnter, children2?.props.onEnter ?? noop$2),
-      onExited: createChainedFunction$1(handleExited, children2?.props.onExited ?? noop$2)
+      onEnter: createChainedFunction$1(handleEnter, children2?.props.onEnter ?? noop$3),
+      onExited: createChainedFunction$1(handleExited, children2?.props.onExited ?? noop$3)
     };
   };
   return {
@@ -53735,7 +53176,7 @@ function getModalUtilityClass(slot) {
   return generateUtilityClass("MuiModal", slot);
 }
 generateUtilityClasses("MuiModal", ["root", "hidden", "backdrop"]);
-const useUtilityClasses$C = (ownerState) => {
+const useUtilityClasses$I = (ownerState) => {
   const {
     open,
     exited,
@@ -53842,7 +53283,7 @@ const Modal = /* @__PURE__ */ reactExports.forwardRef(function Modal2(inProps, r
     ...propsWithDefaults,
     exited
   };
-  const classes2 = useUtilityClasses$C(ownerState);
+  const classes2 = useUtilityClasses$I(ownerState);
   const childProps = {};
   if (children2.props.tabIndex === void 0) {
     childProps.tabIndex = "-1";
@@ -54105,7 +53546,7 @@ const DialogBackdrop = styled(Backdrop, {
   // Improve scrollable dialog support.
   zIndex: -1
 });
-const useUtilityClasses$B = (ownerState) => {
+const useUtilityClasses$H = (ownerState) => {
   const {
     classes: classes2,
     scroll,
@@ -54310,7 +53751,7 @@ const Dialog = /* @__PURE__ */ reactExports.forwardRef(function Dialog2(inProps,
     maxWidth: maxWidth2,
     scroll
   };
-  const classes2 = useUtilityClasses$B(ownerState);
+  const classes2 = useUtilityClasses$H(ownerState);
   const backdropClick = reactExports.useRef();
   const handleMouseDown = (event) => {
     backdropClick.current = event.target === event.currentTarget;
@@ -54592,7 +54033,7 @@ function getDialogActionsUtilityClass(slot) {
   return generateUtilityClass("MuiDialogActions", slot);
 }
 generateUtilityClasses("MuiDialogActions", ["root", "spacing"]);
-const useUtilityClasses$A = (ownerState) => {
+const useUtilityClasses$G = (ownerState) => {
   const {
     classes: classes2,
     disableSpacing
@@ -54642,7 +54083,7 @@ const DialogActions = /* @__PURE__ */ reactExports.forwardRef(function DialogAct
     ...props,
     disableSpacing
   };
-  const classes2 = useUtilityClasses$A(ownerState);
+  const classes2 = useUtilityClasses$G(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(DialogActionsRoot, {
     className: clsx$1(classes2.root, className),
     ownerState,
@@ -54685,7 +54126,7 @@ function getDialogTitleUtilityClass(slot) {
   return generateUtilityClass("MuiDialogTitle", slot);
 }
 const dialogTitleClasses = generateUtilityClasses("MuiDialogTitle", ["root"]);
-const useUtilityClasses$z = (ownerState) => {
+const useUtilityClasses$F = (ownerState) => {
   const {
     classes: classes2,
     dividers
@@ -54746,7 +54187,7 @@ const DialogContent = /* @__PURE__ */ reactExports.forwardRef(function DialogCon
     ...props,
     dividers
   };
-  const classes2 = useUtilityClasses$z(ownerState);
+  const classes2 = useUtilityClasses$F(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(DialogContentRoot, {
     className: clsx$1(classes2.root, className),
     ownerState,
@@ -54785,7 +54226,7 @@ function getDialogContentTextUtilityClass(slot) {
   return generateUtilityClass("MuiDialogContentText", slot);
 }
 generateUtilityClasses("MuiDialogContentText", ["root"]);
-const useUtilityClasses$y = (ownerState) => {
+const useUtilityClasses$E = (ownerState) => {
   const {
     classes: classes2
   } = ownerState;
@@ -54814,7 +54255,7 @@ const DialogContentText = /* @__PURE__ */ reactExports.forwardRef(function Dialo
     className,
     ...ownerState
   } = props;
-  const classes2 = useUtilityClasses$y(ownerState);
+  const classes2 = useUtilityClasses$E(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(DialogContentTextRoot, {
     component: "p",
     variant: "body1",
@@ -54848,7 +54289,7 @@ process.env.NODE_ENV !== "production" ? DialogContentText.propTypes = {
    */
   sx: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])), PropTypes.func, PropTypes.object])
 } : void 0;
-const useUtilityClasses$x = (ownerState) => {
+const useUtilityClasses$D = (ownerState) => {
   const {
     classes: classes2
   } = ownerState;
@@ -54875,7 +54316,7 @@ const DialogTitle = /* @__PURE__ */ reactExports.forwardRef(function DialogTitle
     ...other
   } = props;
   const ownerState = props;
-  const classes2 = useUtilityClasses$x(ownerState);
+  const classes2 = useUtilityClasses$D(ownerState);
   const {
     titleId = idProp
   } = reactExports.useContext(DialogContext);
@@ -54919,7 +54360,7 @@ function getDividerUtilityClass(slot) {
   return generateUtilityClass("MuiDivider", slot);
 }
 const dividerClasses = generateUtilityClasses("MuiDivider", ["root", "absolute", "fullWidth", "inset", "middle", "flexItem", "light", "vertical", "withChildren", "withChildrenVertical", "textAlignRight", "textAlignLeft", "wrapper", "wrapperVertical"]);
-const useUtilityClasses$w = (ownerState) => {
+const useUtilityClasses$C = (ownerState) => {
   const {
     absolute,
     children: children2,
@@ -55133,7 +54574,7 @@ const Divider$1 = /* @__PURE__ */ reactExports.forwardRef(function Divider(inPro
     textAlign,
     variant
   };
-  const classes2 = useUtilityClasses$w(ownerState);
+  const classes2 = useUtilityClasses$C(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(DividerRoot, {
     as: component,
     className: clsx$1(classes2.root, className),
@@ -55215,7 +54656,7 @@ process.env.NODE_ENV !== "production" ? Divider$1.propTypes = {
    */
   variant: PropTypes.oneOfType([PropTypes.oneOf(["fullWidth", "inset", "middle"]), PropTypes.string])
 } : void 0;
-const useUtilityClasses$v = (ownerState) => {
+const useUtilityClasses$B = (ownerState) => {
   const {
     classes: classes2,
     disableUnderline,
@@ -55494,7 +54935,7 @@ const FilledInput = /* @__PURE__ */ reactExports.forwardRef(function FilledInput
     multiline,
     type: type2
   };
-  const classes2 = useUtilityClasses$v(props);
+  const classes2 = useUtilityClasses$B(props);
   const filledInputComponentsProps = {
     root: {
       ownerState
@@ -55718,7 +55159,7 @@ function getFormControlUtilityClasses(slot) {
   return generateUtilityClass("MuiFormControl", slot);
 }
 generateUtilityClasses("MuiFormControl", ["root", "marginNone", "marginNormal", "marginDense", "fullWidth", "disabled"]);
-const useUtilityClasses$u = (ownerState) => {
+const useUtilityClasses$A = (ownerState) => {
   const {
     classes: classes2,
     margin: margin2,
@@ -55808,7 +55249,7 @@ const FormControl = /* @__PURE__ */ reactExports.forwardRef(function FormControl
     size,
     variant
   };
-  const classes2 = useUtilityClasses$u(ownerState);
+  const classes2 = useUtilityClasses$A(ownerState);
   const [adornedStart, setAdornedStart] = reactExports.useState(() => {
     let initialAdornedStart = false;
     if (children2) {
@@ -55979,12 +55420,276 @@ process.env.NODE_ENV !== "production" ? FormControl.propTypes = {
    */
   variant: PropTypes.oneOf(["filled", "outlined", "standard"])
 } : void 0;
+function getFormControlLabelUtilityClasses(slot) {
+  return generateUtilityClass("MuiFormControlLabel", slot);
+}
+const formControlLabelClasses = generateUtilityClasses("MuiFormControlLabel", ["root", "labelPlacementStart", "labelPlacementTop", "labelPlacementBottom", "disabled", "label", "error", "required", "asterisk"]);
+const useUtilityClasses$z = (ownerState) => {
+  const {
+    classes: classes2,
+    disabled: disabled2,
+    labelPlacement,
+    error: error2,
+    required
+  } = ownerState;
+  const slots = {
+    root: ["root", disabled2 && "disabled", `labelPlacement${capitalize(labelPlacement)}`, error2 && "error", required && "required"],
+    label: ["label", disabled2 && "disabled"],
+    asterisk: ["asterisk", error2 && "error"]
+  };
+  return composeClasses(slots, getFormControlLabelUtilityClasses, classes2);
+};
+const FormControlLabelRoot = styled("label", {
+  name: "MuiFormControlLabel",
+  slot: "Root",
+  overridesResolver: (props, styles2) => {
+    const {
+      ownerState
+    } = props;
+    return [{
+      [`& .${formControlLabelClasses.label}`]: styles2.label
+    }, styles2.root, styles2[`labelPlacement${capitalize(ownerState.labelPlacement)}`]];
+  }
+})(memoTheme(({
+  theme
+}) => ({
+  display: "inline-flex",
+  alignItems: "center",
+  cursor: "pointer",
+  // For correct alignment with the text.
+  verticalAlign: "middle",
+  WebkitTapHighlightColor: "transparent",
+  marginLeft: -11,
+  marginRight: 16,
+  // used for row presentation of radio/checkbox
+  [`&.${formControlLabelClasses.disabled}`]: {
+    cursor: "default"
+  },
+  [`& .${formControlLabelClasses.label}`]: {
+    [`&.${formControlLabelClasses.disabled}`]: {
+      color: (theme.vars || theme).palette.text.disabled
+    }
+  },
+  variants: [{
+    props: {
+      labelPlacement: "start"
+    },
+    style: {
+      flexDirection: "row-reverse",
+      marginRight: -11
+    }
+  }, {
+    props: {
+      labelPlacement: "top"
+    },
+    style: {
+      flexDirection: "column-reverse"
+    }
+  }, {
+    props: {
+      labelPlacement: "bottom"
+    },
+    style: {
+      flexDirection: "column"
+    }
+  }, {
+    props: ({
+      labelPlacement
+    }) => labelPlacement === "start" || labelPlacement === "top" || labelPlacement === "bottom",
+    style: {
+      marginLeft: 16
+      // used for row presentation of radio/checkbox
+    }
+  }]
+})));
+const AsteriskComponent$1 = styled("span", {
+  name: "MuiFormControlLabel",
+  slot: "Asterisk"
+})(memoTheme(({
+  theme
+}) => ({
+  [`&.${formControlLabelClasses.error}`]: {
+    color: (theme.vars || theme).palette.error.main
+  }
+})));
+const FormControlLabel = /* @__PURE__ */ reactExports.forwardRef(function FormControlLabel2(inProps, ref) {
+  const props = useDefaultProps({
+    props: inProps,
+    name: "MuiFormControlLabel"
+  });
+  const {
+    checked: checked2,
+    className,
+    componentsProps = {},
+    control,
+    disabled: disabledProp,
+    disableTypography,
+    inputRef,
+    label: labelProp,
+    labelPlacement = "end",
+    name: name2,
+    onChange,
+    required: requiredProp,
+    slots = {},
+    slotProps = {},
+    value: value2,
+    ...other
+  } = props;
+  const muiFormControl = useFormControl();
+  const disabled2 = disabledProp ?? control.props.disabled ?? muiFormControl?.disabled;
+  const required = requiredProp ?? control.props.required;
+  const controlProps = {
+    disabled: disabled2,
+    required
+  };
+  ["checked", "name", "onChange", "value", "inputRef"].forEach((key) => {
+    if (typeof control.props[key] === "undefined" && typeof props[key] !== "undefined") {
+      controlProps[key] = props[key];
+    }
+  });
+  const fcs = formControlState({
+    props,
+    muiFormControl,
+    states: ["error"]
+  });
+  const ownerState = {
+    ...props,
+    disabled: disabled2,
+    labelPlacement,
+    required,
+    error: fcs.error
+  };
+  const classes2 = useUtilityClasses$z(ownerState);
+  const externalForwardedProps = {
+    slots,
+    slotProps: {
+      ...componentsProps,
+      ...slotProps
+    }
+  };
+  const [TypographySlot, typographySlotProps] = useSlot("typography", {
+    elementType: Typography$1,
+    externalForwardedProps,
+    ownerState
+  });
+  let label2 = labelProp;
+  if (label2 != null && label2.type !== Typography$1 && !disableTypography) {
+    label2 = /* @__PURE__ */ jsxRuntimeExports.jsx(TypographySlot, {
+      component: "span",
+      ...typographySlotProps,
+      className: clsx$1(classes2.label, typographySlotProps?.className),
+      children: label2
+    });
+  }
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(FormControlLabelRoot, {
+    className: clsx$1(classes2.root, className),
+    ownerState,
+    ref,
+    ...other,
+    children: [/* @__PURE__ */ reactExports.cloneElement(control, controlProps), required ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", {
+      children: [label2, /* @__PURE__ */ jsxRuntimeExports.jsxs(AsteriskComponent$1, {
+        ownerState,
+        "aria-hidden": true,
+        className: classes2.asterisk,
+        children: [" ", "*"]
+      })]
+    }) : label2]
+  });
+});
+process.env.NODE_ENV !== "production" ? FormControlLabel.propTypes = {
+  // ┌────────────────────────────── Warning ──────────────────────────────┐
+  // │ These PropTypes are generated from the TypeScript type definitions. │
+  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
+  // └─────────────────────────────────────────────────────────────────────┘
+  /**
+   * If `true`, the component appears selected.
+   */
+  checked: PropTypes.bool,
+  /**
+   * Override or extend the styles applied to the component.
+   */
+  classes: PropTypes.object,
+  /**
+   * @ignore
+   */
+  className: PropTypes.string,
+  /**
+   * The props used for each slot inside.
+   * @default {}
+   * @deprecated use the `slotProps` prop instead. This prop will be removed in a future major release. See [Migrating from deprecated APIs](https://mui.com/material-ui/migration/migrating-from-deprecated-apis/) for more details.
+   */
+  componentsProps: PropTypes.shape({
+    typography: PropTypes.object
+  }),
+  /**
+   * A control element. For instance, it can be a `Radio`, a `Switch` or a `Checkbox`.
+   */
+  control: PropTypes.element.isRequired,
+  /**
+   * If `true`, the control is disabled.
+   */
+  disabled: PropTypes.bool,
+  /**
+   * If `true`, the label is rendered as it is passed without an additional typography node.
+   */
+  disableTypography: PropTypes.bool,
+  /**
+   * Pass a ref to the `input` element.
+   */
+  inputRef: refType,
+  /**
+   * A text or an element to be used in an enclosing label element.
+   */
+  label: PropTypes.node,
+  /**
+   * The position of the label.
+   * @default 'end'
+   */
+  labelPlacement: PropTypes.oneOf(["bottom", "end", "start", "top"]),
+  /**
+   * @ignore
+   */
+  name: PropTypes.string,
+  /**
+   * Callback fired when the state is changed.
+   *
+   * @param {React.SyntheticEvent} event The event source of the callback.
+   * You can pull out the new checked state by accessing `event.target.checked` (boolean).
+   */
+  onChange: PropTypes.func,
+  /**
+   * If `true`, the label will indicate that the `input` is required.
+   */
+  required: PropTypes.bool,
+  /**
+   * The props used for each slot inside.
+   * @default {}
+   */
+  slotProps: PropTypes.shape({
+    typography: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+  }),
+  /**
+   * The components used for each slot inside.
+   * @default {}
+   */
+  slots: PropTypes.shape({
+    typography: PropTypes.elementType
+  }),
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])), PropTypes.func, PropTypes.object]),
+  /**
+   * The value of the component.
+   */
+  value: PropTypes.any
+} : void 0;
 function getFormHelperTextUtilityClasses(slot) {
   return generateUtilityClass("MuiFormHelperText", slot);
 }
 const formHelperTextClasses = generateUtilityClasses("MuiFormHelperText", ["root", "error", "disabled", "sizeSmall", "sizeMedium", "contained", "focused", "filled", "required"]);
 var _span$2;
-const useUtilityClasses$t = (ownerState) => {
+const useUtilityClasses$y = (ownerState) => {
   const {
     classes: classes2,
     contained,
@@ -56079,7 +55784,7 @@ const FormHelperText = /* @__PURE__ */ reactExports.forwardRef(function FormHelp
     required: fcs.required
   };
   delete ownerState.ownerState;
-  const classes2 = useUtilityClasses$t(ownerState);
+  const classes2 = useUtilityClasses$y(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(FormHelperTextRoot, {
     as: component,
     className: clsx$1(classes2.root, className),
@@ -56158,7 +55863,7 @@ function getFormLabelUtilityClasses(slot) {
   return generateUtilityClass("MuiFormLabel", slot);
 }
 const formLabelClasses = generateUtilityClasses("MuiFormLabel", ["root", "colorSecondary", "focused", "disabled", "error", "filled", "required", "asterisk"]);
-const useUtilityClasses$s = (ownerState) => {
+const useUtilityClasses$x = (ownerState) => {
   const {
     classes: classes2,
     color: color2,
@@ -56255,7 +55960,7 @@ const FormLabel = /* @__PURE__ */ reactExports.forwardRef(function FormLabel2(in
     focused: fcs.focused,
     required: fcs.required
   };
-  const classes2 = useUtilityClasses$s(ownerState);
+  const classes2 = useUtilityClasses$x(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(FormLabelRoot, {
     as: component,
     ownerState,
@@ -56323,124 +56028,6 @@ process.env.NODE_ENV !== "production" ? FormLabel.propTypes = {
    */
   sx: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])), PropTypes.func, PropTypes.object])
 } : void 0;
-const Grid = createGrid({
-  createStyledComponent: styled("div", {
-    name: "MuiGrid",
-    slot: "Root",
-    overridesResolver: (props, styles2) => {
-      const {
-        ownerState
-      } = props;
-      return [styles2.root, ownerState.container && styles2.container];
-    }
-  }),
-  componentName: "MuiGrid",
-  useThemeProps: (inProps) => useDefaultProps({
-    props: inProps,
-    name: "MuiGrid"
-  }),
-  useTheme: useTheme$1
-});
-process.env.NODE_ENV !== "production" ? Grid.propTypes = {
-  // ┌────────────────────────────── Warning ──────────────────────────────┐
-  // │ These PropTypes are generated from the TypeScript type definitions. │
-  // │ To update them, edit the TypeScript types and run `pnpm proptypes`. │
-  // └─────────────────────────────────────────────────────────────────────┘
-  /**
-   * The content of the component.
-   */
-  children: PropTypes.node,
-  /**
-   * The number of columns.
-   * @default 12
-   */
-  columns: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.number), PropTypes.number, PropTypes.object]),
-  /**
-   * Defines the horizontal space between the type `item` components.
-   * It overrides the value of the `spacing` prop.
-   */
-  columnSpacing: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])), PropTypes.number, PropTypes.object, PropTypes.string]),
-  /**
-   * If `true`, the component will have the flex *container* behavior.
-   * You should be wrapping *items* with a *container*.
-   * @default false
-   */
-  container: PropTypes.bool,
-  /**
-   * Defines the `flex-direction` style property.
-   * It is applied for all screen sizes.
-   * @default 'row'
-   */
-  direction: PropTypes.oneOfType([PropTypes.oneOf(["column-reverse", "column", "row-reverse", "row"]), PropTypes.arrayOf(PropTypes.oneOf(["column-reverse", "column", "row-reverse", "row"])), PropTypes.object]),
-  /**
-   * Defines the offset value for the type `item` components.
-   */
-  offset: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])), PropTypes.object]),
-  /**
-   * Defines the vertical space between the type `item` components.
-   * It overrides the value of the `spacing` prop.
-   */
-  rowSpacing: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])), PropTypes.number, PropTypes.object, PropTypes.string]),
-  /**
-   * Defines the size of the the type `item` components.
-   */
-  size: PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.number, PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.number])), PropTypes.object]),
-  /**
-   * Defines the space between the type `item` components.
-   * It can only be used on a type `container` component.
-   * @default 0
-   */
-  spacing: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])), PropTypes.number, PropTypes.object, PropTypes.string]),
-  /**
-   * @ignore
-   */
-  sx: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])), PropTypes.func, PropTypes.object]),
-  /**
-   * @internal
-   * The level of the grid starts from `0` and increases when the grid nests
-   * inside another grid. Nesting is defined as a container Grid being a direct
-   * child of a container Grid.
-   *
-   * ```js
-   * <Grid container> // level 0
-   *   <Grid container> // level 1
-   *     <Grid container> // level 2
-   * ```
-   *
-   * Only consecutive grid is considered nesting. A grid container will start at
-   * `0` if there are non-Grid container element above it.
-   *
-   * ```js
-   * <Grid container> // level 0
-   *   <div>
-   *     <Grid container> // level 0
-   * ```
-   *
-   * ```js
-   * <Grid container> // level 0
-   *   <Grid>
-   *     <Grid container> // level 0
-   * ```
-   */
-  unstable_level: PropTypes.number,
-  /**
-   * Defines the `flex-wrap` style property.
-   * It's applied for all screen sizes.
-   * @default 'wrap'
-   */
-  wrap: PropTypes.oneOf(["nowrap", "wrap-reverse", "wrap"])
-} : void 0;
-if (process.env.NODE_ENV !== "production") {
-  const Component = Grid;
-  const requireProp = requirePropFactory("Grid", Component);
-  Component["propTypes"] = {
-    // eslint-disable-next-line react/forbid-foreign-prop-types
-    ...Component.propTypes,
-    direction: requireProp("container"),
-    spacing: requireProp("container"),
-    wrap: requireProp("container")
-  };
-}
 function getScale(value2) {
   return `scale(${value2}, ${value2 ** 2})`;
 }
@@ -56674,7 +56261,7 @@ process.env.NODE_ENV !== "production" ? Grow.propTypes = {
 if (Grow) {
   Grow.muiSupportAuto = true;
 }
-const useUtilityClasses$r = (ownerState) => {
+const useUtilityClasses$w = (ownerState) => {
   const {
     classes: classes2,
     disableUnderline
@@ -56807,7 +56394,7 @@ const Input = /* @__PURE__ */ reactExports.forwardRef(function Input2(inProps, r
     type: type2 = "text",
     ...other
   } = props;
-  const classes2 = useUtilityClasses$r(props);
+  const classes2 = useUtilityClasses$w(props);
   const ownerState = {
     disableUnderline
   };
@@ -57024,7 +56611,7 @@ function getInputLabelUtilityClasses(slot) {
   return generateUtilityClass("MuiInputLabel", slot);
 }
 generateUtilityClasses("MuiInputLabel", ["root", "focused", "disabled", "error", "required", "asterisk", "formControl", "sizeSmall", "shrink", "animated", "standard", "filled", "outlined"]);
-const useUtilityClasses$q = (ownerState) => {
+const useUtilityClasses$v = (ownerState) => {
   const {
     classes: classes2,
     formControl,
@@ -57213,7 +56800,7 @@ const InputLabel = /* @__PURE__ */ reactExports.forwardRef(function InputLabel2(
     required: fcs.required,
     focused: fcs.focused
   };
-  const classes2 = useUtilityClasses$q(ownerState);
+  const classes2 = useUtilityClasses$v(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(InputLabelRoot, {
     "data-shrink": shrink,
     ref,
@@ -57298,7 +56885,7 @@ function getListUtilityClass(slot) {
   return generateUtilityClass("MuiList", slot);
 }
 generateUtilityClasses("MuiList", ["root", "padding", "dense", "subheader"]);
-const useUtilityClasses$p = (ownerState) => {
+const useUtilityClasses$u = (ownerState) => {
   const {
     classes: classes2,
     disablePadding,
@@ -57364,7 +56951,7 @@ const List$1 = /* @__PURE__ */ reactExports.forwardRef(function List(inProps, re
     dense,
     disablePadding
   };
-  const classes2 = useUtilityClasses$p(ownerState);
+  const classes2 = useUtilityClasses$u(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(ListContext.Provider, {
     value: context,
     children: /* @__PURE__ */ jsxRuntimeExports.jsxs(ListRoot, {
@@ -57434,7 +57021,7 @@ const overridesResolver$3 = (props, styles2) => {
   } = props;
   return [styles2.root, ownerState.dense && styles2.dense, ownerState.alignItems === "flex-start" && styles2.alignItemsFlexStart, ownerState.divider && styles2.divider, !ownerState.disableGutters && styles2.gutters];
 };
-const useUtilityClasses$o = (ownerState) => {
+const useUtilityClasses$t = (ownerState) => {
   const {
     alignItems,
     classes: classes2,
@@ -57577,7 +57164,7 @@ const ListItemButton = /* @__PURE__ */ reactExports.forwardRef(function ListItem
     divider,
     selected
   };
-  const classes2 = useUtilityClasses$o(ownerState);
+  const classes2 = useUtilityClasses$t(ownerState);
   const handleRef = useForkRef$1(listItemRef, ref);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(ListContext.Provider, {
     value: childContext,
@@ -57676,7 +57263,7 @@ function getListItemSecondaryActionClassesUtilityClass(slot) {
   return generateUtilityClass("MuiListItemSecondaryAction", slot);
 }
 generateUtilityClasses("MuiListItemSecondaryAction", ["root", "disableGutters"]);
-const useUtilityClasses$n = (ownerState) => {
+const useUtilityClasses$s = (ownerState) => {
   const {
     disableGutters,
     classes: classes2
@@ -57723,7 +57310,7 @@ const ListItemSecondaryAction = /* @__PURE__ */ reactExports.forwardRef(function
     ...props,
     disableGutters: context.disableGutters
   };
-  const classes2 = useUtilityClasses$n(ownerState);
+  const classes2 = useUtilityClasses$s(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemSecondaryActionRoot, {
     className: clsx$1(classes2.root, className),
     ownerState,
@@ -57760,7 +57347,7 @@ const overridesResolver$2 = (props, styles2) => {
   } = props;
   return [styles2.root, ownerState.dense && styles2.dense, ownerState.alignItems === "flex-start" && styles2.alignItemsFlexStart, ownerState.divider && styles2.divider, !ownerState.disableGutters && styles2.gutters, !ownerState.disablePadding && styles2.padding, ownerState.hasSecondaryAction && styles2.secondaryAction];
 };
-const useUtilityClasses$m = (ownerState) => {
+const useUtilityClasses$r = (ownerState) => {
   const {
     alignItems,
     classes: classes2,
@@ -57927,7 +57514,7 @@ const ListItem$1 = /* @__PURE__ */ reactExports.forwardRef(function ListItem(inP
     divider,
     hasSecondaryAction
   };
-  const classes2 = useUtilityClasses$m(ownerState);
+  const classes2 = useUtilityClasses$r(ownerState);
   const handleRef = useForkRef$1(listItemRef, ref);
   const externalForwardedProps = {
     slots,
@@ -58124,7 +57711,7 @@ function getListItemAvatarUtilityClass(slot) {
   return generateUtilityClass("MuiListItemAvatar", slot);
 }
 generateUtilityClasses("MuiListItemAvatar", ["root", "alignItemsFlexStart"]);
-const useUtilityClasses$l = (ownerState) => {
+const useUtilityClasses$q = (ownerState) => {
   const {
     alignItems,
     classes: classes2
@@ -58169,7 +57756,7 @@ const ListItemAvatar = /* @__PURE__ */ reactExports.forwardRef(function ListItem
     ...props,
     alignItems: context.alignItems
   };
-  const classes2 = useUtilityClasses$l(ownerState);
+  const classes2 = useUtilityClasses$q(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemAvatarRoot, {
     className: clsx$1(classes2.root, className),
     ownerState,
@@ -58203,7 +57790,7 @@ function getListItemIconUtilityClass(slot) {
   return generateUtilityClass("MuiListItemIcon", slot);
 }
 const listItemIconClasses = generateUtilityClasses("MuiListItemIcon", ["root", "alignItemsFlexStart"]);
-const useUtilityClasses$k = (ownerState) => {
+const useUtilityClasses$p = (ownerState) => {
   const {
     alignItems,
     classes: classes2
@@ -58252,7 +57839,7 @@ const ListItemIcon = /* @__PURE__ */ reactExports.forwardRef(function ListItemIc
     ...props,
     alignItems: context.alignItems
   };
-  const classes2 = useUtilityClasses$k(ownerState);
+  const classes2 = useUtilityClasses$p(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemIconRoot, {
     className: clsx$1(classes2.root, className),
     ownerState,
@@ -58287,7 +57874,7 @@ function getListItemTextUtilityClass(slot) {
   return generateUtilityClass("MuiListItemText", slot);
 }
 const listItemTextClasses = generateUtilityClasses("MuiListItemText", ["root", "multiline", "dense", "inset", "primary", "secondary"]);
-const useUtilityClasses$j = (ownerState) => {
+const useUtilityClasses$o = (ownerState) => {
   const {
     classes: classes2,
     inset,
@@ -58375,7 +57962,7 @@ const ListItemText = /* @__PURE__ */ reactExports.forwardRef(function ListItemTe
     secondary: !!secondary,
     dense
   };
-  const classes2 = useUtilityClasses$j(ownerState);
+  const classes2 = useUtilityClasses$o(ownerState);
   const externalForwardedProps = {
     slots,
     slotProps: {
@@ -58776,7 +58363,7 @@ function getTransformOriginValue(transformOrigin) {
 function resolveAnchorEl(anchorEl) {
   return typeof anchorEl === "function" ? anchorEl() : anchorEl;
 }
-const useUtilityClasses$i = (ownerState) => {
+const useUtilityClasses$n = (ownerState) => {
   const {
     classes: classes2
   } = ownerState;
@@ -58854,7 +58441,7 @@ const Popover = /* @__PURE__ */ reactExports.forwardRef(function Popover2(inProp
     transitionDuration: transitionDurationProp,
     TransitionProps
   };
-  const classes2 = useUtilityClasses$i(ownerState);
+  const classes2 = useUtilityClasses$n(ownerState);
   const getAnchorOffset = reactExports.useCallback(() => {
     if (anchorReference === "anchorPosition") {
       if (process.env.NODE_ENV !== "production") {
@@ -59293,7 +58880,7 @@ const LTR_ORIGIN = {
   vertical: "top",
   horizontal: "left"
 };
-const useUtilityClasses$h = (ownerState) => {
+const useUtilityClasses$m = (ownerState) => {
   const {
     classes: classes2
   } = ownerState;
@@ -59364,7 +58951,7 @@ const Menu$1 = /* @__PURE__ */ reactExports.forwardRef(function Menu(inProps, re
     TransitionProps,
     variant
   };
-  const classes2 = useUtilityClasses$h(ownerState);
+  const classes2 = useUtilityClasses$m(ownerState);
   const autoFocusItem = autoFocus && !disableAutoFocusItem && open;
   const menuListActionsRef = reactExports.useRef(null);
   const handleEntering = (element, isAppearing) => {
@@ -59603,7 +59190,7 @@ function getNativeSelectUtilityClasses(slot) {
   return generateUtilityClass("MuiNativeSelect", slot);
 }
 const nativeSelectClasses = generateUtilityClasses("MuiNativeSelect", ["root", "select", "multiple", "filled", "outlined", "standard", "disabled", "icon", "iconOpen", "iconFilled", "iconOutlined", "iconStandard", "nativeInput", "error"]);
-const useUtilityClasses$g = (ownerState) => {
+const useUtilityClasses$l = (ownerState) => {
   const {
     classes: classes2,
     variant,
@@ -59762,7 +59349,7 @@ const NativeSelectInput = /* @__PURE__ */ reactExports.forwardRef(function Nativ
     variant,
     error: error2
   };
-  const classes2 = useUtilityClasses$g(ownerState);
+  const classes2 = useUtilityClasses$l(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(reactExports.Fragment, {
     children: [/* @__PURE__ */ jsxRuntimeExports.jsx(NativeSelectSelect, {
       ownerState,
@@ -59925,7 +59512,7 @@ const SelectNativeInput = styled("input", {
   width: "100%",
   boxSizing: "border-box"
 });
-const useUtilityClasses$f = (ownerState) => {
+const useUtilityClasses$k = (ownerState) => {
   const {
     classes: classes2,
     variant,
@@ -60270,7 +59857,7 @@ const SelectInput = /* @__PURE__ */ reactExports.forwardRef(function SelectInput
     open,
     error: error2
   };
-  const classes2 = useUtilityClasses$f(ownerState);
+  const classes2 = useUtilityClasses$k(ownerState);
   const paperProps = {
     ...MenuProps.PaperProps,
     ...typeof MenuProps.slotProps?.paper === "function" ? MenuProps.slotProps.paper(ownerState) : MenuProps.slotProps?.paper
@@ -60662,7 +60249,7 @@ process.env.NODE_ENV !== "production" ? NotchedOutline.propTypes = {
    */
   style: PropTypes.object
 } : void 0;
-const useUtilityClasses$e = (ownerState) => {
+const useUtilityClasses$j = (ownerState) => {
   const {
     classes: classes2
   } = ownerState;
@@ -60840,7 +60427,7 @@ const OutlinedInput = /* @__PURE__ */ reactExports.forwardRef(function OutlinedI
     type: type2 = "text",
     ...other
   } = props;
-  const classes2 = useUtilityClasses$e(props);
+  const classes2 = useUtilityClasses$j(props);
   const muiFormControl = useFormControl();
   const fcs = formControlState({
     props,
@@ -61072,7 +60659,7 @@ process.env.NODE_ENV !== "production" ? OutlinedInput.propTypes = {
   value: PropTypes.any
 } : void 0;
 OutlinedInput.muiName = "Input";
-const useUtilityClasses$d = (ownerState) => {
+const useUtilityClasses$i = (ownerState) => {
   const {
     classes: classes2
   } = ownerState;
@@ -61135,7 +60722,7 @@ const Select = /* @__PURE__ */ reactExports.forwardRef(function Select2(inProps,
     variant,
     classes: classesProp
   };
-  const classes2 = useUtilityClasses$d(ownerState);
+  const classes2 = useUtilityClasses$i(ownerState);
   const {
     root,
     ...restOfClasses
@@ -61367,7 +60954,7 @@ const overridesResolver$1 = (props, styles2) => {
   } = props;
   return [styles2.root, ownerState.dense && styles2.dense, ownerState.divider && styles2.divider, !ownerState.disableGutters && styles2.gutters];
 };
-const useUtilityClasses$c = (ownerState) => {
+const useUtilityClasses$h = (ownerState) => {
   const {
     disabled: disabled2,
     dense,
@@ -61528,7 +61115,7 @@ const MenuItem = /* @__PURE__ */ reactExports.forwardRef(function MenuItem2(inPr
     divider,
     disableGutters
   };
-  const classes2 = useUtilityClasses$c(props);
+  const classes2 = useUtilityClasses$h(props);
   const handleRef = useForkRef$1(menuItemRef, ref);
   let tabIndex;
   if (!props.disabled) {
@@ -61763,7 +61350,7 @@ const overridesResolver = (props, styles2) => {
   } = props;
   return [styles2.root, styles2[ownerState.variant], styles2[`size${capitalize(ownerState.size)}`], ownerState.variant === "text" && styles2[`text${capitalize(ownerState.color)}`], ownerState.variant === "outlined" && styles2[`outlined${capitalize(ownerState.color)}`], ownerState.shape === "rounded" && styles2.rounded, ownerState.type === "page" && styles2.page, (ownerState.type === "start-ellipsis" || ownerState.type === "end-ellipsis") && styles2.ellipsis, (ownerState.type === "previous" || ownerState.type === "next") && styles2.previousNext, (ownerState.type === "first" || ownerState.type === "last") && styles2.firstLast];
 };
-const useUtilityClasses$b = (ownerState) => {
+const useUtilityClasses$g = (ownerState) => {
   const {
     classes: classes2,
     color: color2,
@@ -62036,7 +61623,7 @@ const PaginationItem = /* @__PURE__ */ reactExports.forwardRef(function Paginati
     variant
   };
   const isRtl = useRtl();
-  const classes2 = useUtilityClasses$b(ownerState);
+  const classes2 = useUtilityClasses$g(ownerState);
   const externalForwardedProps = {
     slots: {
       previous: slots.previous ?? components.previous,
@@ -62206,7 +61793,7 @@ process.env.NODE_ENV !== "production" ? PaginationItem.propTypes = {
    */
   variant: PropTypes.oneOfType([PropTypes.oneOf(["outlined", "text"]), PropTypes.string])
 } : void 0;
-const useUtilityClasses$a = (ownerState) => {
+const useUtilityClasses$f = (ownerState) => {
   const {
     classes: classes2,
     variant
@@ -62296,7 +61883,7 @@ const Pagination = /* @__PURE__ */ reactExports.forwardRef(function Pagination2(
     size,
     variant
   };
-  const classes2 = useUtilityClasses$a(ownerState);
+  const classes2 = useUtilityClasses$f(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(PaginationRoot, {
     "aria-label": "pagination navigation",
     className: clsx$1(classes2.root, className),
@@ -62437,7 +62024,7 @@ function getSkeletonUtilityClass(slot) {
   return generateUtilityClass("MuiSkeleton", slot);
 }
 generateUtilityClasses("MuiSkeleton", ["root", "text", "rectangular", "rounded", "circular", "pulse", "wave", "withChildren", "fitContent", "heightAuto"]);
-const useUtilityClasses$9 = (ownerState) => {
+const useUtilityClasses$e = (ownerState) => {
   const {
     classes: classes2,
     variant,
@@ -62623,7 +62210,7 @@ const Skeleton = /* @__PURE__ */ reactExports.forwardRef(function Skeleton2(inPr
     variant,
     hasChildren: Boolean(other.children)
   };
-  const classes2 = useUtilityClasses$9(ownerState);
+  const classes2 = useUtilityClasses$e(ownerState);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(SkeletonRoot, {
     as: component,
     ref,
@@ -62696,7 +62283,7 @@ const tooltipClasses = generateUtilityClasses("MuiTooltip", ["popper", "popperIn
 function round(value2) {
   return Math.round(value2 * 1e5) / 1e5;
 }
-const useUtilityClasses$8 = (ownerState) => {
+const useUtilityClasses$d = (ownerState) => {
   const {
     classes: classes2,
     disableInteractive,
@@ -63268,7 +62855,7 @@ const Tooltip = /* @__PURE__ */ reactExports.forwardRef(function Tooltip2(inProp
       modifiers: tooltipModifiers
     };
   }, [arrowRef, PopperProps.popperOptions, resolvedPopperProps?.popperOptions]);
-  const classes2 = useUtilityClasses$8(ownerState);
+  const classes2 = useUtilityClasses$d(ownerState);
   const resolvedTransitionProps = typeof slotProps.transition === "function" ? slotProps.transition(ownerState) : slotProps.transition;
   const externalForwardedProps = {
     slots: {
@@ -63593,6 +63180,891 @@ process.env.NODE_ENV !== "production" ? Stack.propTypes = {
    * @default false
    */
   useFlexGap: PropTypes.bool
+} : void 0;
+const StepperContext = /* @__PURE__ */ reactExports.createContext({});
+if (process.env.NODE_ENV !== "production") {
+  StepperContext.displayName = "StepperContext";
+}
+const StepContext = /* @__PURE__ */ reactExports.createContext({});
+if (process.env.NODE_ENV !== "production") {
+  StepContext.displayName = "StepContext";
+}
+function getStepUtilityClass(slot) {
+  return generateUtilityClass("MuiStep", slot);
+}
+generateUtilityClasses("MuiStep", ["root", "horizontal", "vertical", "alternativeLabel", "completed"]);
+const useUtilityClasses$c = (ownerState) => {
+  const {
+    classes: classes2,
+    orientation,
+    alternativeLabel,
+    completed
+  } = ownerState;
+  const slots = {
+    root: ["root", orientation, alternativeLabel && "alternativeLabel", completed && "completed"]
+  };
+  return composeClasses(slots, getStepUtilityClass, classes2);
+};
+const StepRoot = styled("div", {
+  name: "MuiStep",
+  slot: "Root",
+  overridesResolver: (props, styles2) => {
+    const {
+      ownerState
+    } = props;
+    return [styles2.root, styles2[ownerState.orientation], ownerState.alternativeLabel && styles2.alternativeLabel, ownerState.completed && styles2.completed];
+  }
+})({
+  variants: [{
+    props: {
+      orientation: "horizontal"
+    },
+    style: {
+      paddingLeft: 8,
+      paddingRight: 8
+    }
+  }, {
+    props: {
+      alternativeLabel: true
+    },
+    style: {
+      flex: 1,
+      position: "relative"
+    }
+  }]
+});
+const Step$1 = /* @__PURE__ */ reactExports.forwardRef(function Step(inProps, ref) {
+  const props = useDefaultProps({
+    props: inProps,
+    name: "MuiStep"
+  });
+  const {
+    active: activeProp,
+    children: children2,
+    className,
+    component = "div",
+    completed: completedProp,
+    disabled: disabledProp,
+    expanded = false,
+    index,
+    last,
+    ...other
+  } = props;
+  const {
+    activeStep,
+    connector,
+    alternativeLabel,
+    orientation,
+    nonLinear
+  } = reactExports.useContext(StepperContext);
+  let [active = false, completed = false, disabled2 = false] = [activeProp, completedProp, disabledProp];
+  if (activeStep === index) {
+    active = activeProp !== void 0 ? activeProp : true;
+  } else if (!nonLinear && activeStep > index) {
+    completed = completedProp !== void 0 ? completedProp : true;
+  } else if (!nonLinear && activeStep < index) {
+    disabled2 = disabledProp !== void 0 ? disabledProp : true;
+  }
+  const contextValue = reactExports.useMemo(() => ({
+    index,
+    last,
+    expanded,
+    icon: index + 1,
+    active,
+    completed,
+    disabled: disabled2
+  }), [index, last, expanded, active, completed, disabled2]);
+  const ownerState = {
+    ...props,
+    active,
+    orientation,
+    alternativeLabel,
+    completed,
+    disabled: disabled2,
+    expanded,
+    component
+  };
+  const classes2 = useUtilityClasses$c(ownerState);
+  const newChildren = /* @__PURE__ */ jsxRuntimeExports.jsxs(StepRoot, {
+    as: component,
+    className: clsx$1(classes2.root, className),
+    ref,
+    ownerState,
+    ...other,
+    children: [connector && alternativeLabel && index !== 0 ? connector : null, children2]
+  });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(StepContext.Provider, {
+    value: contextValue,
+    children: connector && !alternativeLabel && index !== 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs(reactExports.Fragment, {
+      children: [connector, newChildren]
+    }) : newChildren
+  });
+});
+process.env.NODE_ENV !== "production" ? Step$1.propTypes = {
+  // ┌────────────────────────────── Warning ──────────────────────────────┐
+  // │ These PropTypes are generated from the TypeScript type definitions. │
+  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
+  // └─────────────────────────────────────────────────────────────────────┘
+  /**
+   * Sets the step as active. Is passed to child components.
+   */
+  active: PropTypes.bool,
+  /**
+   * Should be `Step` sub-components such as `StepLabel`, `StepContent`.
+   */
+  children: PropTypes.node,
+  /**
+   * Override or extend the styles applied to the component.
+   */
+  classes: PropTypes.object,
+  /**
+   * @ignore
+   */
+  className: PropTypes.string,
+  /**
+   * Mark the step as completed. Is passed to child components.
+   */
+  completed: PropTypes.bool,
+  /**
+   * The component used for the root node.
+   * Either a string to use a HTML element or a component.
+   */
+  component: PropTypes.elementType,
+  /**
+   * If `true`, the step is disabled, will also disable the button if
+   * `StepButton` is a child of `Step`. Is passed to child components.
+   */
+  disabled: PropTypes.bool,
+  /**
+   * Expand the step.
+   * @default false
+   */
+  expanded: PropTypes.bool,
+  /**
+   * The position of the step.
+   * The prop defaults to the value inherited from the parent Stepper component.
+   */
+  index: integerPropType,
+  /**
+   * If `true`, the Step is displayed as rendered last.
+   * The prop defaults to the value inherited from the parent Stepper component.
+   */
+  last: PropTypes.bool,
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])), PropTypes.func, PropTypes.object])
+} : void 0;
+const CheckCircle = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm-2 17l-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z"
+}), "CheckCircle");
+const Warning = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"
+}), "Warning");
+function getStepIconUtilityClass(slot) {
+  return generateUtilityClass("MuiStepIcon", slot);
+}
+const stepIconClasses = generateUtilityClasses("MuiStepIcon", ["root", "active", "completed", "error", "text"]);
+var _circle;
+const useUtilityClasses$b = (ownerState) => {
+  const {
+    classes: classes2,
+    active,
+    completed,
+    error: error2
+  } = ownerState;
+  const slots = {
+    root: ["root", active && "active", completed && "completed", error2 && "error"],
+    text: ["text"]
+  };
+  return composeClasses(slots, getStepIconUtilityClass, classes2);
+};
+const StepIconRoot = styled(SvgIcon$1, {
+  name: "MuiStepIcon",
+  slot: "Root"
+})(memoTheme(({
+  theme
+}) => ({
+  display: "block",
+  transition: theme.transitions.create("color", {
+    duration: theme.transitions.duration.shortest
+  }),
+  color: (theme.vars || theme).palette.text.disabled,
+  [`&.${stepIconClasses.completed}, &.${stepIconClasses.active}`]: {
+    color: (theme.vars || theme).palette.primary.main
+  },
+  [`&.${stepIconClasses.error}`]: {
+    color: (theme.vars || theme).palette.error.main
+  }
+})));
+const StepIconText = styled("text", {
+  name: "MuiStepIcon",
+  slot: "Text"
+})(memoTheme(({
+  theme
+}) => ({
+  fill: (theme.vars || theme).palette.primary.contrastText,
+  fontSize: theme.typography.caption.fontSize,
+  fontFamily: theme.typography.fontFamily
+})));
+const StepIcon = /* @__PURE__ */ reactExports.forwardRef(function StepIcon2(inProps, ref) {
+  const props = useDefaultProps({
+    props: inProps,
+    name: "MuiStepIcon"
+  });
+  const {
+    active = false,
+    className: classNameProp,
+    completed = false,
+    error: error2 = false,
+    icon,
+    ...other
+  } = props;
+  const ownerState = {
+    ...props,
+    active,
+    completed,
+    error: error2
+  };
+  const classes2 = useUtilityClasses$b(ownerState);
+  if (typeof icon === "number" || typeof icon === "string") {
+    const className = clsx$1(classNameProp, classes2.root);
+    if (error2) {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(StepIconRoot, {
+        as: Warning,
+        className,
+        ref,
+        ownerState,
+        ...other
+      });
+    }
+    if (completed) {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(StepIconRoot, {
+        as: CheckCircle,
+        className,
+        ref,
+        ownerState,
+        ...other
+      });
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(StepIconRoot, {
+      className,
+      ref,
+      ownerState,
+      ...other,
+      children: [_circle || (_circle = /* @__PURE__ */ jsxRuntimeExports.jsx("circle", {
+        cx: "12",
+        cy: "12",
+        r: "12"
+      })), /* @__PURE__ */ jsxRuntimeExports.jsx(StepIconText, {
+        className: classes2.text,
+        x: "12",
+        y: "12",
+        textAnchor: "middle",
+        dominantBaseline: "central",
+        ownerState,
+        children: icon
+      })]
+    });
+  }
+  return icon;
+});
+process.env.NODE_ENV !== "production" ? StepIcon.propTypes = {
+  // ┌────────────────────────────── Warning ──────────────────────────────┐
+  // │ These PropTypes are generated from the TypeScript type definitions. │
+  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
+  // └─────────────────────────────────────────────────────────────────────┘
+  /**
+   * Whether this step is active.
+   * @default false
+   */
+  active: PropTypes.bool,
+  /**
+   * Override or extend the styles applied to the component.
+   */
+  classes: PropTypes.object,
+  /**
+   * @ignore
+   */
+  className: PropTypes.string,
+  /**
+   * Mark the step as completed. Is passed to child components.
+   * @default false
+   */
+  completed: PropTypes.bool,
+  /**
+   * If `true`, the step is marked as failed.
+   * @default false
+   */
+  error: PropTypes.bool,
+  /**
+   * The label displayed in the step icon.
+   */
+  icon: PropTypes.node,
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])), PropTypes.func, PropTypes.object])
+} : void 0;
+function getStepLabelUtilityClass(slot) {
+  return generateUtilityClass("MuiStepLabel", slot);
+}
+const stepLabelClasses = generateUtilityClasses("MuiStepLabel", ["root", "horizontal", "vertical", "label", "active", "completed", "error", "disabled", "iconContainer", "alternativeLabel", "labelContainer"]);
+const useUtilityClasses$a = (ownerState) => {
+  const {
+    classes: classes2,
+    orientation,
+    active,
+    completed,
+    error: error2,
+    disabled: disabled2,
+    alternativeLabel
+  } = ownerState;
+  const slots = {
+    root: ["root", orientation, error2 && "error", disabled2 && "disabled", alternativeLabel && "alternativeLabel"],
+    label: ["label", active && "active", completed && "completed", error2 && "error", disabled2 && "disabled", alternativeLabel && "alternativeLabel"],
+    iconContainer: ["iconContainer", active && "active", completed && "completed", error2 && "error", disabled2 && "disabled", alternativeLabel && "alternativeLabel"],
+    labelContainer: ["labelContainer", alternativeLabel && "alternativeLabel"]
+  };
+  return composeClasses(slots, getStepLabelUtilityClass, classes2);
+};
+const StepLabelRoot = styled("span", {
+  name: "MuiStepLabel",
+  slot: "Root",
+  overridesResolver: (props, styles2) => {
+    const {
+      ownerState
+    } = props;
+    return [styles2.root, styles2[ownerState.orientation]];
+  }
+})({
+  display: "flex",
+  alignItems: "center",
+  [`&.${stepLabelClasses.alternativeLabel}`]: {
+    flexDirection: "column"
+  },
+  [`&.${stepLabelClasses.disabled}`]: {
+    cursor: "default"
+  },
+  variants: [{
+    props: {
+      orientation: "vertical"
+    },
+    style: {
+      textAlign: "left",
+      padding: "8px 0"
+    }
+  }]
+});
+const StepLabelLabel = styled("span", {
+  name: "MuiStepLabel",
+  slot: "Label"
+})(memoTheme(({
+  theme
+}) => ({
+  ...theme.typography.body2,
+  display: "block",
+  transition: theme.transitions.create("color", {
+    duration: theme.transitions.duration.shortest
+  }),
+  [`&.${stepLabelClasses.active}, &.${stepLabelClasses.completed}`]: {
+    color: (theme.vars || theme).palette.text.primary,
+    fontWeight: 500
+  },
+  [`&.${stepLabelClasses.alternativeLabel}`]: {
+    marginTop: 16
+  },
+  [`&.${stepLabelClasses.error}`]: {
+    color: (theme.vars || theme).palette.error.main
+  }
+})));
+const StepLabelIconContainer = styled("span", {
+  name: "MuiStepLabel",
+  slot: "IconContainer"
+})({
+  flexShrink: 0,
+  display: "flex",
+  paddingRight: 8,
+  [`&.${stepLabelClasses.alternativeLabel}`]: {
+    paddingRight: 0
+  }
+});
+const StepLabelLabelContainer = styled("span", {
+  name: "MuiStepLabel",
+  slot: "LabelContainer"
+})(memoTheme(({
+  theme
+}) => ({
+  width: "100%",
+  color: (theme.vars || theme).palette.text.secondary,
+  [`&.${stepLabelClasses.alternativeLabel}`]: {
+    textAlign: "center"
+  }
+})));
+const StepLabel = /* @__PURE__ */ reactExports.forwardRef(function StepLabel2(inProps, ref) {
+  const props = useDefaultProps({
+    props: inProps,
+    name: "MuiStepLabel"
+  });
+  const {
+    children: children2,
+    className,
+    componentsProps = {},
+    error: error2 = false,
+    icon: iconProp,
+    optional,
+    slots = {},
+    slotProps = {},
+    StepIconComponent: StepIconComponentProp,
+    StepIconProps,
+    ...other
+  } = props;
+  const {
+    alternativeLabel,
+    orientation
+  } = reactExports.useContext(StepperContext);
+  const {
+    active,
+    disabled: disabled2,
+    completed,
+    icon: iconContext
+  } = reactExports.useContext(StepContext);
+  const icon = iconProp || iconContext;
+  let StepIconComponent = StepIconComponentProp;
+  if (icon && !StepIconComponent) {
+    StepIconComponent = StepIcon;
+  }
+  const ownerState = {
+    ...props,
+    active,
+    alternativeLabel,
+    completed,
+    disabled: disabled2,
+    error: error2,
+    orientation
+  };
+  const classes2 = useUtilityClasses$a(ownerState);
+  const externalForwardedProps = {
+    slots,
+    slotProps: {
+      stepIcon: StepIconProps,
+      ...componentsProps,
+      ...slotProps
+    }
+  };
+  const [RootSlot, rootProps] = useSlot("root", {
+    elementType: StepLabelRoot,
+    externalForwardedProps: {
+      ...externalForwardedProps,
+      ...other
+    },
+    ownerState,
+    ref,
+    className: clsx$1(classes2.root, className)
+  });
+  const [LabelSlot, labelProps] = useSlot("label", {
+    elementType: StepLabelLabel,
+    externalForwardedProps,
+    ownerState
+  });
+  const [StepIconSlot, stepIconProps] = useSlot("stepIcon", {
+    elementType: StepIconComponent,
+    externalForwardedProps,
+    ownerState
+  });
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(RootSlot, {
+    ...rootProps,
+    children: [icon || StepIconSlot ? /* @__PURE__ */ jsxRuntimeExports.jsx(StepLabelIconContainer, {
+      className: classes2.iconContainer,
+      ownerState,
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(StepIconSlot, {
+        completed,
+        active,
+        error: error2,
+        icon,
+        ...stepIconProps
+      })
+    }) : null, /* @__PURE__ */ jsxRuntimeExports.jsxs(StepLabelLabelContainer, {
+      className: classes2.labelContainer,
+      ownerState,
+      children: [children2 ? /* @__PURE__ */ jsxRuntimeExports.jsx(LabelSlot, {
+        ...labelProps,
+        className: clsx$1(classes2.label, labelProps?.className),
+        children: children2
+      }) : null, optional]
+    })]
+  });
+});
+process.env.NODE_ENV !== "production" ? StepLabel.propTypes = {
+  // ┌────────────────────────────── Warning ──────────────────────────────┐
+  // │ These PropTypes are generated from the TypeScript type definitions. │
+  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
+  // └─────────────────────────────────────────────────────────────────────┘
+  /**
+   * In most cases will simply be a string containing a title for the label.
+   */
+  children: PropTypes.node,
+  /**
+   * Override or extend the styles applied to the component.
+   */
+  classes: PropTypes.object,
+  /**
+   * @ignore
+   */
+  className: PropTypes.string,
+  /**
+   * The props used for each slot inside.
+   * @default {}
+   * @deprecated use the `slotProps` prop instead. This prop will be removed in a future major release. See [Migrating from deprecated APIs](https://mui.com/material-ui/migration/migrating-from-deprecated-apis/) for more details.
+   */
+  componentsProps: PropTypes.shape({
+    label: PropTypes.object
+  }),
+  /**
+   * If `true`, the step is marked as failed.
+   * @default false
+   */
+  error: PropTypes.bool,
+  /**
+   * Override the default label of the step icon.
+   */
+  icon: PropTypes.node,
+  /**
+   * The optional node to display.
+   */
+  optional: PropTypes.node,
+  /**
+   * The props used for each slot inside.
+   * @default {}
+   */
+  slotProps: PropTypes.shape({
+    label: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+    root: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+    stepIcon: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+  }),
+  /**
+   * The components used for each slot inside.
+   * @default {}
+   */
+  slots: PropTypes.shape({
+    label: PropTypes.elementType,
+    root: PropTypes.elementType,
+    stepIcon: PropTypes.elementType
+  }),
+  /**
+   * The component to render in place of the [`StepIcon`](https://mui.com/material-ui/api/step-icon/).
+   * @deprecated Use `slots.stepIcon` instead. This prop will be removed in a future major release. See [Migrating from deprecated APIs](/material-ui/migration/migrating-from-deprecated-apis/) for more details.
+   */
+  StepIconComponent: PropTypes.elementType,
+  /**
+   * Props applied to the [`StepIcon`](https://mui.com/material-ui/api/step-icon/) element.
+   * @deprecated Use `slotProps.stepIcon` instead. This prop will be removed in a future major release. See [Migrating from deprecated APIs](/material-ui/migration/migrating-from-deprecated-apis/) for more details.
+   */
+  StepIconProps: PropTypes.object,
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])), PropTypes.func, PropTypes.object])
+} : void 0;
+StepLabel.muiName = "StepLabel";
+function getStepConnectorUtilityClass(slot) {
+  return generateUtilityClass("MuiStepConnector", slot);
+}
+generateUtilityClasses("MuiStepConnector", ["root", "horizontal", "vertical", "alternativeLabel", "active", "completed", "disabled", "line", "lineHorizontal", "lineVertical"]);
+const useUtilityClasses$9 = (ownerState) => {
+  const {
+    classes: classes2,
+    orientation,
+    alternativeLabel,
+    active,
+    completed,
+    disabled: disabled2
+  } = ownerState;
+  const slots = {
+    root: ["root", orientation, alternativeLabel && "alternativeLabel", active && "active", completed && "completed", disabled2 && "disabled"],
+    line: ["line", `line${capitalize(orientation)}`]
+  };
+  return composeClasses(slots, getStepConnectorUtilityClass, classes2);
+};
+const StepConnectorRoot = styled("div", {
+  name: "MuiStepConnector",
+  slot: "Root",
+  overridesResolver: (props, styles2) => {
+    const {
+      ownerState
+    } = props;
+    return [styles2.root, styles2[ownerState.orientation], ownerState.alternativeLabel && styles2.alternativeLabel, ownerState.completed && styles2.completed];
+  }
+})({
+  flex: "1 1 auto",
+  variants: [{
+    props: {
+      orientation: "vertical"
+    },
+    style: {
+      marginLeft: 12
+      // half icon
+    }
+  }, {
+    props: {
+      alternativeLabel: true
+    },
+    style: {
+      position: "absolute",
+      top: 8 + 4,
+      left: "calc(-50% + 20px)",
+      right: "calc(50% + 20px)"
+    }
+  }]
+});
+const StepConnectorLine = styled("span", {
+  name: "MuiStepConnector",
+  slot: "Line",
+  overridesResolver: (props, styles2) => {
+    const {
+      ownerState
+    } = props;
+    return [styles2.line, styles2[`line${capitalize(ownerState.orientation)}`]];
+  }
+})(memoTheme(({
+  theme
+}) => {
+  const borderColor2 = theme.palette.mode === "light" ? theme.palette.grey[400] : theme.palette.grey[600];
+  return {
+    display: "block",
+    borderColor: theme.vars ? theme.vars.palette.StepConnector.border : borderColor2,
+    variants: [{
+      props: {
+        orientation: "horizontal"
+      },
+      style: {
+        borderTopStyle: "solid",
+        borderTopWidth: 1
+      }
+    }, {
+      props: {
+        orientation: "vertical"
+      },
+      style: {
+        borderLeftStyle: "solid",
+        borderLeftWidth: 1,
+        minHeight: 24
+      }
+    }]
+  };
+}));
+const StepConnector = /* @__PURE__ */ reactExports.forwardRef(function StepConnector2(inProps, ref) {
+  const props = useDefaultProps({
+    props: inProps,
+    name: "MuiStepConnector"
+  });
+  const {
+    className,
+    ...other
+  } = props;
+  const {
+    alternativeLabel,
+    orientation = "horizontal"
+  } = reactExports.useContext(StepperContext);
+  const {
+    active,
+    disabled: disabled2,
+    completed
+  } = reactExports.useContext(StepContext);
+  const ownerState = {
+    ...props,
+    alternativeLabel,
+    orientation,
+    active,
+    completed,
+    disabled: disabled2
+  };
+  const classes2 = useUtilityClasses$9(ownerState);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(StepConnectorRoot, {
+    className: clsx$1(classes2.root, className),
+    ref,
+    ownerState,
+    ...other,
+    children: /* @__PURE__ */ jsxRuntimeExports.jsx(StepConnectorLine, {
+      className: classes2.line,
+      ownerState
+    })
+  });
+});
+process.env.NODE_ENV !== "production" ? StepConnector.propTypes = {
+  // ┌────────────────────────────── Warning ──────────────────────────────┐
+  // │ These PropTypes are generated from the TypeScript type definitions. │
+  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
+  // └─────────────────────────────────────────────────────────────────────┘
+  /**
+   * Override or extend the styles applied to the component.
+   */
+  classes: PropTypes.object,
+  /**
+   * @ignore
+   */
+  className: PropTypes.string,
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])), PropTypes.func, PropTypes.object])
+} : void 0;
+function getStepperUtilityClass(slot) {
+  return generateUtilityClass("MuiStepper", slot);
+}
+generateUtilityClasses("MuiStepper", ["root", "horizontal", "vertical", "nonLinear", "alternativeLabel"]);
+const useUtilityClasses$8 = (ownerState) => {
+  const {
+    orientation,
+    nonLinear,
+    alternativeLabel,
+    classes: classes2
+  } = ownerState;
+  const slots = {
+    root: ["root", orientation, nonLinear && "nonLinear", alternativeLabel && "alternativeLabel"]
+  };
+  return composeClasses(slots, getStepperUtilityClass, classes2);
+};
+const StepperRoot = styled("div", {
+  name: "MuiStepper",
+  slot: "Root",
+  overridesResolver: (props, styles2) => {
+    const {
+      ownerState
+    } = props;
+    return [styles2.root, styles2[ownerState.orientation], ownerState.alternativeLabel && styles2.alternativeLabel, ownerState.nonLinear && styles2.nonLinear];
+  }
+})({
+  display: "flex",
+  variants: [{
+    props: {
+      orientation: "horizontal"
+    },
+    style: {
+      flexDirection: "row",
+      alignItems: "center"
+    }
+  }, {
+    props: {
+      orientation: "vertical"
+    },
+    style: {
+      flexDirection: "column"
+    }
+  }, {
+    props: {
+      alternativeLabel: true
+    },
+    style: {
+      alignItems: "flex-start"
+    }
+  }]
+});
+const defaultConnector = /* @__PURE__ */ jsxRuntimeExports.jsx(StepConnector, {});
+const Stepper = /* @__PURE__ */ reactExports.forwardRef(function Stepper2(inProps, ref) {
+  const props = useDefaultProps({
+    props: inProps,
+    name: "MuiStepper"
+  });
+  const {
+    activeStep = 0,
+    alternativeLabel = false,
+    children: children2,
+    className,
+    component = "div",
+    connector = defaultConnector,
+    nonLinear = false,
+    orientation = "horizontal",
+    ...other
+  } = props;
+  const ownerState = {
+    ...props,
+    nonLinear,
+    alternativeLabel,
+    orientation,
+    component
+  };
+  const classes2 = useUtilityClasses$8(ownerState);
+  const childrenArray = reactExports.Children.toArray(children2).filter(Boolean);
+  const steps = childrenArray.map((step, index) => {
+    return /* @__PURE__ */ reactExports.cloneElement(step, {
+      index,
+      last: index + 1 === childrenArray.length,
+      ...step.props
+    });
+  });
+  const contextValue = reactExports.useMemo(() => ({
+    activeStep,
+    alternativeLabel,
+    connector,
+    nonLinear,
+    orientation
+  }), [activeStep, alternativeLabel, connector, nonLinear, orientation]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(StepperContext.Provider, {
+    value: contextValue,
+    children: /* @__PURE__ */ jsxRuntimeExports.jsx(StepperRoot, {
+      as: component,
+      ownerState,
+      className: clsx$1(classes2.root, className),
+      ref,
+      ...other,
+      children: steps
+    })
+  });
+});
+process.env.NODE_ENV !== "production" ? Stepper.propTypes = {
+  // ┌────────────────────────────── Warning ──────────────────────────────┐
+  // │ These PropTypes are generated from the TypeScript type definitions. │
+  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
+  // └─────────────────────────────────────────────────────────────────────┘
+  /**
+   * Set the active step (zero based index).
+   * Set to -1 to disable all the steps.
+   * @default 0
+   */
+  activeStep: integerPropType,
+  /**
+   * If set to 'true' and orientation is horizontal,
+   * then the step label will be positioned under the icon.
+   * @default false
+   */
+  alternativeLabel: PropTypes.bool,
+  /**
+   * Two or more `<Step />` components.
+   */
+  children: PropTypes.node,
+  /**
+   * Override or extend the styles applied to the component.
+   */
+  classes: PropTypes.object,
+  /**
+   * @ignore
+   */
+  className: PropTypes.string,
+  /**
+   * The component used for the root node.
+   * Either a string to use a HTML element or a component.
+   */
+  component: PropTypes.elementType,
+  /**
+   * An element to be placed between each step.
+   * @default <StepConnector />
+   */
+  connector: PropTypes.element,
+  /**
+   * If set the `Stepper` will not assist in controlling steps for linear flow.
+   * @default false
+   */
+  nonLinear: PropTypes.bool,
+  /**
+   * The component orientation (layout flow direction).
+   * @default 'horizontal'
+   */
+  orientation: PropTypes.oneOf(["horizontal", "vertical"]),
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])), PropTypes.func, PropTypes.object])
 } : void 0;
 function getSwitchUtilityClass(slot) {
   return generateUtilityClass("MuiSwitch", slot);
@@ -66535,7 +67007,2654 @@ const LogoutIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
 const LoginIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
   d: "M11 7 9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8z"
 }), "Login");
-const axios = {};
+const ClientContext = reactExports.createContext(false);
+const useClient = () => reactExports.useContext(ClientContext);
+const isString$1 = (obj) => typeof obj === "string";
+const defer = () => {
+  let res;
+  let rej;
+  const promise = new Promise((resolve, reject) => {
+    res = resolve;
+    rej = reject;
+  });
+  promise.resolve = res;
+  promise.reject = rej;
+  return promise;
+};
+const makeString = (object) => {
+  if (object == null) return "";
+  return String(object);
+};
+const copy$1 = (a2, s2, t2) => {
+  a2.forEach((m) => {
+    if (s2[m]) t2[m] = s2[m];
+  });
+};
+const lastOfPathSeparatorRegExp = /###/g;
+const cleanKey = (key) => key && key.includes("###") ? key.replace(lastOfPathSeparatorRegExp, ".") : key;
+const canNotTraverseDeeper = (object) => !object || isString$1(object);
+const getLastOfPath = (object, path, Empty) => {
+  const stack = !isString$1(path) ? path : path.split(".");
+  let stackIndex = 0;
+  while (stackIndex < stack.length - 1) {
+    if (canNotTraverseDeeper(object)) return {};
+    const key = cleanKey(stack[stackIndex]);
+    if (!object[key] && Empty) object[key] = new Empty();
+    if (Object.prototype.hasOwnProperty.call(object, key)) {
+      object = object[key];
+    } else {
+      object = {};
+    }
+    ++stackIndex;
+  }
+  if (canNotTraverseDeeper(object)) return {};
+  return {
+    obj: object,
+    k: cleanKey(stack[stackIndex])
+  };
+};
+const setPath = (object, path, newValue) => {
+  const {
+    obj,
+    k
+  } = getLastOfPath(object, path, Object);
+  if (obj !== void 0 || path.length === 1) {
+    obj[k] = newValue;
+    return;
+  }
+  let e2 = path[path.length - 1];
+  let p2 = path.slice(0, path.length - 1);
+  let last = getLastOfPath(object, p2, Object);
+  while (last.obj === void 0 && p2.length) {
+    e2 = `${p2[p2.length - 1]}.${e2}`;
+    p2 = p2.slice(0, p2.length - 1);
+    last = getLastOfPath(object, p2, Object);
+    if (last?.obj && typeof last.obj[`${last.k}.${e2}`] !== "undefined") {
+      last.obj = void 0;
+    }
+  }
+  last.obj[`${last.k}.${e2}`] = newValue;
+};
+const pushPath = (object, path, newValue, concat) => {
+  const {
+    obj,
+    k
+  } = getLastOfPath(object, path, Object);
+  obj[k] = obj[k] || [];
+  obj[k].push(newValue);
+};
+const getPath = (object, path) => {
+  const {
+    obj,
+    k
+  } = getLastOfPath(object, path);
+  if (!obj) return void 0;
+  if (!Object.prototype.hasOwnProperty.call(obj, k)) return void 0;
+  return obj[k];
+};
+const getPathWithDefaults = (data2, defaultData, key) => {
+  const value2 = getPath(data2, key);
+  if (value2 !== void 0) {
+    return value2;
+  }
+  return getPath(defaultData, key);
+};
+const deepExtend = (target2, source, overwrite) => {
+  for (const prop in source) {
+    if (prop !== "__proto__" && prop !== "constructor") {
+      if (Object.prototype.hasOwnProperty.call(target2, prop)) {
+        if (isString$1(target2[prop]) || target2[prop] instanceof String || isString$1(source[prop]) || source[prop] instanceof String) {
+          if (overwrite) target2[prop] = source[prop];
+        } else {
+          deepExtend(target2[prop], source[prop], overwrite);
+        }
+      } else {
+        target2[prop] = source[prop];
+      }
+    }
+  }
+  return target2;
+};
+const regexEscape = (str) => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+const _entityMap = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+  "/": "&#x2F;"
+};
+const escape = (data2) => {
+  if (isString$1(data2)) {
+    return data2.replace(/[&<>"'\/]/g, (s2) => _entityMap[s2]);
+  }
+  return data2;
+};
+class RegExpCache {
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.regExpMap = /* @__PURE__ */ new Map();
+    this.regExpQueue = [];
+  }
+  getRegExp(pattern) {
+    const regExpFromCache = this.regExpMap.get(pattern);
+    if (regExpFromCache !== void 0) {
+      return regExpFromCache;
+    }
+    const regExpNew = new RegExp(pattern);
+    if (this.regExpQueue.length === this.capacity) {
+      this.regExpMap.delete(this.regExpQueue.shift());
+    }
+    this.regExpMap.set(pattern, regExpNew);
+    this.regExpQueue.push(pattern);
+    return regExpNew;
+  }
+}
+const chars = [" ", ",", "?", "!", ";"];
+const looksLikeObjectPathRegExpCache = new RegExpCache(20);
+const looksLikeObjectPath = (key, nsSeparator, keySeparator) => {
+  nsSeparator = nsSeparator || "";
+  keySeparator = keySeparator || "";
+  const possibleChars = chars.filter((c2) => !nsSeparator.includes(c2) && !keySeparator.includes(c2));
+  if (possibleChars.length === 0) return true;
+  const r2 = looksLikeObjectPathRegExpCache.getRegExp(`(${possibleChars.map((c2) => c2 === "?" ? "\\?" : c2).join("|")})`);
+  let matched = !r2.test(key);
+  if (!matched) {
+    const ki = key.indexOf(keySeparator);
+    if (ki > 0 && !r2.test(key.substring(0, ki))) {
+      matched = true;
+    }
+  }
+  return matched;
+};
+const deepFind = (obj, path, keySeparator = ".") => {
+  if (!obj) return void 0;
+  if (obj[path]) {
+    if (!Object.prototype.hasOwnProperty.call(obj, path)) return void 0;
+    return obj[path];
+  }
+  const tokens = path.split(keySeparator);
+  let current = obj;
+  for (let i = 0; i < tokens.length; ) {
+    if (!current || typeof current !== "object") {
+      return void 0;
+    }
+    let next2;
+    let nextPath = "";
+    for (let j = i; j < tokens.length; ++j) {
+      if (j !== i) {
+        nextPath += keySeparator;
+      }
+      nextPath += tokens[j];
+      next2 = current[nextPath];
+      if (next2 !== void 0) {
+        if (["string", "number", "boolean"].includes(typeof next2) && j < tokens.length - 1) {
+          continue;
+        }
+        i += j - i + 1;
+        break;
+      }
+    }
+    current = next2;
+  }
+  return current;
+};
+const getCleanedCode = (code) => code?.replace(/_/g, "-");
+const consoleLogger = {
+  type: "logger",
+  log(args) {
+    this.output("log", args);
+  },
+  warn(args) {
+    this.output("warn", args);
+  },
+  error(args) {
+    this.output("error", args);
+  },
+  output(type2, args) {
+    console?.[type2]?.apply?.(console, args);
+  }
+};
+let Logger$1 = class Logger {
+  constructor(concreteLogger, options2 = {}) {
+    this.init(concreteLogger, options2);
+  }
+  init(concreteLogger, options2 = {}) {
+    this.prefix = options2.prefix || "i18next:";
+    this.logger = concreteLogger || consoleLogger;
+    this.options = options2;
+    this.debug = options2.debug;
+  }
+  log(...args) {
+    return this.forward(args, "log", "", true);
+  }
+  warn(...args) {
+    return this.forward(args, "warn", "", true);
+  }
+  error(...args) {
+    return this.forward(args, "error", "");
+  }
+  deprecate(...args) {
+    return this.forward(args, "warn", "WARNING DEPRECATED: ", true);
+  }
+  forward(args, lvl, prefix2, debugOnly) {
+    if (debugOnly && !this.debug) return null;
+    args = args.map((a2) => isString$1(a2) ? a2.replace(/[\r\n\x00-\x1F\x7F]/g, " ") : a2);
+    if (isString$1(args[0])) args[0] = `${prefix2}${this.prefix} ${args[0]}`;
+    return this.logger[lvl](args);
+  }
+  create(moduleName) {
+    return new Logger(this.logger, {
+      ...{
+        prefix: `${this.prefix}:${moduleName}:`
+      },
+      ...this.options
+    });
+  }
+  clone(options2) {
+    options2 = options2 || this.options;
+    options2.prefix = options2.prefix || this.prefix;
+    return new Logger(this.logger, options2);
+  }
+};
+var baseLogger = new Logger$1();
+class EventEmitter {
+  constructor() {
+    this.observers = {};
+  }
+  on(events, listener) {
+    events.split(" ").forEach((event) => {
+      if (!this.observers[event]) this.observers[event] = /* @__PURE__ */ new Map();
+      const numListeners = this.observers[event].get(listener) || 0;
+      this.observers[event].set(listener, numListeners + 1);
+    });
+    return this;
+  }
+  off(event, listener) {
+    if (!this.observers[event]) return;
+    if (!listener) {
+      delete this.observers[event];
+      return;
+    }
+    this.observers[event].delete(listener);
+  }
+  once(event, listener) {
+    const wrapper2 = (...args) => {
+      listener(...args);
+      this.off(event, wrapper2);
+    };
+    this.on(event, wrapper2);
+    return this;
+  }
+  emit(event, ...args) {
+    if (this.observers[event]) {
+      const cloned = Array.from(this.observers[event].entries());
+      cloned.forEach(([observer, numTimesAdded]) => {
+        for (let i = 0; i < numTimesAdded; i++) {
+          observer(...args);
+        }
+      });
+    }
+    if (this.observers["*"]) {
+      const cloned = Array.from(this.observers["*"].entries());
+      cloned.forEach(([observer, numTimesAdded]) => {
+        for (let i = 0; i < numTimesAdded; i++) {
+          observer(event, ...args);
+        }
+      });
+    }
+  }
+}
+class ResourceStore extends EventEmitter {
+  constructor(data2, options2 = {
+    ns: ["translation"],
+    defaultNS: "translation"
+  }) {
+    super();
+    this.data = data2 || {};
+    this.options = options2;
+    if (this.options.keySeparator === void 0) {
+      this.options.keySeparator = ".";
+    }
+    if (this.options.ignoreJSONStructure === void 0) {
+      this.options.ignoreJSONStructure = true;
+    }
+  }
+  addNamespaces(ns) {
+    if (!this.options.ns.includes(ns)) {
+      this.options.ns.push(ns);
+    }
+  }
+  removeNamespaces(ns) {
+    const index = this.options.ns.indexOf(ns);
+    if (index > -1) {
+      this.options.ns.splice(index, 1);
+    }
+  }
+  getResource(lng, ns, key, options2 = {}) {
+    const keySeparator = options2.keySeparator !== void 0 ? options2.keySeparator : this.options.keySeparator;
+    const ignoreJSONStructure = options2.ignoreJSONStructure !== void 0 ? options2.ignoreJSONStructure : this.options.ignoreJSONStructure;
+    let path;
+    if (lng.includes(".")) {
+      path = lng.split(".");
+    } else {
+      path = [lng, ns];
+      if (key) {
+        if (Array.isArray(key)) {
+          path.push(...key);
+        } else if (isString$1(key) && keySeparator) {
+          path.push(...key.split(keySeparator));
+        } else {
+          path.push(key);
+        }
+      }
+    }
+    const result2 = getPath(this.data, path);
+    if (!result2 && !ns && !key && lng.includes(".")) {
+      lng = path[0];
+      ns = path[1];
+      key = path.slice(2).join(".");
+    }
+    if (result2 || !ignoreJSONStructure || !isString$1(key)) return result2;
+    return deepFind(this.data?.[lng]?.[ns], key, keySeparator);
+  }
+  addResource(lng, ns, key, value2, options2 = {
+    silent: false
+  }) {
+    const keySeparator = options2.keySeparator !== void 0 ? options2.keySeparator : this.options.keySeparator;
+    let path = [lng, ns];
+    if (key) path = path.concat(keySeparator ? key.split(keySeparator) : key);
+    if (lng.includes(".")) {
+      path = lng.split(".");
+      value2 = ns;
+      ns = path[1];
+    }
+    this.addNamespaces(ns);
+    setPath(this.data, path, value2);
+    if (!options2.silent) this.emit("added", lng, ns, key, value2);
+  }
+  addResources(lng, ns, resources, options2 = {
+    silent: false
+  }) {
+    for (const m in resources) {
+      if (isString$1(resources[m]) || Array.isArray(resources[m])) this.addResource(lng, ns, m, resources[m], {
+        silent: true
+      });
+    }
+    if (!options2.silent) this.emit("added", lng, ns, resources);
+  }
+  addResourceBundle(lng, ns, resources, deep, overwrite, options2 = {
+    silent: false,
+    skipCopy: false
+  }) {
+    let path = [lng, ns];
+    if (lng.includes(".")) {
+      path = lng.split(".");
+      deep = resources;
+      resources = ns;
+      ns = path[1];
+    }
+    this.addNamespaces(ns);
+    let pack = getPath(this.data, path) || {};
+    if (!options2.skipCopy) resources = JSON.parse(JSON.stringify(resources));
+    if (deep) {
+      deepExtend(pack, resources, overwrite);
+    } else {
+      pack = {
+        ...pack,
+        ...resources
+      };
+    }
+    setPath(this.data, path, pack);
+    if (!options2.silent) this.emit("added", lng, ns, resources);
+  }
+  removeResourceBundle(lng, ns) {
+    if (this.hasResourceBundle(lng, ns)) {
+      delete this.data[lng][ns];
+    }
+    this.removeNamespaces(ns);
+    this.emit("removed", lng, ns);
+  }
+  hasResourceBundle(lng, ns) {
+    return this.getResource(lng, ns) !== void 0;
+  }
+  getResourceBundle(lng, ns) {
+    if (!ns) ns = this.options.defaultNS;
+    return this.getResource(lng, ns);
+  }
+  getDataByLanguage(lng) {
+    return this.data[lng];
+  }
+  hasLanguageSomeTranslations(lng) {
+    const data2 = this.getDataByLanguage(lng);
+    const n2 = data2 && Object.keys(data2) || [];
+    return !!n2.find((v) => data2[v] && Object.keys(data2[v]).length > 0);
+  }
+  toJSON() {
+    return this.data;
+  }
+}
+var postProcessor = {
+  processors: {},
+  addPostProcessor(module) {
+    this.processors[module.name] = module;
+  },
+  handle(processors, value2, key, options2, translator) {
+    processors.forEach((processor) => {
+      value2 = this.processors[processor]?.process(value2, key, options2, translator) ?? value2;
+    });
+    return value2;
+  }
+};
+const PATH_KEY = /* @__PURE__ */ Symbol("i18next/PATH_KEY");
+function createProxy() {
+  const state2 = [];
+  const handler2 = /* @__PURE__ */ Object.create(null);
+  let proxy2;
+  handler2.get = (target2, key) => {
+    proxy2?.revoke?.();
+    if (key === PATH_KEY) return state2;
+    state2.push(key);
+    proxy2 = Proxy.revocable(target2, handler2);
+    return proxy2.proxy;
+  };
+  return Proxy.revocable(/* @__PURE__ */ Object.create(null), handler2).proxy;
+}
+function keysFromSelector(selector, opts) {
+  const {
+    [PATH_KEY]: path
+  } = selector(createProxy());
+  const keySeparator = opts?.keySeparator ?? ".";
+  const nsSeparator = opts?.nsSeparator ?? ":";
+  const strict = opts?.enableSelector === "strict";
+  if (path.length > 1 && nsSeparator) {
+    const ns = opts?.ns;
+    const nsList = strict ? Array.isArray(ns) ? ns : ns ? [ns] : null : Array.isArray(ns) ? ns : null;
+    if (nsList) {
+      const candidates = strict ? nsList : nsList.length > 1 ? nsList.slice(1) : [];
+      if (candidates.includes(path[0])) {
+        return `${path[0]}${nsSeparator}${path.slice(1).join(keySeparator)}`;
+      }
+    }
+  }
+  return path.join(keySeparator);
+}
+const shouldHandleAsObject = (res) => !isString$1(res) && typeof res !== "boolean" && typeof res !== "number";
+class Translator extends EventEmitter {
+  constructor(services, options2 = {}) {
+    super();
+    copy$1(["resourceStore", "languageUtils", "pluralResolver", "interpolator", "backendConnector", "i18nFormat", "utils"], services, this);
+    this.options = options2;
+    if (this.options.keySeparator === void 0) {
+      this.options.keySeparator = ".";
+    }
+    this.logger = baseLogger.create("translator");
+    this.checkedLoadedFor = {};
+  }
+  changeLanguage(lng) {
+    if (lng) this.language = lng;
+  }
+  exists(key, o2 = {
+    interpolation: {}
+  }) {
+    const opt = {
+      ...o2
+    };
+    if (key == null) return false;
+    const resolved = this.resolve(key, opt);
+    if (resolved?.res === void 0) return false;
+    const isObject2 = shouldHandleAsObject(resolved.res);
+    if (opt.returnObjects === false && isObject2) {
+      return false;
+    }
+    return true;
+  }
+  extractFromKey(key, opt) {
+    let nsSeparator = opt.nsSeparator !== void 0 ? opt.nsSeparator : this.options.nsSeparator;
+    if (nsSeparator === void 0) nsSeparator = ":";
+    const keySeparator = opt.keySeparator !== void 0 ? opt.keySeparator : this.options.keySeparator;
+    let namespaces = opt.ns || this.options.defaultNS || [];
+    const wouldCheckForNsInKey = nsSeparator && key.includes(nsSeparator);
+    const seemsNaturalLanguage = !this.options.userDefinedKeySeparator && !opt.keySeparator && !this.options.userDefinedNsSeparator && !opt.nsSeparator && !looksLikeObjectPath(key, nsSeparator, keySeparator);
+    if (wouldCheckForNsInKey && !seemsNaturalLanguage) {
+      const m = key.match(this.interpolator.nestingRegexp);
+      if (m && m.length > 0) {
+        return {
+          key,
+          namespaces: isString$1(namespaces) ? [namespaces] : namespaces
+        };
+      }
+      const parts = key.split(nsSeparator);
+      if (nsSeparator !== keySeparator || nsSeparator === keySeparator && this.options.ns.includes(parts[0])) namespaces = parts.shift();
+      key = parts.join(keySeparator);
+    }
+    return {
+      key,
+      namespaces: isString$1(namespaces) ? [namespaces] : namespaces
+    };
+  }
+  translate(keys2, o2, lastKey) {
+    let opt = typeof o2 === "object" ? {
+      ...o2
+    } : o2;
+    if (typeof opt !== "object" && this.options.overloadTranslationOptionHandler) {
+      opt = this.options.overloadTranslationOptionHandler(arguments);
+    }
+    if (typeof opt === "object") opt = {
+      ...opt
+    };
+    if (!opt) opt = {};
+    if (keys2 == null) return "";
+    if (typeof keys2 === "function") keys2 = keysFromSelector(keys2, {
+      ...this.options,
+      ...opt
+    });
+    if (!Array.isArray(keys2)) keys2 = [String(keys2)];
+    keys2 = keys2.map((k) => typeof k === "function" ? keysFromSelector(k, {
+      ...this.options,
+      ...opt
+    }) : String(k));
+    const returnDetails = opt.returnDetails !== void 0 ? opt.returnDetails : this.options.returnDetails;
+    const keySeparator = opt.keySeparator !== void 0 ? opt.keySeparator : this.options.keySeparator;
+    const {
+      key,
+      namespaces
+    } = this.extractFromKey(keys2[keys2.length - 1], opt);
+    const namespace = namespaces[namespaces.length - 1];
+    let nsSeparator = opt.nsSeparator !== void 0 ? opt.nsSeparator : this.options.nsSeparator;
+    if (nsSeparator === void 0) nsSeparator = ":";
+    const lng = opt.lng || this.language;
+    const appendNamespaceToCIMode = opt.appendNamespaceToCIMode || this.options.appendNamespaceToCIMode;
+    if (lng?.toLowerCase() === "cimode") {
+      if (appendNamespaceToCIMode) {
+        if (returnDetails) {
+          return {
+            res: `${namespace}${nsSeparator}${key}`,
+            usedKey: key,
+            exactUsedKey: key,
+            usedLng: lng,
+            usedNS: namespace,
+            usedParams: this.getUsedParamsDetails(opt)
+          };
+        }
+        return `${namespace}${nsSeparator}${key}`;
+      }
+      if (returnDetails) {
+        return {
+          res: key,
+          usedKey: key,
+          exactUsedKey: key,
+          usedLng: lng,
+          usedNS: namespace,
+          usedParams: this.getUsedParamsDetails(opt)
+        };
+      }
+      return key;
+    }
+    const resolved = this.resolve(keys2, opt);
+    let res = resolved?.res;
+    const resUsedKey = resolved?.usedKey || key;
+    const resExactUsedKey = resolved?.exactUsedKey || key;
+    const noObject = ["[object Number]", "[object Function]", "[object RegExp]"];
+    const joinArrays = opt.joinArrays !== void 0 ? opt.joinArrays : this.options.joinArrays;
+    const handleAsObjectInI18nFormat = !this.i18nFormat || this.i18nFormat.handleAsObject;
+    const needsPluralHandling = opt.count !== void 0 && !isString$1(opt.count);
+    const hasDefaultValue = Translator.hasDefaultValue(opt);
+    const defaultValueSuffix = needsPluralHandling ? this.pluralResolver.getSuffix(lng, opt.count, opt) : "";
+    const defaultValueSuffixOrdinalFallback = opt.ordinal && needsPluralHandling ? this.pluralResolver.getSuffix(lng, opt.count, {
+      ordinal: false
+    }) : "";
+    const needsZeroSuffixLookup = needsPluralHandling && !opt.ordinal && opt.count === 0;
+    const defaultValue2 = needsZeroSuffixLookup && opt[`defaultValue${this.options.pluralSeparator}zero`] || opt[`defaultValue${defaultValueSuffix}`] || opt[`defaultValue${defaultValueSuffixOrdinalFallback}`] || opt.defaultValue;
+    let resForObjHndl = res;
+    if (handleAsObjectInI18nFormat && !res && hasDefaultValue) {
+      resForObjHndl = defaultValue2;
+    }
+    const handleAsObject = shouldHandleAsObject(resForObjHndl);
+    const resType = Object.prototype.toString.apply(resForObjHndl);
+    if (handleAsObjectInI18nFormat && resForObjHndl && handleAsObject && !noObject.includes(resType) && !(isString$1(joinArrays) && Array.isArray(resForObjHndl))) {
+      if (!opt.returnObjects && !this.options.returnObjects) {
+        if (!this.options.returnedObjectHandler) {
+          this.logger.warn("accessing an object - but returnObjects options is not enabled!");
+        }
+        const r2 = this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, resForObjHndl, {
+          ...opt,
+          ns: namespaces
+        }) : `key '${key} (${this.language})' returned an object instead of string.`;
+        if (returnDetails) {
+          resolved.res = r2;
+          resolved.usedParams = this.getUsedParamsDetails(opt);
+          return resolved;
+        }
+        return r2;
+      }
+      if (keySeparator) {
+        const resTypeIsArray = Array.isArray(resForObjHndl);
+        const copy2 = resTypeIsArray ? [] : {};
+        const newKeyToUse = resTypeIsArray ? resExactUsedKey : resUsedKey;
+        for (const m in resForObjHndl) {
+          if (Object.prototype.hasOwnProperty.call(resForObjHndl, m)) {
+            const deepKey = `${newKeyToUse}${keySeparator}${m}`;
+            if (hasDefaultValue && !res) {
+              copy2[m] = this.translate(deepKey, {
+                ...opt,
+                defaultValue: shouldHandleAsObject(defaultValue2) ? defaultValue2[m] : void 0,
+                ...{
+                  joinArrays: false,
+                  ns: namespaces
+                }
+              });
+            } else {
+              copy2[m] = this.translate(deepKey, {
+                ...opt,
+                ...{
+                  joinArrays: false,
+                  ns: namespaces
+                }
+              });
+            }
+            if (copy2[m] === deepKey) copy2[m] = resForObjHndl[m];
+          }
+        }
+        res = copy2;
+      }
+    } else if (handleAsObjectInI18nFormat && isString$1(joinArrays) && Array.isArray(res)) {
+      res = res.join(joinArrays);
+      if (res) res = this.extendTranslation(res, keys2, opt, lastKey);
+    } else {
+      let usedDefault = false;
+      let usedKey = false;
+      if (!this.isValidLookup(res) && hasDefaultValue) {
+        usedDefault = true;
+        res = defaultValue2;
+      }
+      if (!this.isValidLookup(res)) {
+        usedKey = true;
+        res = key;
+      }
+      const missingKeyNoValueFallbackToKey = opt.missingKeyNoValueFallbackToKey || this.options.missingKeyNoValueFallbackToKey;
+      const resForMissing = missingKeyNoValueFallbackToKey && usedKey ? void 0 : res;
+      const updateMissing = hasDefaultValue && defaultValue2 !== res && this.options.updateMissing;
+      if (usedKey || usedDefault || updateMissing) {
+        this.logger.log(updateMissing ? "updateKey" : "missingKey", lng, namespace, needsPluralHandling && !updateMissing ? `${key}${this.pluralResolver.getSuffix(lng, opt.count, opt)}` : key, updateMissing ? defaultValue2 : res);
+        if (keySeparator) {
+          const fk = this.resolve(key, {
+            ...opt,
+            keySeparator: false
+          });
+          if (fk && fk.res) this.logger.warn("Seems the loaded translations were in flat JSON format instead of nested. Either set keySeparator: false on init or make sure your translations are published in nested format.");
+        }
+        let lngs = [];
+        const fallbackLngs = this.languageUtils.getFallbackCodes(this.options.fallbackLng, opt.lng || this.language);
+        if (this.options.saveMissingTo === "fallback" && fallbackLngs && fallbackLngs[0]) {
+          for (let i = 0; i < fallbackLngs.length; i++) {
+            lngs.push(fallbackLngs[i]);
+          }
+        } else if (this.options.saveMissingTo === "all") {
+          lngs = this.languageUtils.toResolveHierarchy(opt.lng || this.language);
+        } else {
+          lngs.push(opt.lng || this.language);
+        }
+        const send = (l2, k, specificDefaultValue) => {
+          const defaultForMissing = hasDefaultValue && specificDefaultValue !== res ? specificDefaultValue : resForMissing;
+          if (this.options.missingKeyHandler) {
+            this.options.missingKeyHandler(l2, namespace, k, defaultForMissing, updateMissing, opt);
+          } else if (this.backendConnector?.saveMissing) {
+            this.backendConnector.saveMissing(l2, namespace, k, defaultForMissing, updateMissing, opt);
+          }
+          this.emit("missingKey", l2, namespace, k, res);
+        };
+        if (this.options.saveMissing) {
+          if (this.options.saveMissingPlurals && needsPluralHandling) {
+            lngs.forEach((language2) => {
+              const suffixes = this.pluralResolver.getSuffixes(language2, opt);
+              if (needsZeroSuffixLookup && opt[`defaultValue${this.options.pluralSeparator}zero`] && !suffixes.includes(`${this.options.pluralSeparator}zero`)) {
+                suffixes.push(`${this.options.pluralSeparator}zero`);
+              }
+              suffixes.forEach((suffix) => {
+                send([language2], key + suffix, opt[`defaultValue${suffix}`] || defaultValue2);
+              });
+            });
+          } else {
+            send(lngs, key, defaultValue2);
+          }
+        }
+      }
+      res = this.extendTranslation(res, keys2, opt, resolved, lastKey);
+      if (usedKey && res === key && this.options.appendNamespaceToMissingKey) {
+        res = `${namespace}${nsSeparator}${key}`;
+      }
+      if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler) {
+        res = this.options.parseMissingKeyHandler(this.options.appendNamespaceToMissingKey ? `${namespace}${nsSeparator}${key}` : key, usedDefault ? res : void 0, opt);
+      }
+    }
+    if (returnDetails) {
+      resolved.res = res;
+      resolved.usedParams = this.getUsedParamsDetails(opt);
+      return resolved;
+    }
+    return res;
+  }
+  extendTranslation(res, key, opt, resolved, lastKey) {
+    if (this.i18nFormat?.parse) {
+      res = this.i18nFormat.parse(res, {
+        ...this.options.interpolation.defaultVariables,
+        ...opt
+      }, opt.lng || this.language || resolved.usedLng, resolved.usedNS, resolved.usedKey, {
+        resolved
+      });
+    } else if (!opt.skipInterpolation) {
+      if (opt.interpolation) this.interpolator.init({
+        ...opt,
+        ...{
+          interpolation: {
+            ...this.options.interpolation,
+            ...opt.interpolation
+          }
+        }
+      });
+      const skipOnVariables = isString$1(res) && (opt?.interpolation?.skipOnVariables !== void 0 ? opt.interpolation.skipOnVariables : this.options.interpolation.skipOnVariables);
+      let nestBef;
+      if (skipOnVariables) {
+        const nb = res.match(this.interpolator.nestingRegexp);
+        nestBef = nb && nb.length;
+      }
+      let data2 = opt.replace && !isString$1(opt.replace) ? opt.replace : opt;
+      if (this.options.interpolation.defaultVariables) data2 = {
+        ...this.options.interpolation.defaultVariables,
+        ...data2
+      };
+      res = this.interpolator.interpolate(res, data2, opt.lng || this.language || resolved.usedLng, opt);
+      if (skipOnVariables) {
+        const na = res.match(this.interpolator.nestingRegexp);
+        const nestAft = na && na.length;
+        if (nestBef < nestAft) opt.nest = false;
+      }
+      if (!opt.lng && resolved && resolved.res) opt.lng = this.language || resolved.usedLng;
+      if (opt.nest !== false) res = this.interpolator.nest(res, (...args) => {
+        if (lastKey?.[0] === args[0] && !opt.context) {
+          this.logger.warn(`It seems you are nesting recursively key: ${args[0]} in key: ${key[0]}`);
+          return null;
+        }
+        return this.translate(...args, key);
+      }, opt);
+      if (opt.interpolation) this.interpolator.reset();
+    }
+    const postProcess = opt.postProcess || this.options.postProcess;
+    const postProcessorNames = isString$1(postProcess) ? [postProcess] : postProcess;
+    if (res != null && postProcessorNames?.length && opt.applyPostProcessor !== false) {
+      res = postProcessor.handle(postProcessorNames, res, key, this.options && this.options.postProcessPassResolved ? {
+        i18nResolved: {
+          ...resolved,
+          usedParams: this.getUsedParamsDetails(opt)
+        },
+        ...opt
+      } : opt, this);
+    }
+    return res;
+  }
+  resolve(keys2, opt = {}) {
+    let found2;
+    let usedKey;
+    let exactUsedKey;
+    let usedLng;
+    let usedNS;
+    if (isString$1(keys2)) keys2 = [keys2];
+    if (Array.isArray(keys2)) keys2 = keys2.map((k) => typeof k === "function" ? keysFromSelector(k, {
+      ...this.options,
+      ...opt
+    }) : k);
+    keys2.forEach((k) => {
+      if (this.isValidLookup(found2)) return;
+      const extracted = this.extractFromKey(k, opt);
+      const key = extracted.key;
+      usedKey = key;
+      let namespaces = extracted.namespaces;
+      if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
+      const needsPluralHandling = opt.count !== void 0 && !isString$1(opt.count);
+      const needsZeroSuffixLookup = needsPluralHandling && !opt.ordinal && opt.count === 0;
+      const needsContextHandling = opt.context !== void 0 && (isString$1(opt.context) || typeof opt.context === "number") && opt.context !== "";
+      const codes = opt.lngs ? opt.lngs : this.languageUtils.toResolveHierarchy(opt.lng || this.language, opt.fallbackLng);
+      namespaces.forEach((ns) => {
+        if (this.isValidLookup(found2)) return;
+        usedNS = ns;
+        if (!this.checkedLoadedFor[`${codes[0]}-${ns}`] && this.utils?.hasLoadedNamespace && !this.utils?.hasLoadedNamespace(usedNS)) {
+          this.checkedLoadedFor[`${codes[0]}-${ns}`] = true;
+          this.logger.warn(`key "${usedKey}" for languages "${codes.join(", ")}" won't get resolved as namespace "${usedNS}" was not yet loaded`, "This means something IS WRONG in your setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!");
+        }
+        codes.forEach((code) => {
+          if (this.isValidLookup(found2)) return;
+          usedLng = code;
+          const finalKeys = [key];
+          if (this.i18nFormat?.addLookupKeys) {
+            this.i18nFormat.addLookupKeys(finalKeys, key, code, ns, opt);
+          } else {
+            let pluralSuffix;
+            if (needsPluralHandling) pluralSuffix = this.pluralResolver.getSuffix(code, opt.count, opt);
+            const zeroSuffix = `${this.options.pluralSeparator}zero`;
+            const ordinalPrefix = `${this.options.pluralSeparator}ordinal${this.options.pluralSeparator}`;
+            if (needsPluralHandling) {
+              if (opt.ordinal && pluralSuffix.startsWith(ordinalPrefix)) {
+                finalKeys.push(key + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator));
+              }
+              finalKeys.push(key + pluralSuffix);
+              if (needsZeroSuffixLookup) {
+                finalKeys.push(key + zeroSuffix);
+              }
+            }
+            if (needsContextHandling) {
+              const contextKey = `${key}${this.options.contextSeparator || "_"}${opt.context}`;
+              finalKeys.push(contextKey);
+              if (needsPluralHandling) {
+                if (opt.ordinal && pluralSuffix.startsWith(ordinalPrefix)) {
+                  finalKeys.push(contextKey + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator));
+                }
+                finalKeys.push(contextKey + pluralSuffix);
+                if (needsZeroSuffixLookup) {
+                  finalKeys.push(contextKey + zeroSuffix);
+                }
+              }
+            }
+          }
+          let possibleKey;
+          while (possibleKey = finalKeys.pop()) {
+            if (!this.isValidLookup(found2)) {
+              exactUsedKey = possibleKey;
+              found2 = this.getResource(code, ns, possibleKey, opt);
+            }
+          }
+        });
+      });
+    });
+    return {
+      res: found2,
+      usedKey,
+      exactUsedKey,
+      usedLng,
+      usedNS
+    };
+  }
+  isValidLookup(res) {
+    return res !== void 0 && !(!this.options.returnNull && res === null) && !(!this.options.returnEmptyString && res === "");
+  }
+  getResource(code, ns, key, options2 = {}) {
+    if (this.i18nFormat?.getResource) return this.i18nFormat.getResource(code, ns, key, options2);
+    return this.resourceStore.getResource(code, ns, key, options2);
+  }
+  getUsedParamsDetails(options2 = {}) {
+    const optionsKeys = ["defaultValue", "ordinal", "context", "replace", "lng", "lngs", "fallbackLng", "ns", "keySeparator", "nsSeparator", "returnObjects", "returnDetails", "joinArrays", "postProcess", "interpolation"];
+    const useOptionsReplaceForData = options2.replace && !isString$1(options2.replace);
+    let data2 = useOptionsReplaceForData ? options2.replace : options2;
+    if (useOptionsReplaceForData && typeof options2.count !== "undefined") {
+      data2 = {
+        ...data2,
+        count: options2.count
+      };
+    }
+    if (this.options.interpolation.defaultVariables) {
+      data2 = {
+        ...this.options.interpolation.defaultVariables,
+        ...data2
+      };
+    }
+    if (!useOptionsReplaceForData) {
+      data2 = {
+        ...data2
+      };
+      for (const key of optionsKeys) {
+        delete data2[key];
+      }
+    }
+    return data2;
+  }
+  static hasDefaultValue(options2) {
+    const prefix2 = "defaultValue";
+    for (const option in options2) {
+      if (Object.prototype.hasOwnProperty.call(options2, option) && option.startsWith(prefix2) && void 0 !== options2[option]) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+class LanguageUtil {
+  constructor(options2) {
+    this.options = options2;
+    this.supportedLngs = this.options.supportedLngs || false;
+    this.logger = baseLogger.create("languageUtils");
+  }
+  getScriptPartFromCode(code) {
+    code = getCleanedCode(code);
+    if (!code || !code.includes("-")) return null;
+    const p2 = code.split("-");
+    if (p2.length === 2) return null;
+    p2.pop();
+    if (p2[p2.length - 1].toLowerCase() === "x") return null;
+    return this.formatLanguageCode(p2.join("-"));
+  }
+  getLanguagePartFromCode(code) {
+    code = getCleanedCode(code);
+    if (!code || !code.includes("-")) return code;
+    const p2 = code.split("-");
+    return this.formatLanguageCode(p2[0]);
+  }
+  formatLanguageCode(code) {
+    if (isString$1(code) && code.includes("-")) {
+      let formattedCode;
+      try {
+        formattedCode = Intl.getCanonicalLocales(code)[0];
+      } catch (e2) {
+      }
+      if (formattedCode && this.options.lowerCaseLng) {
+        formattedCode = formattedCode.toLowerCase();
+      }
+      if (formattedCode) return formattedCode;
+      if (this.options.lowerCaseLng) {
+        return code.toLowerCase();
+      }
+      return code;
+    }
+    return this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
+  }
+  isSupportedCode(code) {
+    if (this.options.load === "languageOnly" || this.options.nonExplicitSupportedLngs) {
+      code = this.getLanguagePartFromCode(code);
+    }
+    return !this.supportedLngs || !this.supportedLngs.length || this.supportedLngs.includes(code);
+  }
+  getBestMatchFromCodes(codes) {
+    if (!codes) return null;
+    let found2;
+    codes.forEach((code) => {
+      if (found2) return;
+      const cleanedLng = this.formatLanguageCode(code);
+      if (!this.options.supportedLngs || this.isSupportedCode(cleanedLng)) found2 = cleanedLng;
+    });
+    if (!found2 && this.options.supportedLngs) {
+      codes.forEach((code) => {
+        if (found2) return;
+        const lngScOnly = this.getScriptPartFromCode(code);
+        if (this.isSupportedCode(lngScOnly)) return found2 = lngScOnly;
+        const lngOnly = this.getLanguagePartFromCode(code);
+        if (this.isSupportedCode(lngOnly)) return found2 = lngOnly;
+        found2 = this.options.supportedLngs.find((supportedLng) => {
+          if (supportedLng === lngOnly) return true;
+          if (!supportedLng.includes("-") && !lngOnly.includes("-")) return false;
+          if (supportedLng.includes("-") && !lngOnly.includes("-") && supportedLng.slice(0, supportedLng.indexOf("-")) === lngOnly) return true;
+          if (supportedLng.startsWith(lngOnly) && lngOnly.length > 1) return true;
+          return false;
+        });
+      });
+    }
+    if (!found2) found2 = this.getFallbackCodes(this.options.fallbackLng)[0];
+    return found2;
+  }
+  getFallbackCodes(fallbacks, code) {
+    if (!fallbacks) return [];
+    if (typeof fallbacks === "function") fallbacks = fallbacks(code);
+    if (isString$1(fallbacks)) fallbacks = [fallbacks];
+    if (Array.isArray(fallbacks)) return fallbacks;
+    if (!code) return fallbacks.default || [];
+    let found2 = fallbacks[code];
+    if (!found2) found2 = fallbacks[this.getScriptPartFromCode(code)];
+    if (!found2) found2 = fallbacks[this.formatLanguageCode(code)];
+    if (!found2) found2 = fallbacks[this.getLanguagePartFromCode(code)];
+    if (!found2) found2 = fallbacks.default;
+    return found2 || [];
+  }
+  toResolveHierarchy(code, fallbackCode) {
+    const fallbackCodes = this.getFallbackCodes((fallbackCode === false ? [] : fallbackCode) || this.options.fallbackLng || [], code);
+    const codes = [];
+    const addCode = (c2) => {
+      if (!c2) return;
+      if (this.isSupportedCode(c2)) {
+        codes.push(c2);
+      } else {
+        this.logger.warn(`rejecting language code not found in supportedLngs: ${c2}`);
+      }
+    };
+    if (isString$1(code) && (code.includes("-") || code.includes("_"))) {
+      if (this.options.load !== "languageOnly") addCode(this.formatLanguageCode(code));
+      if (this.options.load !== "languageOnly" && this.options.load !== "currentOnly") addCode(this.getScriptPartFromCode(code));
+      if (this.options.load !== "currentOnly") addCode(this.getLanguagePartFromCode(code));
+    } else if (isString$1(code)) {
+      addCode(this.formatLanguageCode(code));
+    }
+    fallbackCodes.forEach((fc) => {
+      if (!codes.includes(fc)) addCode(this.formatLanguageCode(fc));
+    });
+    return codes;
+  }
+}
+const suffixesOrder = {
+  zero: 0,
+  one: 1,
+  two: 2,
+  few: 3,
+  many: 4,
+  other: 5
+};
+const dummyRule = {
+  select: (count) => count === 1 ? "one" : "other",
+  resolvedOptions: () => ({
+    pluralCategories: ["one", "other"]
+  })
+};
+class PluralResolver {
+  constructor(languageUtils, options2 = {}) {
+    this.languageUtils = languageUtils;
+    this.options = options2;
+    this.logger = baseLogger.create("pluralResolver");
+    this.pluralRulesCache = {};
+  }
+  clearCache() {
+    this.pluralRulesCache = {};
+  }
+  getRule(code, options2 = {}) {
+    const cleanedCode = getCleanedCode(code === "dev" ? "en" : code);
+    const type2 = options2.ordinal ? "ordinal" : "cardinal";
+    const cacheKey2 = JSON.stringify({
+      cleanedCode,
+      type: type2
+    });
+    if (cacheKey2 in this.pluralRulesCache) {
+      return this.pluralRulesCache[cacheKey2];
+    }
+    let rule;
+    try {
+      rule = new Intl.PluralRules(cleanedCode, {
+        type: type2
+      });
+    } catch (err) {
+      if (typeof Intl === "undefined") {
+        this.logger.error("No Intl support, please use an Intl polyfill!");
+        return dummyRule;
+      }
+      if (!code.match(/-|_/)) return dummyRule;
+      const lngPart = this.languageUtils.getLanguagePartFromCode(code);
+      rule = this.getRule(lngPart, options2);
+    }
+    this.pluralRulesCache[cacheKey2] = rule;
+    return rule;
+  }
+  needsPlural(code, options2 = {}) {
+    let rule = this.getRule(code, options2);
+    if (!rule) rule = this.getRule("dev", options2);
+    return rule?.resolvedOptions().pluralCategories.length > 1;
+  }
+  getPluralFormsOfKey(code, key, options2 = {}) {
+    return this.getSuffixes(code, options2).map((suffix) => `${key}${suffix}`);
+  }
+  getSuffixes(code, options2 = {}) {
+    let rule = this.getRule(code, options2);
+    if (!rule) rule = this.getRule("dev", options2);
+    if (!rule) return [];
+    return rule.resolvedOptions().pluralCategories.sort((pluralCategory1, pluralCategory2) => suffixesOrder[pluralCategory1] - suffixesOrder[pluralCategory2]).map((pluralCategory) => `${this.options.prepend}${options2.ordinal ? `ordinal${this.options.prepend}` : ""}${pluralCategory}`);
+  }
+  getSuffix(code, count, options2 = {}) {
+    const rule = this.getRule(code, options2);
+    if (rule) {
+      return `${this.options.prepend}${options2.ordinal ? `ordinal${this.options.prepend}` : ""}${rule.select(count)}`;
+    }
+    this.logger.warn(`no plural rule found for: ${code}`);
+    return this.getSuffix("dev", count, options2);
+  }
+}
+const deepFindWithDefaults = (data2, defaultData, key, keySeparator = ".", ignoreJSONStructure = true) => {
+  let path = getPathWithDefaults(data2, defaultData, key);
+  if (!path && ignoreJSONStructure && isString$1(key)) {
+    path = deepFind(data2, key, keySeparator);
+    if (path === void 0) path = deepFind(defaultData, key, keySeparator);
+  }
+  return path;
+};
+const regexSafe = (val) => val.replace(/\$/g, "$$$$");
+class Interpolator {
+  constructor(options2 = {}) {
+    this.logger = baseLogger.create("interpolator");
+    this.options = options2;
+    this.format = options2?.interpolation?.format || ((value2) => value2);
+    this.init(options2);
+  }
+  init(options2 = {}) {
+    if (!options2.interpolation) options2.interpolation = {
+      escapeValue: true
+    };
+    const {
+      escape: escape$1,
+      escapeValue,
+      useRawValueToEscape,
+      prefix: prefix2,
+      prefixEscaped,
+      suffix,
+      suffixEscaped,
+      formatSeparator,
+      unescapeSuffix,
+      unescapePrefix,
+      nestingPrefix,
+      nestingPrefixEscaped,
+      nestingSuffix,
+      nestingSuffixEscaped,
+      nestingOptionsSeparator,
+      maxReplaces,
+      alwaysFormat
+    } = options2.interpolation;
+    this.escape = escape$1 !== void 0 ? escape$1 : escape;
+    this.escapeValue = escapeValue !== void 0 ? escapeValue : true;
+    this.useRawValueToEscape = useRawValueToEscape !== void 0 ? useRawValueToEscape : false;
+    this.prefix = prefix2 ? regexEscape(prefix2) : prefixEscaped || "{{";
+    this.suffix = suffix ? regexEscape(suffix) : suffixEscaped || "}}";
+    this.formatSeparator = formatSeparator || ",";
+    this.unescapePrefix = unescapeSuffix ? "" : unescapePrefix ? regexEscape(unescapePrefix) : "-";
+    this.unescapeSuffix = this.unescapePrefix ? "" : unescapeSuffix ? regexEscape(unescapeSuffix) : "";
+    this.nestingPrefix = nestingPrefix ? regexEscape(nestingPrefix) : nestingPrefixEscaped || regexEscape("$t(");
+    this.nestingSuffix = nestingSuffix ? regexEscape(nestingSuffix) : nestingSuffixEscaped || regexEscape(")");
+    this.nestingOptionsSeparator = nestingOptionsSeparator || ",";
+    this.maxReplaces = maxReplaces || 1e3;
+    this.alwaysFormat = alwaysFormat !== void 0 ? alwaysFormat : false;
+    this.resetRegExp();
+  }
+  reset() {
+    if (this.options) this.init(this.options);
+  }
+  resetRegExp() {
+    const getOrResetRegExp = (existingRegExp, pattern) => {
+      if (existingRegExp?.source === pattern) {
+        existingRegExp.lastIndex = 0;
+        return existingRegExp;
+      }
+      return new RegExp(pattern, "g");
+    };
+    this.regexp = getOrResetRegExp(this.regexp, `${this.prefix}(.+?)${this.suffix}`);
+    this.regexpUnescape = getOrResetRegExp(this.regexpUnescape, `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`);
+    this.nestingRegexp = getOrResetRegExp(this.nestingRegexp, `${this.nestingPrefix}((?:[^()"']+|"[^"]*"|'[^']*'|\\((?:[^()]|"[^"]*"|'[^']*')*\\))*?)${this.nestingSuffix}`);
+  }
+  interpolate(str, data2, lng, options2) {
+    let match2;
+    let value2;
+    let replaces;
+    const defaultData = this.options && this.options.interpolation && this.options.interpolation.defaultVariables || {};
+    const handleFormat = (key) => {
+      if (!key.includes(this.formatSeparator)) {
+        const path = deepFindWithDefaults(data2, defaultData, key, this.options.keySeparator, this.options.ignoreJSONStructure);
+        return this.alwaysFormat ? this.format(path, void 0, lng, {
+          ...options2,
+          ...data2,
+          interpolationkey: key
+        }) : path;
+      }
+      const p2 = key.split(this.formatSeparator);
+      const k = p2.shift().trim();
+      const f = p2.join(this.formatSeparator).trim();
+      return this.format(deepFindWithDefaults(data2, defaultData, k, this.options.keySeparator, this.options.ignoreJSONStructure), f, lng, {
+        ...options2,
+        ...data2,
+        interpolationkey: k
+      });
+    };
+    this.resetRegExp();
+    if (!this.escapeValue && typeof str === "string" && /\$t\([^)]*\{[^}]*\{\{/.test(str)) {
+      this.logger.warn("nesting options string contains interpolated variables with escapeValue: false — if any of those values are attacker-controlled they can inject additional nesting options (e.g. redirect lng/ns). Sanitise untrusted input before passing it to t(), or keep escapeValue: true.");
+    }
+    const missingInterpolationHandler = options2?.missingInterpolationHandler || this.options.missingInterpolationHandler;
+    const skipOnVariables = options2?.interpolation?.skipOnVariables !== void 0 ? options2.interpolation.skipOnVariables : this.options.interpolation.skipOnVariables;
+    const todos = [{
+      regex: this.regexpUnescape,
+      safeValue: (val) => val
+    }, {
+      regex: this.regexp,
+      safeValue: (val) => this.escapeValue ? this.escape(val) : val
+    }];
+    todos.forEach((todo) => {
+      replaces = 0;
+      while (match2 = todo.regex.exec(str)) {
+        const matchedVar = match2[1].trim();
+        value2 = handleFormat(matchedVar);
+        if (value2 === void 0) {
+          if (typeof missingInterpolationHandler === "function") {
+            const temp = missingInterpolationHandler(str, match2, options2);
+            value2 = isString$1(temp) ? temp : "";
+          } else if (options2 && Object.prototype.hasOwnProperty.call(options2, matchedVar)) {
+            value2 = "";
+          } else if (skipOnVariables) {
+            value2 = match2[0];
+            continue;
+          } else {
+            this.logger.warn(`missed to pass in variable ${matchedVar} for interpolating ${str}`);
+            value2 = "";
+          }
+        } else if (!isString$1(value2) && !this.useRawValueToEscape) {
+          value2 = makeString(value2);
+        }
+        const safeValue = todo.safeValue(value2);
+        str = str.replace(match2[0], regexSafe(safeValue));
+        if (skipOnVariables) {
+          todo.regex.lastIndex += safeValue.length;
+          todo.regex.lastIndex -= match2[0].length;
+        } else {
+          todo.regex.lastIndex = 0;
+        }
+        replaces++;
+        if (replaces >= this.maxReplaces) {
+          break;
+        }
+      }
+    });
+    return str;
+  }
+  nest(str, fc, options2 = {}) {
+    let match2;
+    let value2;
+    let clonedOptions;
+    const handleHasOptions = (key, inheritedOptions) => {
+      const sep = this.nestingOptionsSeparator;
+      if (!key.includes(sep)) return key;
+      const c2 = key.split(new RegExp(`${regexEscape(sep)}[ ]*{`));
+      let optionsString = `{${c2[1]}`;
+      key = c2[0];
+      optionsString = this.interpolate(optionsString, clonedOptions);
+      const matchedSingleQuotes = optionsString.match(/'/g);
+      const matchedDoubleQuotes = optionsString.match(/"/g);
+      if ((matchedSingleQuotes?.length ?? 0) % 2 === 0 && !matchedDoubleQuotes || (matchedDoubleQuotes?.length ?? 0) % 2 !== 0) {
+        optionsString = optionsString.replace(/'/g, '"');
+      }
+      try {
+        clonedOptions = JSON.parse(optionsString);
+        if (inheritedOptions) clonedOptions = {
+          ...inheritedOptions,
+          ...clonedOptions
+        };
+      } catch (e2) {
+        this.logger.warn(`failed parsing options string in nesting for key ${key}`, e2);
+        return `${key}${sep}${optionsString}`;
+      }
+      if (clonedOptions.defaultValue && clonedOptions.defaultValue.includes(this.prefix)) delete clonedOptions.defaultValue;
+      return key;
+    };
+    while (match2 = this.nestingRegexp.exec(str)) {
+      let formatters = [];
+      clonedOptions = {
+        ...options2
+      };
+      clonedOptions = clonedOptions.replace && !isString$1(clonedOptions.replace) ? clonedOptions.replace : clonedOptions;
+      clonedOptions.applyPostProcessor = false;
+      delete clonedOptions.defaultValue;
+      const keyEndIndex = /{.*}/s.test(match2[1]) ? match2[1].lastIndexOf("}") + 1 : match2[1].indexOf(this.formatSeparator);
+      if (keyEndIndex !== -1) {
+        formatters = match2[1].slice(keyEndIndex).split(this.formatSeparator).map((elem) => elem.trim()).filter(Boolean);
+        match2[1] = match2[1].slice(0, keyEndIndex);
+      }
+      value2 = fc(handleHasOptions.call(this, match2[1].trim(), clonedOptions), clonedOptions);
+      if (value2 && match2[0] === str && !isString$1(value2)) return value2;
+      if (!isString$1(value2)) value2 = makeString(value2);
+      if (!value2) {
+        this.logger.warn(`missed to resolve ${match2[1]} for nesting ${str}`);
+        value2 = "";
+      }
+      if (formatters.length) {
+        value2 = formatters.reduce((v, f) => this.format(v, f, options2.lng, {
+          ...options2,
+          interpolationkey: match2[1].trim()
+        }), value2.trim());
+      }
+      str = str.replace(match2[0], value2);
+      this.regexp.lastIndex = 0;
+    }
+    return str;
+  }
+}
+const parseFormatStr = (formatStr) => {
+  let formatName = formatStr.toLowerCase().trim();
+  const formatOptions = {};
+  if (formatStr.includes("(")) {
+    const p2 = formatStr.split("(");
+    formatName = p2[0].toLowerCase().trim();
+    const optStr = p2[1].slice(0, -1);
+    if (formatName === "currency" && !optStr.includes(":")) {
+      if (!formatOptions.currency) formatOptions.currency = optStr.trim();
+    } else if (formatName === "relativetime" && !optStr.includes(":")) {
+      if (!formatOptions.range) formatOptions.range = optStr.trim();
+    } else {
+      const opts = optStr.split(";");
+      opts.forEach((opt) => {
+        if (opt) {
+          const [key, ...rest] = opt.split(":");
+          const val = rest.join(":").trim().replace(/^'+|'+$/g, "");
+          const trimmedKey = key.trim();
+          if (!formatOptions[trimmedKey]) formatOptions[trimmedKey] = val;
+          if (val === "false") formatOptions[trimmedKey] = false;
+          if (val === "true") formatOptions[trimmedKey] = true;
+          if (!isNaN(val)) formatOptions[trimmedKey] = parseInt(val, 10);
+        }
+      });
+    }
+  }
+  return {
+    formatName,
+    formatOptions
+  };
+};
+const createCachedFormatter = (fn2) => {
+  const cache2 = {};
+  return (v, l2, o2) => {
+    let optForCache = o2;
+    if (o2 && o2.interpolationkey && o2.formatParams && o2.formatParams[o2.interpolationkey] && o2[o2.interpolationkey]) {
+      optForCache = {
+        ...optForCache,
+        [o2.interpolationkey]: void 0
+      };
+    }
+    const key = l2 + JSON.stringify(optForCache);
+    let frm = cache2[key];
+    if (!frm) {
+      frm = fn2(getCleanedCode(l2), o2);
+      cache2[key] = frm;
+    }
+    return frm(v);
+  };
+};
+const createNonCachedFormatter = (fn2) => (v, l2, o2) => fn2(getCleanedCode(l2), o2)(v);
+class Formatter {
+  constructor(options2 = {}) {
+    this.logger = baseLogger.create("formatter");
+    this.options = options2;
+    this.init(options2);
+  }
+  init(services, options2 = {
+    interpolation: {}
+  }) {
+    this.formatSeparator = options2.interpolation.formatSeparator || ",";
+    const cf = options2.cacheInBuiltFormats ? createCachedFormatter : createNonCachedFormatter;
+    this.formats = {
+      number: cf((lng, opt) => {
+        const formatter = new Intl.NumberFormat(lng, {
+          ...opt
+        });
+        return (val) => formatter.format(val);
+      }),
+      currency: cf((lng, opt) => {
+        const formatter = new Intl.NumberFormat(lng, {
+          ...opt,
+          style: "currency"
+        });
+        return (val) => formatter.format(val);
+      }),
+      datetime: cf((lng, opt) => {
+        const formatter = new Intl.DateTimeFormat(lng, {
+          ...opt
+        });
+        return (val) => formatter.format(val);
+      }),
+      relativetime: cf((lng, opt) => {
+        const formatter = new Intl.RelativeTimeFormat(lng, {
+          ...opt
+        });
+        return (val) => formatter.format(val, opt.range || "day");
+      }),
+      list: cf((lng, opt) => {
+        const formatter = new Intl.ListFormat(lng, {
+          ...opt
+        });
+        return (val) => formatter.format(val);
+      })
+    };
+  }
+  add(name2, fc) {
+    this.formats[name2.toLowerCase().trim()] = fc;
+  }
+  addCached(name2, fc) {
+    this.formats[name2.toLowerCase().trim()] = createCachedFormatter(fc);
+  }
+  format(value2, format, lng, options2 = {}) {
+    if (!format) return value2;
+    if (value2 == null) return value2;
+    const rawFormats = format.split(this.formatSeparator);
+    const formats = [];
+    for (let i = 0; i < rawFormats.length; i++) {
+      let f = rawFormats[i];
+      while (f.indexOf("(") > -1 && !f.includes(")") && i + 1 < rawFormats.length) {
+        f = `${f}${this.formatSeparator}${rawFormats[++i]}`;
+      }
+      formats.push(f);
+    }
+    const result2 = formats.reduce((mem, f) => {
+      const {
+        formatName,
+        formatOptions
+      } = parseFormatStr(f);
+      if (this.formats[formatName]) {
+        let formatted = mem;
+        try {
+          const valOptions = options2?.formatParams?.[options2.interpolationkey] || {};
+          const l2 = valOptions.locale || valOptions.lng || options2.locale || options2.lng || lng;
+          formatted = this.formats[formatName](mem, l2, {
+            ...formatOptions,
+            ...options2,
+            ...valOptions
+          });
+        } catch (error2) {
+          this.logger.warn(error2);
+        }
+        return formatted;
+      } else {
+        this.logger.warn(`there was no format function for ${formatName}`);
+      }
+      return mem;
+    }, value2);
+    return result2;
+  }
+}
+const removePending = (q, name2) => {
+  if (q.pending[name2] !== void 0) {
+    delete q.pending[name2];
+    q.pendingCount--;
+  }
+};
+class Connector extends EventEmitter {
+  constructor(backend, store, services, options2 = {}) {
+    super();
+    this.backend = backend;
+    this.store = store;
+    this.services = services;
+    this.languageUtils = services.languageUtils;
+    this.options = options2;
+    this.logger = baseLogger.create("backendConnector");
+    this.waitingReads = [];
+    this.maxParallelReads = options2.maxParallelReads || 10;
+    this.readingCalls = 0;
+    this.maxRetries = options2.maxRetries >= 0 ? options2.maxRetries : 5;
+    this.retryTimeout = options2.retryTimeout >= 1 ? options2.retryTimeout : 350;
+    this.state = {};
+    this.queue = [];
+    this.backend?.init?.(services, options2.backend, options2);
+  }
+  queueLoad(languages, namespaces, options2, callback) {
+    const toLoad = {};
+    const pending = {};
+    const toLoadLanguages = {};
+    const toLoadNamespaces = {};
+    languages.forEach((lng) => {
+      let hasAllNamespaces = true;
+      namespaces.forEach((ns) => {
+        const name2 = `${lng}|${ns}`;
+        if (!options2.reload && this.store.hasResourceBundle(lng, ns)) {
+          this.state[name2] = 2;
+        } else if (this.state[name2] < 0) ;
+        else if (this.state[name2] === 1) {
+          if (pending[name2] === void 0) pending[name2] = true;
+        } else {
+          this.state[name2] = 1;
+          hasAllNamespaces = false;
+          if (pending[name2] === void 0) pending[name2] = true;
+          if (toLoad[name2] === void 0) toLoad[name2] = true;
+          if (toLoadNamespaces[ns] === void 0) toLoadNamespaces[ns] = true;
+        }
+      });
+      if (!hasAllNamespaces) toLoadLanguages[lng] = true;
+    });
+    if (Object.keys(toLoad).length || Object.keys(pending).length) {
+      this.queue.push({
+        pending,
+        pendingCount: Object.keys(pending).length,
+        loaded: {},
+        errors: [],
+        callback
+      });
+    }
+    return {
+      toLoad: Object.keys(toLoad),
+      pending: Object.keys(pending),
+      toLoadLanguages: Object.keys(toLoadLanguages),
+      toLoadNamespaces: Object.keys(toLoadNamespaces)
+    };
+  }
+  loaded(name2, err, data2) {
+    const s2 = name2.split("|");
+    const lng = s2[0];
+    const ns = s2[1];
+    if (err) this.emit("failedLoading", lng, ns, err);
+    if (!err && data2) {
+      this.store.addResourceBundle(lng, ns, data2, void 0, void 0, {
+        skipCopy: true
+      });
+    }
+    this.state[name2] = err ? -1 : 2;
+    if (err && data2) this.state[name2] = 0;
+    const loaded = {};
+    this.queue.forEach((q) => {
+      pushPath(q.loaded, [lng], ns);
+      removePending(q, name2);
+      if (err) q.errors.push(err);
+      if (q.pendingCount === 0 && !q.done) {
+        Object.keys(q.loaded).forEach((l2) => {
+          if (!loaded[l2]) loaded[l2] = {};
+          const loadedKeys = q.loaded[l2];
+          if (loadedKeys.length) {
+            loadedKeys.forEach((n2) => {
+              if (loaded[l2][n2] === void 0) loaded[l2][n2] = true;
+            });
+          }
+        });
+        q.done = true;
+        if (q.errors.length) {
+          q.callback(q.errors);
+        } else {
+          q.callback();
+        }
+      }
+    });
+    this.emit("loaded", loaded);
+    this.queue = this.queue.filter((q) => !q.done);
+  }
+  read(lng, ns, fcName, tried = 0, wait = this.retryTimeout, callback) {
+    if (!lng.length) return callback(null, {});
+    if (this.readingCalls >= this.maxParallelReads) {
+      this.waitingReads.push({
+        lng,
+        ns,
+        fcName,
+        tried,
+        wait,
+        callback
+      });
+      return;
+    }
+    this.readingCalls++;
+    const resolver = (err, data2) => {
+      this.readingCalls--;
+      if (this.waitingReads.length > 0) {
+        const next2 = this.waitingReads.shift();
+        this.read(next2.lng, next2.ns, next2.fcName, next2.tried, next2.wait, next2.callback);
+      }
+      if (err && data2 && tried < this.maxRetries) {
+        setTimeout(() => {
+          this.read(lng, ns, fcName, tried + 1, wait * 2, callback);
+        }, wait);
+        return;
+      }
+      callback(err, data2);
+    };
+    const fc = this.backend[fcName].bind(this.backend);
+    if (fc.length === 2) {
+      try {
+        const r2 = fc(lng, ns);
+        if (r2 && typeof r2.then === "function") {
+          r2.then((data2) => resolver(null, data2)).catch(resolver);
+        } else {
+          resolver(null, r2);
+        }
+      } catch (err) {
+        resolver(err);
+      }
+      return;
+    }
+    return fc(lng, ns, resolver);
+  }
+  prepareLoading(languages, namespaces, options2 = {}, callback) {
+    if (!this.backend) {
+      this.logger.warn("No backend was added via i18next.use. Will not load resources.");
+      return callback && callback();
+    }
+    if (isString$1(languages)) languages = this.languageUtils.toResolveHierarchy(languages);
+    if (isString$1(namespaces)) namespaces = [namespaces];
+    const toLoad = this.queueLoad(languages, namespaces, options2, callback);
+    if (!toLoad.toLoad.length) {
+      if (!toLoad.pending.length) callback();
+      return null;
+    }
+    toLoad.toLoad.forEach((name2) => {
+      this.loadOne(name2);
+    });
+  }
+  load(languages, namespaces, callback) {
+    this.prepareLoading(languages, namespaces, {}, callback);
+  }
+  reload(languages, namespaces, callback) {
+    this.prepareLoading(languages, namespaces, {
+      reload: true
+    }, callback);
+  }
+  loadOne(name2, prefix2 = "") {
+    const s2 = name2.split("|");
+    const lng = s2[0];
+    const ns = s2[1];
+    this.read(lng, ns, "read", void 0, void 0, (err, data2) => {
+      if (err) this.logger.warn(`${prefix2}loading namespace ${ns} for language ${lng} failed`, err);
+      if (!err && data2) this.logger.log(`${prefix2}loaded namespace ${ns} for language ${lng}`, data2);
+      this.loaded(name2, err, data2);
+    });
+  }
+  saveMissing(languages, namespace, key, fallbackValue, isUpdate, options2 = {}, clb = () => {
+  }) {
+    if (this.services?.utils?.hasLoadedNamespace && !this.services?.utils?.hasLoadedNamespace(namespace)) {
+      this.logger.warn(`did not save key "${key}" as the namespace "${namespace}" was not yet loaded`, "This means something IS WRONG in your setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!");
+      return;
+    }
+    if (key === void 0 || key === null || key === "") return;
+    if (this.backend?.create) {
+      const opts = {
+        ...options2,
+        isUpdate
+      };
+      const fc = this.backend.create.bind(this.backend);
+      if (fc.length < 6) {
+        try {
+          let r2;
+          if (fc.length === 5) {
+            r2 = fc(languages, namespace, key, fallbackValue, opts);
+          } else {
+            r2 = fc(languages, namespace, key, fallbackValue);
+          }
+          if (r2 && typeof r2.then === "function") {
+            r2.then((data2) => clb(null, data2)).catch(clb);
+          } else {
+            clb(null, r2);
+          }
+        } catch (err) {
+          clb(err);
+        }
+      } else {
+        fc(languages, namespace, key, fallbackValue, clb, opts);
+      }
+    }
+    if (!languages || !languages[0]) return;
+    this.store.addResource(languages[0], namespace, key, fallbackValue);
+  }
+}
+const get = () => ({
+  debug: false,
+  initAsync: true,
+  ns: ["translation"],
+  defaultNS: ["translation"],
+  fallbackLng: ["dev"],
+  fallbackNS: false,
+  supportedLngs: false,
+  nonExplicitSupportedLngs: false,
+  load: "all",
+  preload: false,
+  keySeparator: ".",
+  nsSeparator: ":",
+  pluralSeparator: "_",
+  contextSeparator: "_",
+  enableSelector: false,
+  partialBundledLanguages: false,
+  saveMissing: false,
+  updateMissing: false,
+  saveMissingTo: "fallback",
+  saveMissingPlurals: true,
+  missingKeyHandler: false,
+  missingInterpolationHandler: false,
+  postProcess: false,
+  postProcessPassResolved: false,
+  returnNull: false,
+  returnEmptyString: true,
+  returnObjects: false,
+  joinArrays: false,
+  returnedObjectHandler: false,
+  parseMissingKeyHandler: false,
+  appendNamespaceToMissingKey: false,
+  appendNamespaceToCIMode: false,
+  overloadTranslationOptionHandler: (args) => {
+    let ret = {};
+    if (typeof args[1] === "object") ret = args[1];
+    if (isString$1(args[1])) ret.defaultValue = args[1];
+    if (isString$1(args[2])) ret.tDescription = args[2];
+    if (typeof args[2] === "object" || typeof args[3] === "object") {
+      const options2 = args[3] || args[2];
+      Object.keys(options2).forEach((key) => {
+        ret[key] = options2[key];
+      });
+    }
+    return ret;
+  },
+  interpolation: {
+    escapeValue: true,
+    prefix: "{{",
+    suffix: "}}",
+    formatSeparator: ",",
+    unescapePrefix: "-",
+    nestingPrefix: "$t(",
+    nestingSuffix: ")",
+    nestingOptionsSeparator: ",",
+    maxReplaces: 1e3,
+    skipOnVariables: true
+  },
+  cacheInBuiltFormats: true
+});
+const transformOptions = (options2) => {
+  if (isString$1(options2.ns)) options2.ns = [options2.ns];
+  if (isString$1(options2.fallbackLng)) options2.fallbackLng = [options2.fallbackLng];
+  if (isString$1(options2.fallbackNS)) options2.fallbackNS = [options2.fallbackNS];
+  if (options2.supportedLngs && !options2.supportedLngs.includes("cimode")) {
+    options2.supportedLngs = options2.supportedLngs.concat(["cimode"]);
+  }
+  return options2;
+};
+const noop$2 = () => {
+};
+const bindMemberFunctions = (inst) => {
+  const mems = Object.getOwnPropertyNames(Object.getPrototypeOf(inst));
+  mems.forEach((mem) => {
+    if (typeof inst[mem] === "function") {
+      inst[mem] = inst[mem].bind(inst);
+    }
+  });
+};
+class I18n extends EventEmitter {
+  constructor(options2 = {}, callback) {
+    super();
+    this.options = transformOptions(options2);
+    this.services = {};
+    this.logger = baseLogger;
+    this.modules = {
+      external: []
+    };
+    bindMemberFunctions(this);
+    if (callback && !this.isInitialized && !options2.isClone) {
+      if (!this.options.initAsync) {
+        this.init(options2, callback);
+        return this;
+      }
+      setTimeout(() => {
+        this.init(options2, callback);
+      }, 0);
+    }
+  }
+  init(options2 = {}, callback) {
+    this.isInitializing = true;
+    if (typeof options2 === "function") {
+      callback = options2;
+      options2 = {};
+    }
+    if (options2.defaultNS == null && options2.ns) {
+      if (isString$1(options2.ns)) {
+        options2.defaultNS = options2.ns;
+      } else if (!options2.ns.includes("translation")) {
+        options2.defaultNS = options2.ns[0];
+      }
+    }
+    const defOpts = get();
+    this.options = {
+      ...defOpts,
+      ...this.options,
+      ...transformOptions(options2)
+    };
+    this.options.interpolation = {
+      ...defOpts.interpolation,
+      ...this.options.interpolation
+    };
+    if (options2.keySeparator !== void 0) {
+      this.options.userDefinedKeySeparator = options2.keySeparator;
+    }
+    if (options2.nsSeparator !== void 0) {
+      this.options.userDefinedNsSeparator = options2.nsSeparator;
+    }
+    if (typeof this.options.overloadTranslationOptionHandler !== "function") {
+      this.options.overloadTranslationOptionHandler = defOpts.overloadTranslationOptionHandler;
+    }
+    const createClassOnDemand = (ClassOrObject) => {
+      if (!ClassOrObject) return null;
+      if (typeof ClassOrObject === "function") return new ClassOrObject();
+      return ClassOrObject;
+    };
+    if (!this.options.isClone) {
+      if (this.modules.logger) {
+        baseLogger.init(createClassOnDemand(this.modules.logger), this.options);
+      } else {
+        baseLogger.init(null, this.options);
+      }
+      let formatter;
+      if (this.modules.formatter) {
+        formatter = this.modules.formatter;
+      } else {
+        formatter = Formatter;
+      }
+      const lu = new LanguageUtil(this.options);
+      this.store = new ResourceStore(this.options.resources, this.options);
+      const s2 = this.services;
+      s2.logger = baseLogger;
+      s2.resourceStore = this.store;
+      s2.languageUtils = lu;
+      s2.pluralResolver = new PluralResolver(lu, {
+        prepend: this.options.pluralSeparator
+      });
+      if (formatter) {
+        s2.formatter = createClassOnDemand(formatter);
+        if (s2.formatter.init) s2.formatter.init(s2, this.options);
+        this.options.interpolation.format = s2.formatter.format.bind(s2.formatter);
+      }
+      s2.interpolator = new Interpolator(this.options);
+      s2.utils = {
+        hasLoadedNamespace: this.hasLoadedNamespace.bind(this)
+      };
+      s2.backendConnector = new Connector(createClassOnDemand(this.modules.backend), s2.resourceStore, s2, this.options);
+      s2.backendConnector.on("*", (event, ...args) => {
+        this.emit(event, ...args);
+      });
+      if (this.modules.languageDetector) {
+        s2.languageDetector = createClassOnDemand(this.modules.languageDetector);
+        if (s2.languageDetector.init) s2.languageDetector.init(s2, this.options.detection, this.options);
+      }
+      if (this.modules.i18nFormat) {
+        s2.i18nFormat = createClassOnDemand(this.modules.i18nFormat);
+        if (s2.i18nFormat.init) s2.i18nFormat.init(this);
+      }
+      this.translator = new Translator(this.services, this.options);
+      this.translator.on("*", (event, ...args) => {
+        this.emit(event, ...args);
+      });
+      this.modules.external.forEach((m) => {
+        if (m.init) m.init(this);
+      });
+    }
+    this.format = this.options.interpolation.format;
+    if (!callback) callback = noop$2;
+    if (this.options.fallbackLng && !this.services.languageDetector && !this.options.lng) {
+      const codes = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
+      if (codes.length > 0 && codes[0] !== "dev") this.options.lng = codes[0];
+    }
+    if (!this.services.languageDetector && !this.options.lng) {
+      this.logger.warn("init: no languageDetector is used and no lng is defined");
+    }
+    const storeApi = ["getResource", "hasResourceBundle", "getResourceBundle", "getDataByLanguage"];
+    storeApi.forEach((fcName) => {
+      this[fcName] = (...args) => this.store[fcName](...args);
+    });
+    const storeApiChained = ["addResource", "addResources", "addResourceBundle", "removeResourceBundle"];
+    storeApiChained.forEach((fcName) => {
+      this[fcName] = (...args) => {
+        this.store[fcName](...args);
+        return this;
+      };
+    });
+    const deferred = defer();
+    const load = () => {
+      const finish = (err, t2) => {
+        this.isInitializing = false;
+        if (this.isInitialized && !this.initializedStoreOnce) this.logger.warn("init: i18next is already initialized. You should call init just once!");
+        this.isInitialized = true;
+        if (!this.options.isClone) this.logger.log("initialized", this.options);
+        this.emit("initialized", this.options);
+        deferred.resolve(t2);
+        callback(err, t2);
+      };
+      if ((this.languages || this.isLanguageChangingTo) && !this.isInitialized) return finish(null, this.t.bind(this));
+      this.changeLanguage(this.options.lng, finish);
+    };
+    if (this.options.resources || !this.options.initAsync) {
+      load();
+    } else {
+      setTimeout(load, 0);
+    }
+    return deferred;
+  }
+  loadResources(language2, callback = noop$2) {
+    let usedCallback = callback;
+    const usedLng = isString$1(language2) ? language2 : this.language;
+    if (typeof language2 === "function") usedCallback = language2;
+    if (!this.options.resources || this.options.partialBundledLanguages) {
+      if (usedLng?.toLowerCase() === "cimode" && (!this.options.preload || this.options.preload.length === 0)) return usedCallback();
+      const toLoad = [];
+      const append3 = (lng) => {
+        if (!lng) return;
+        if (lng === "cimode") return;
+        const lngs = this.services.languageUtils.toResolveHierarchy(lng);
+        lngs.forEach((l2) => {
+          if (l2 === "cimode") return;
+          if (!toLoad.includes(l2)) toLoad.push(l2);
+        });
+      };
+      if (!usedLng) {
+        const fallbacks = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
+        fallbacks.forEach((l2) => append3(l2));
+      } else {
+        append3(usedLng);
+      }
+      this.options.preload?.forEach?.((l2) => append3(l2));
+      this.services.backendConnector.load(toLoad, this.options.ns, (e2) => {
+        if (!e2 && !this.resolvedLanguage && this.language) this.setResolvedLanguage(this.language);
+        usedCallback(e2);
+      });
+    } else {
+      usedCallback(null);
+    }
+  }
+  reloadResources(lngs, ns, callback) {
+    const deferred = defer();
+    if (typeof lngs === "function") {
+      callback = lngs;
+      lngs = void 0;
+    }
+    if (typeof ns === "function") {
+      callback = ns;
+      ns = void 0;
+    }
+    if (!lngs) lngs = this.languages;
+    if (!ns) ns = this.options.ns;
+    if (!callback) callback = noop$2;
+    this.services.backendConnector.reload(lngs, ns, (err) => {
+      deferred.resolve();
+      callback(err);
+    });
+    return deferred;
+  }
+  use(module) {
+    if (!module) throw new Error("You are passing an undefined module! Please check the object you are passing to i18next.use()");
+    if (!module.type) throw new Error("You are passing a wrong module! Please check the object you are passing to i18next.use()");
+    if (module.type === "backend") {
+      this.modules.backend = module;
+    }
+    if (module.type === "logger" || module.log && module.warn && module.error) {
+      this.modules.logger = module;
+    }
+    if (module.type === "languageDetector") {
+      this.modules.languageDetector = module;
+    }
+    if (module.type === "i18nFormat") {
+      this.modules.i18nFormat = module;
+    }
+    if (module.type === "postProcessor") {
+      postProcessor.addPostProcessor(module);
+    }
+    if (module.type === "formatter") {
+      this.modules.formatter = module;
+    }
+    if (module.type === "3rdParty") {
+      this.modules.external.push(module);
+    }
+    return this;
+  }
+  setResolvedLanguage(l2) {
+    if (!l2 || !this.languages) return;
+    if (["cimode", "dev"].includes(l2)) return;
+    for (let li = 0; li < this.languages.length; li++) {
+      const lngInLngs = this.languages[li];
+      if (["cimode", "dev"].includes(lngInLngs)) continue;
+      if (this.store.hasLanguageSomeTranslations(lngInLngs)) {
+        this.resolvedLanguage = lngInLngs;
+        break;
+      }
+    }
+    if (!this.resolvedLanguage && !this.languages.includes(l2) && this.store.hasLanguageSomeTranslations(l2)) {
+      this.resolvedLanguage = l2;
+      this.languages.unshift(l2);
+    }
+  }
+  changeLanguage(lng, callback) {
+    this.isLanguageChangingTo = lng;
+    const deferred = defer();
+    this.emit("languageChanging", lng);
+    const setLngProps = (l2) => {
+      this.language = l2;
+      this.languages = this.services.languageUtils.toResolveHierarchy(l2);
+      this.resolvedLanguage = void 0;
+      this.setResolvedLanguage(l2);
+    };
+    const done = (err, l2) => {
+      if (l2) {
+        if (this.isLanguageChangingTo === lng) {
+          setLngProps(l2);
+          this.translator.changeLanguage(l2);
+          this.isLanguageChangingTo = void 0;
+          this.emit("languageChanged", l2);
+          this.logger.log("languageChanged", l2);
+        }
+      } else {
+        this.isLanguageChangingTo = void 0;
+      }
+      deferred.resolve((...args) => this.t(...args));
+      if (callback) callback(err, (...args) => this.t(...args));
+    };
+    const setLng = (lngs) => {
+      if (!lng && !lngs && this.services.languageDetector) lngs = [];
+      const fl = isString$1(lngs) ? lngs : lngs && lngs[0];
+      const l2 = this.store.hasLanguageSomeTranslations(fl) ? fl : this.services.languageUtils.getBestMatchFromCodes(isString$1(lngs) ? [lngs] : lngs);
+      if (l2) {
+        if (!this.language) {
+          setLngProps(l2);
+        }
+        if (!this.translator.language) this.translator.changeLanguage(l2);
+        this.services.languageDetector?.cacheUserLanguage?.(l2);
+      }
+      this.loadResources(l2, (err) => {
+        done(err, l2);
+      });
+    };
+    if (!lng && this.services.languageDetector && !this.services.languageDetector.async) {
+      setLng(this.services.languageDetector.detect());
+    } else if (!lng && this.services.languageDetector && this.services.languageDetector.async) {
+      if (this.services.languageDetector.detect.length === 0) {
+        this.services.languageDetector.detect().then(setLng);
+      } else {
+        this.services.languageDetector.detect(setLng);
+      }
+    } else {
+      setLng(lng);
+    }
+    return deferred;
+  }
+  getFixedT(lng, ns, keyPrefix, fixedOpts) {
+    const scopeNs = fixedOpts?.scopeNs;
+    const fixedT = (key, opts, ...rest) => {
+      let o2;
+      if (typeof opts !== "object") {
+        o2 = this.options.overloadTranslationOptionHandler([key, opts].concat(rest));
+      } else {
+        o2 = {
+          ...opts
+        };
+      }
+      o2.lng = o2.lng || fixedT.lng;
+      o2.lngs = o2.lngs || fixedT.lngs;
+      const explicitCallNs = o2.ns !== void 0 && o2.ns !== null;
+      o2.ns = o2.ns || fixedT.ns;
+      if (o2.keyPrefix !== "") o2.keyPrefix = o2.keyPrefix || keyPrefix || fixedT.keyPrefix;
+      const selectorOpts = {
+        ...this.options,
+        ...o2
+      };
+      if (Array.isArray(scopeNs) && !explicitCallNs) selectorOpts.ns = scopeNs;
+      if (typeof o2.keyPrefix === "function") o2.keyPrefix = keysFromSelector(o2.keyPrefix, selectorOpts);
+      const keySeparator = this.options.keySeparator || ".";
+      let resultKey;
+      if (o2.keyPrefix && Array.isArray(key)) {
+        resultKey = key.map((k) => {
+          if (typeof k === "function") k = keysFromSelector(k, selectorOpts);
+          return `${o2.keyPrefix}${keySeparator}${k}`;
+        });
+      } else {
+        if (typeof key === "function") key = keysFromSelector(key, selectorOpts);
+        resultKey = o2.keyPrefix ? `${o2.keyPrefix}${keySeparator}${key}` : key;
+      }
+      return this.t(resultKey, o2);
+    };
+    if (isString$1(lng)) {
+      fixedT.lng = lng;
+    } else {
+      fixedT.lngs = lng;
+    }
+    fixedT.ns = ns;
+    fixedT.keyPrefix = keyPrefix;
+    return fixedT;
+  }
+  t(...args) {
+    return this.translator?.translate(...args);
+  }
+  exists(...args) {
+    return this.translator?.exists(...args);
+  }
+  setDefaultNamespace(ns) {
+    this.options.defaultNS = ns;
+  }
+  hasLoadedNamespace(ns, options2 = {}) {
+    if (!this.isInitialized) {
+      this.logger.warn("hasLoadedNamespace: i18next was not initialized", this.languages);
+      return false;
+    }
+    if (!this.languages || !this.languages.length) {
+      this.logger.warn("hasLoadedNamespace: i18n.languages were undefined or empty", this.languages);
+      return false;
+    }
+    const lng = options2.lng || this.resolvedLanguage || this.languages[0];
+    const fallbackLng = this.options ? this.options.fallbackLng : false;
+    const lastLng = this.languages[this.languages.length - 1];
+    if (lng.toLowerCase() === "cimode") return true;
+    const loadNotPending = (l2, n2) => {
+      const loadState = this.services.backendConnector.state[`${l2}|${n2}`];
+      return loadState === -1 || loadState === 0 || loadState === 2;
+    };
+    if (options2.precheck) {
+      const preResult = options2.precheck(this, loadNotPending);
+      if (preResult !== void 0) return preResult;
+    }
+    if (this.hasResourceBundle(lng, ns)) return true;
+    if (!this.services.backendConnector.backend || this.options.resources && !this.options.partialBundledLanguages) return true;
+    if (loadNotPending(lng, ns) && (!fallbackLng || loadNotPending(lastLng, ns))) return true;
+    return false;
+  }
+  loadNamespaces(ns, callback) {
+    const deferred = defer();
+    if (!this.options.ns) {
+      if (callback) callback();
+      return Promise.resolve();
+    }
+    if (isString$1(ns)) ns = [ns];
+    ns.forEach((n2) => {
+      if (!this.options.ns.includes(n2)) this.options.ns.push(n2);
+    });
+    this.loadResources((err) => {
+      deferred.resolve();
+      if (callback) callback(err);
+    });
+    return deferred;
+  }
+  loadLanguages(lngs, callback) {
+    const deferred = defer();
+    if (isString$1(lngs)) lngs = [lngs];
+    const preloaded = this.options.preload || [];
+    const newLngs = lngs.filter((lng) => !preloaded.includes(lng) && this.services.languageUtils.isSupportedCode(lng));
+    if (!newLngs.length) {
+      if (callback) callback();
+      return Promise.resolve();
+    }
+    this.options.preload = preloaded.concat(newLngs);
+    this.loadResources((err) => {
+      deferred.resolve();
+      if (callback) callback(err);
+    });
+    return deferred;
+  }
+  dir(lng) {
+    if (!lng) lng = this.resolvedLanguage || (this.languages?.length > 0 ? this.languages[0] : this.language);
+    if (!lng) return "rtl";
+    try {
+      const l2 = new Intl.Locale(lng);
+      if (l2 && l2.getTextInfo) {
+        const ti = l2.getTextInfo();
+        if (ti && ti.direction) return ti.direction;
+      }
+    } catch (e2) {
+    }
+    const rtlLngs = ["ar", "shu", "sqr", "ssh", "xaa", "yhd", "yud", "aao", "abh", "abv", "acm", "acq", "acw", "acx", "acy", "adf", "ads", "aeb", "aec", "afb", "ajp", "apc", "apd", "arb", "arq", "ars", "ary", "arz", "auz", "avl", "ayh", "ayl", "ayn", "ayp", "bbz", "pga", "he", "iw", "ps", "pbt", "pbu", "pst", "prp", "prd", "ug", "ur", "ydd", "yds", "yih", "ji", "yi", "hbo", "men", "xmn", "fa", "jpr", "peo", "pes", "prs", "dv", "sam", "ckb"];
+    const languageUtils = this.services?.languageUtils || new LanguageUtil(get());
+    if (lng.toLowerCase().indexOf("-latn") > 1) return "ltr";
+    return rtlLngs.includes(languageUtils.getLanguagePartFromCode(lng)) || lng.toLowerCase().indexOf("-arab") > 1 ? "rtl" : "ltr";
+  }
+  static createInstance(options2 = {}, callback) {
+    const instance2 = new I18n(options2, callback);
+    instance2.createInstance = I18n.createInstance;
+    return instance2;
+  }
+  cloneInstance(options2 = {}, callback = noop$2) {
+    const forkResourceStore = options2.forkResourceStore;
+    if (forkResourceStore) delete options2.forkResourceStore;
+    const mergedOptions = {
+      ...this.options,
+      ...options2,
+      ...{
+        isClone: true
+      }
+    };
+    const clone = new I18n(mergedOptions);
+    if (options2.debug !== void 0 || options2.prefix !== void 0) {
+      clone.logger = clone.logger.clone(options2);
+    }
+    const membersToCopy = ["store", "services", "language"];
+    membersToCopy.forEach((m) => {
+      clone[m] = this[m];
+    });
+    clone.services = {
+      ...this.services
+    };
+    clone.services.utils = {
+      hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
+    };
+    if (forkResourceStore) {
+      const clonedData = Object.keys(this.store.data).reduce((prev2, l2) => {
+        prev2[l2] = {
+          ...this.store.data[l2]
+        };
+        prev2[l2] = Object.keys(prev2[l2]).reduce((acc, n2) => {
+          acc[n2] = {
+            ...prev2[l2][n2]
+          };
+          return acc;
+        }, prev2[l2]);
+        return prev2;
+      }, {});
+      clone.store = new ResourceStore(clonedData, mergedOptions);
+      clone.services.resourceStore = clone.store;
+    }
+    if (options2.interpolation) {
+      const defOpts = get();
+      const mergedInterpolation = {
+        ...defOpts.interpolation,
+        ...this.options.interpolation,
+        ...options2.interpolation
+      };
+      const mergedForInterpolator = {
+        ...mergedOptions,
+        interpolation: mergedInterpolation
+      };
+      clone.services.interpolator = new Interpolator(mergedForInterpolator);
+    }
+    clone.translator = new Translator(clone.services, mergedOptions);
+    clone.translator.on("*", (event, ...args) => {
+      clone.emit(event, ...args);
+    });
+    clone.init(mergedOptions, callback);
+    clone.translator.options = mergedOptions;
+    clone.translator.backendConnector.services.utils = {
+      hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
+    };
+    return clone;
+  }
+  toJSON() {
+    return {
+      options: this.options,
+      store: this.store,
+      language: this.language,
+      languages: this.languages,
+      resolvedLanguage: this.resolvedLanguage
+    };
+  }
+}
+const instance = I18n.createInstance();
+instance.createInstance;
+instance.dir;
+instance.init;
+instance.loadResources;
+instance.reloadResources;
+instance.use;
+instance.changeLanguage;
+instance.getFixedT;
+const t$1 = instance.t;
+instance.exists;
+instance.setDefaultNamespace;
+instance.hasLoadedNamespace;
+instance.loadNamespaces;
+instance.loadLanguages;
+const warn$1 = (i18n, code, msg, rest) => {
+  const args = [msg, {
+    code,
+    ...rest || {}
+  }];
+  if (i18n?.services?.logger?.forward) {
+    return i18n.services.logger.forward(args, "warn", "react-i18next::", true);
+  }
+  if (isString(args[0])) args[0] = `react-i18next:: ${args[0]}`;
+  if (i18n?.services?.logger?.warn) {
+    i18n.services.logger.warn(...args);
+  } else if (console?.warn) {
+    console.warn(...args);
+  }
+};
+const alreadyWarned = {};
+const warnOnce = (i18n, code, msg, rest) => {
+  if (isString(msg) && alreadyWarned[msg]) return;
+  if (isString(msg)) alreadyWarned[msg] = /* @__PURE__ */ new Date();
+  warn$1(i18n, code, msg, rest);
+};
+const loadedClb = (i18n, cb) => () => {
+  if (i18n.isInitialized) {
+    cb();
+  } else {
+    const initialized = () => {
+      setTimeout(() => {
+        i18n.off("initialized", initialized);
+      }, 0);
+      cb();
+    };
+    i18n.on("initialized", initialized);
+  }
+};
+const loadNamespaces = (i18n, ns, cb) => {
+  i18n.loadNamespaces(ns, loadedClb(i18n, cb));
+};
+const loadLanguages = (i18n, lng, ns, cb) => {
+  if (isString(ns)) ns = [ns];
+  if (i18n.options.preload && i18n.options.preload.indexOf(lng) > -1) return loadNamespaces(i18n, ns, cb);
+  ns.forEach((n2) => {
+    if (i18n.options.ns.indexOf(n2) < 0) i18n.options.ns.push(n2);
+  });
+  i18n.loadLanguages(lng, loadedClb(i18n, cb));
+};
+const hasLoadedNamespace = (ns, i18n, options2 = {}) => {
+  if (!i18n.languages || !i18n.languages.length) {
+    warnOnce(i18n, "NO_LANGUAGES", "i18n.languages were undefined or empty", {
+      languages: i18n.languages
+    });
+    return true;
+  }
+  return i18n.hasLoadedNamespace(ns, {
+    lng: options2.lng,
+    precheck: (i18nInstance2, loadNotPending) => {
+      if (options2.bindI18n && options2.bindI18n.indexOf("languageChanging") > -1 && i18nInstance2.services.backendConnector.backend && i18nInstance2.isLanguageChangingTo && !loadNotPending(i18nInstance2.isLanguageChangingTo, ns)) return false;
+    }
+  });
+};
+const isString = (obj) => typeof obj === "string";
+const isObject = (obj) => typeof obj === "object" && obj !== null;
+const matchHtmlEntity = /&(?:amp|#38|lt|#60|gt|#62|apos|#39|quot|#34|nbsp|#160|copy|#169|reg|#174|hellip|#8230|#x2F|#47);/g;
+const htmlEntities = {
+  "&amp;": "&",
+  "&#38;": "&",
+  "&lt;": "<",
+  "&#60;": "<",
+  "&gt;": ">",
+  "&#62;": ">",
+  "&apos;": "'",
+  "&#39;": "'",
+  "&quot;": '"',
+  "&#34;": '"',
+  "&nbsp;": " ",
+  "&#160;": " ",
+  "&copy;": "©",
+  "&#169;": "©",
+  "&reg;": "®",
+  "&#174;": "®",
+  "&hellip;": "…",
+  "&#8230;": "…",
+  "&#x2F;": "/",
+  "&#47;": "/"
+};
+const unescapeHtmlEntity = (m) => htmlEntities[m];
+const unescape$1 = (text) => text.replace(matchHtmlEntity, unescapeHtmlEntity);
+let defaultOptions = {
+  bindI18n: "languageChanged",
+  bindI18nStore: "",
+  transEmptyNodeValue: "",
+  transSupportBasicHtmlNodes: true,
+  transWrapTextNodes: "",
+  transKeepBasicHtmlNodesFor: ["br", "strong", "i", "p"],
+  useSuspense: true,
+  unescape: unescape$1,
+  transDefaultProps: void 0
+};
+const getDefaults = () => defaultOptions;
+let i18nInstance;
+const getI18n = () => i18nInstance;
+const I18nContext = reactExports.createContext();
+class ReportNamespaces {
+  constructor() {
+    this.usedNamespaces = {};
+  }
+  addUsedNamespaces(namespaces) {
+    namespaces.forEach((ns) => {
+      if (!this.usedNamespaces[ns]) this.usedNamespaces[ns] = true;
+    });
+  }
+  getUsedNamespaces() {
+    return Object.keys(this.usedNamespaces);
+  }
+}
+var shim = { exports: {} };
+var useSyncExternalStoreShim_production = {};
+var hasRequiredUseSyncExternalStoreShim_production;
+function requireUseSyncExternalStoreShim_production() {
+  if (hasRequiredUseSyncExternalStoreShim_production) return useSyncExternalStoreShim_production;
+  hasRequiredUseSyncExternalStoreShim_production = 1;
+  var React2 = requireReact();
+  function is(x3, y3) {
+    return x3 === y3 && (0 !== x3 || 1 / x3 === 1 / y3) || x3 !== x3 && y3 !== y3;
+  }
+  var objectIs = "function" === typeof Object.is ? Object.is : is, useState = React2.useState, useEffect = React2.useEffect, useLayoutEffect = React2.useLayoutEffect, useDebugValue = React2.useDebugValue;
+  function useSyncExternalStore$2(subscribe, getSnapshot) {
+    var value2 = getSnapshot(), _useState = useState({ inst: { value: value2, getSnapshot } }), inst = _useState[0].inst, forceUpdate = _useState[1];
+    useLayoutEffect(
+      function() {
+        inst.value = value2;
+        inst.getSnapshot = getSnapshot;
+        checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+      },
+      [subscribe, value2, getSnapshot]
+    );
+    useEffect(
+      function() {
+        checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+        return subscribe(function() {
+          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+        });
+      },
+      [subscribe]
+    );
+    useDebugValue(value2);
+    return value2;
+  }
+  function checkIfSnapshotChanged(inst) {
+    var latestGetSnapshot = inst.getSnapshot;
+    inst = inst.value;
+    try {
+      var nextValue = latestGetSnapshot();
+      return !objectIs(inst, nextValue);
+    } catch (error2) {
+      return true;
+    }
+  }
+  function useSyncExternalStore$1(subscribe, getSnapshot) {
+    return getSnapshot();
+  }
+  var shim2 = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1 : useSyncExternalStore$2;
+  useSyncExternalStoreShim_production.useSyncExternalStore = void 0 !== React2.useSyncExternalStore ? React2.useSyncExternalStore : shim2;
+  return useSyncExternalStoreShim_production;
+}
+var useSyncExternalStoreShim_development = {};
+var hasRequiredUseSyncExternalStoreShim_development;
+function requireUseSyncExternalStoreShim_development() {
+  if (hasRequiredUseSyncExternalStoreShim_development) return useSyncExternalStoreShim_development;
+  hasRequiredUseSyncExternalStoreShim_development = 1;
+  "production" !== process.env.NODE_ENV && (function() {
+    function is(x3, y3) {
+      return x3 === y3 && (0 !== x3 || 1 / x3 === 1 / y3) || x3 !== x3 && y3 !== y3;
+    }
+    function useSyncExternalStore$2(subscribe, getSnapshot) {
+      didWarnOld18Alpha || void 0 === React2.startTransition || (didWarnOld18Alpha = true, console.error(
+        "You are using an outdated, pre-release alpha of React 18 that does not support useSyncExternalStore. The use-sync-external-store shim will not work correctly. Upgrade to a newer pre-release."
+      ));
+      var value2 = getSnapshot();
+      if (!didWarnUncachedGetSnapshot) {
+        var cachedValue = getSnapshot();
+        objectIs(value2, cachedValue) || (console.error(
+          "The result of getSnapshot should be cached to avoid an infinite loop"
+        ), didWarnUncachedGetSnapshot = true);
+      }
+      cachedValue = useState({
+        inst: { value: value2, getSnapshot }
+      });
+      var inst = cachedValue[0].inst, forceUpdate = cachedValue[1];
+      useLayoutEffect(
+        function() {
+          inst.value = value2;
+          inst.getSnapshot = getSnapshot;
+          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+        },
+        [subscribe, value2, getSnapshot]
+      );
+      useEffect(
+        function() {
+          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+          return subscribe(function() {
+            checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+          });
+        },
+        [subscribe]
+      );
+      useDebugValue(value2);
+      return value2;
+    }
+    function checkIfSnapshotChanged(inst) {
+      var latestGetSnapshot = inst.getSnapshot;
+      inst = inst.value;
+      try {
+        var nextValue = latestGetSnapshot();
+        return !objectIs(inst, nextValue);
+      } catch (error2) {
+        return true;
+      }
+    }
+    function useSyncExternalStore$1(subscribe, getSnapshot) {
+      return getSnapshot();
+    }
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
+    var React2 = requireReact(), objectIs = "function" === typeof Object.is ? Object.is : is, useState = React2.useState, useEffect = React2.useEffect, useLayoutEffect = React2.useLayoutEffect, useDebugValue = React2.useDebugValue, didWarnOld18Alpha = false, didWarnUncachedGetSnapshot = false, shim2 = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1 : useSyncExternalStore$2;
+    useSyncExternalStoreShim_development.useSyncExternalStore = void 0 !== React2.useSyncExternalStore ? React2.useSyncExternalStore : shim2;
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
+  })();
+  return useSyncExternalStoreShim_development;
+}
+var hasRequiredShim;
+function requireShim() {
+  if (hasRequiredShim) return shim.exports;
+  hasRequiredShim = 1;
+  if (process.env.NODE_ENV === "production") {
+    shim.exports = requireUseSyncExternalStoreShim_production();
+  } else {
+    shim.exports = requireUseSyncExternalStoreShim_development();
+  }
+  return shim.exports;
+}
+var shimExports = requireShim();
+const notReadyT = (k, optsOrDefaultValue) => {
+  if (isString(optsOrDefaultValue)) return optsOrDefaultValue;
+  if (isObject(optsOrDefaultValue) && isString(optsOrDefaultValue.defaultValue)) return optsOrDefaultValue.defaultValue;
+  if (typeof k === "function") return "";
+  if (Array.isArray(k)) {
+    const last = k[k.length - 1];
+    return typeof last === "function" ? "" : last;
+  }
+  return k;
+};
+const notReadySnapshot = {
+  t: notReadyT,
+  ready: false
+};
+const dummySubscribe = () => () => {
+};
+const useTranslation = (ns, props = {}) => {
+  const {
+    i18n: i18nFromProps
+  } = props;
+  const {
+    i18n: i18nFromContext,
+    defaultNS: defaultNSFromContext
+  } = reactExports.useContext(I18nContext) || {};
+  const i18n = i18nFromProps || i18nFromContext || getI18n();
+  if (i18n && !i18n.reportNamespaces) i18n.reportNamespaces = new ReportNamespaces();
+  if (!i18n) {
+    warnOnce(i18n, "NO_I18NEXT_INSTANCE", "useTranslation: You will need to pass in an i18next instance by using initReactI18next");
+  }
+  const i18nOptions = reactExports.useMemo(() => ({
+    ...getDefaults(),
+    ...i18n?.options?.react,
+    ...props
+  }), [i18n, props]);
+  const {
+    useSuspense,
+    keyPrefix
+  } = i18nOptions;
+  const nsOrContext = defaultNSFromContext || i18n?.options?.defaultNS;
+  const unstableNamespaces = isString(nsOrContext) ? [nsOrContext] : nsOrContext || ["translation"];
+  const namespaces = reactExports.useMemo(() => unstableNamespaces, unstableNamespaces);
+  i18n?.reportNamespaces?.addUsedNamespaces?.(namespaces);
+  const revisionRef = reactExports.useRef(0);
+  const subscribe = reactExports.useCallback((callback) => {
+    if (!i18n) return dummySubscribe;
+    const {
+      bindI18n,
+      bindI18nStore
+    } = i18nOptions;
+    const wrappedCallback = () => {
+      revisionRef.current += 1;
+      callback();
+    };
+    if (bindI18n) i18n.on(bindI18n, wrappedCallback);
+    if (bindI18nStore) i18n.store.on(bindI18nStore, wrappedCallback);
+    return () => {
+      if (bindI18n) bindI18n.split(" ").forEach((e2) => i18n.off(e2, wrappedCallback));
+      if (bindI18nStore) bindI18nStore.split(" ").forEach((e2) => i18n.store.off(e2, wrappedCallback));
+    };
+  }, [i18n, i18nOptions]);
+  const snapshotRef = reactExports.useRef();
+  const getSnapshot = reactExports.useCallback(() => {
+    if (!i18n) {
+      return notReadySnapshot;
+    }
+    const calculatedReady = !!(i18n.isInitialized || i18n.initializedStoreOnce) && namespaces.every((n2) => hasLoadedNamespace(n2, i18n, i18nOptions));
+    const currentLng = props.lng || i18n.language;
+    const currentRevision = revisionRef.current;
+    const lastSnapshot = snapshotRef.current;
+    if (lastSnapshot && lastSnapshot.ready === calculatedReady && lastSnapshot.lng === currentLng && lastSnapshot.keyPrefix === keyPrefix && lastSnapshot.revision === currentRevision) {
+      return lastSnapshot;
+    }
+    const calculatedT = i18n.getFixedT(currentLng, i18nOptions.nsMode === "fallback" ? namespaces : namespaces[0], keyPrefix, {
+      scopeNs: namespaces
+    });
+    const newSnapshot = {
+      t: calculatedT,
+      ready: calculatedReady,
+      lng: currentLng,
+      keyPrefix,
+      revision: currentRevision
+    };
+    snapshotRef.current = newSnapshot;
+    return newSnapshot;
+  }, [i18n, namespaces, keyPrefix, i18nOptions, props.lng]);
+  const [loadCount, setLoadCount] = reactExports.useState(0);
+  const {
+    t: t2,
+    ready
+  } = shimExports.useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  reactExports.useEffect(() => {
+    if (i18n && !ready && !useSuspense) {
+      const onLoaded = () => setLoadCount((c2) => c2 + 1);
+      if (props.lng) {
+        loadLanguages(i18n, props.lng, namespaces, onLoaded);
+      } else {
+        loadNamespaces(i18n, namespaces, onLoaded);
+      }
+    }
+  }, [i18n, props.lng, namespaces, ready, useSuspense, loadCount]);
+  const finalI18n = i18n || {};
+  const wrapperRef = reactExports.useRef(null);
+  const wrapperLangRef = reactExports.useRef();
+  const createI18nWrapper = (original) => {
+    const descriptors = Object.getOwnPropertyDescriptors(original);
+    if (descriptors.__original) delete descriptors.__original;
+    const wrapper2 = Object.create(Object.getPrototypeOf(original), descriptors);
+    if (!Object.prototype.hasOwnProperty.call(wrapper2, "__original")) {
+      try {
+        Object.defineProperty(wrapper2, "__original", {
+          value: original,
+          writable: false,
+          enumerable: false,
+          configurable: false
+        });
+      } catch (_) {
+      }
+    }
+    return wrapper2;
+  };
+  const ret = reactExports.useMemo(() => {
+    const original = finalI18n;
+    const lang = original?.language;
+    let i18nWrapper = original;
+    if (original) {
+      if (wrapperRef.current && wrapperRef.current.__original === original) {
+        if (wrapperLangRef.current !== lang) {
+          i18nWrapper = createI18nWrapper(original);
+          wrapperRef.current = i18nWrapper;
+          wrapperLangRef.current = lang;
+        } else {
+          i18nWrapper = wrapperRef.current;
+        }
+      } else {
+        i18nWrapper = createI18nWrapper(original);
+        wrapperRef.current = i18nWrapper;
+        wrapperLangRef.current = lang;
+      }
+    }
+    const effectiveT = !ready && !useSuspense ? (...args) => {
+      warnOnce(i18n, "USE_T_BEFORE_READY", "useTranslation: t was called before ready. When using useSuspense: false, make sure to check the ready flag before using t.");
+      return t2(...args);
+    } : t2;
+    const arr = [effectiveT, i18nWrapper, ready];
+    arr.t = effectiveT;
+    arr.i18n = i18nWrapper;
+    arr.ready = ready;
+    return arr;
+  }, [t2, finalI18n, ready, finalI18n.resolvedLanguage, finalI18n.language, finalI18n.languages]);
+  if (i18n && useSuspense && !ready) {
+    throw new Promise((resolve) => {
+      const onLoaded = () => resolve();
+      if (props.lng) {
+        loadLanguages(i18n, props.lng, namespaces, onLoaded);
+      } else {
+        loadNamespaces(i18n, namespaces, onLoaded);
+      }
+    });
+  }
+  return ret;
+};
 class InvalidTokenError extends Error {
 }
 InvalidTokenError.prototype.name = "InvalidTokenError";
@@ -66624,7 +69743,7 @@ var Log = /* @__PURE__ */ ((Log2) => {
   }
   Log2.setLogger = setLogger;
 })(Log || (Log = {}));
-var Logger = class _Logger {
+var Logger2 = class _Logger {
   constructor(_name) {
     this._name = _name;
   }
@@ -66700,7 +69819,7 @@ var JwtUtils = class {
     try {
       return jwtDecode(token2);
     } catch (err) {
-      Logger.error("JwtUtils.decode", err);
+      Logger2.error("JwtUtils.decode", err);
       throw err;
     }
   }
@@ -66769,7 +69888,7 @@ var _CryptoUtils = class _CryptoUtils2 {
       const hashed = await crypto.subtle.digest("SHA-256", data2);
       return toBase64(hashed).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
     } catch (err) {
-      Logger.error("CryptoUtils.generateCodeChallenge", err);
+      Logger2.error("CryptoUtils.generateCodeChallenge", err);
       throw err;
     }
   }
@@ -66948,7 +70067,7 @@ var Event$2 = class Event2 {
   constructor(_name) {
     this._name = _name;
     this._callbacks = [];
-    this._logger = new Logger(`Event('${this._name}')`);
+    this._logger = new Logger2(`Event('${this._name}')`);
   }
   addHandler(cb) {
     this._callbacks.push(cb);
@@ -66989,7 +70108,7 @@ var PopupUtils = class {
 var Timer = class _Timer extends Event$2 {
   constructor() {
     super(...arguments);
-    this._logger = new Logger(`Timer('${this._name}')`);
+    this._logger = new Logger2(`Timer('${this._name}')`);
     this._timerHandle = null;
     this._expiration = 0;
     this._callback = () => {
@@ -67046,7 +70165,7 @@ var ErrorResponse = class extends Error {
     this.form = form;
     this.name = "ErrorResponse";
     if (!args.error) {
-      Logger.error("ErrorResponse", "No error passed");
+      Logger2.error("ErrorResponse", "No error passed");
       throw new Error("No error passed");
     }
     this.error = args.error;
@@ -67065,7 +70184,7 @@ var ErrorTimeout = class extends Error {
 };
 var AccessTokenEvents = class {
   constructor(args) {
-    this._logger = new Logger("AccessTokenEvents");
+    this._logger = new Logger2("AccessTokenEvents");
     this._expiringTimer = new Timer("Access token expiring");
     this._expiredTimer = new Timer("Access token expired");
     this._expiringNotificationTimeInSeconds = args.expiringNotificationTimeInSeconds;
@@ -67130,7 +70249,7 @@ var CheckSessionIFrame = class {
     this._client_id = _client_id;
     this._intervalInSeconds = _intervalInSeconds;
     this._stopOnError = _stopOnError;
-    this._logger = new Logger("CheckSessionIFrame");
+    this._logger = new Logger2("CheckSessionIFrame");
     this._timer = null;
     this._session_state = null;
     this._message = (e2) => {
@@ -67196,7 +70315,7 @@ var CheckSessionIFrame = class {
 };
 var InMemoryWebStorage = class {
   constructor() {
-    this._logger = new Logger("InMemoryWebStorage");
+    this._logger = new Logger2("InMemoryWebStorage");
     this._data = {};
   }
   clear() {
@@ -67233,7 +70352,7 @@ var JsonService = class {
   constructor(additionalContentTypes = [], _jwtHandler = null, _extraHeaders = {}) {
     this._jwtHandler = _jwtHandler;
     this._extraHeaders = _extraHeaders;
-    this._logger = new Logger("JsonService");
+    this._logger = new Logger2("JsonService");
     this._contentTypes = [];
     this._contentTypes.push(...additionalContentTypes, "application/json");
     if (_jwtHandler) {
@@ -67395,7 +70514,7 @@ var JsonService = class {
 var MetadataService = class {
   constructor(_settings) {
     this._settings = _settings;
-    this._logger = new Logger("MetadataService");
+    this._logger = new Logger2("MetadataService");
     this._signingKeys = null;
     this._metadata = null;
     this._metadataUrl = this._settings.metadataUrl;
@@ -67496,7 +70615,7 @@ var WebStorageStateStore = class {
     prefix: prefix2 = "oidc.",
     store = localStorage
   } = {}) {
-    this._logger = new Logger("WebStorageStateStore");
+    this._logger = new Logger2("WebStorageStateStore");
     this._store = store;
     this._prefix = prefix2;
   }
@@ -67639,7 +70758,7 @@ var UserInfoService = class {
   constructor(_settings, _metadataService) {
     this._settings = _settings;
     this._metadataService = _metadataService;
-    this._logger = new Logger("UserInfoService");
+    this._logger = new Logger2("UserInfoService");
     this._getClaimsFromJwt = async (responseText) => {
       const logger2 = this._logger.create("_getClaimsFromJwt");
       try {
@@ -67677,7 +70796,7 @@ var TokenClient = class {
   constructor(_settings, _metadataService) {
     this._settings = _settings;
     this._metadataService = _metadataService;
-    this._logger = new Logger("TokenClient");
+    this._logger = new Logger2("TokenClient");
     this._jsonService = new JsonService(
       this._settings.revokeTokenAdditionalContentTypes,
       null,
@@ -67891,7 +71010,7 @@ var ResponseValidator = class {
     this._settings = _settings;
     this._metadataService = _metadataService;
     this._claimsService = _claimsService;
-    this._logger = new Logger("ResponseValidator");
+    this._logger = new Logger2("ResponseValidator");
     this._userInfoService = new UserInfoService(this._settings, this._metadataService);
     this._tokenClient = new TokenClient(this._settings, this._metadataService);
   }
@@ -68054,7 +71173,7 @@ var State$1 = class _State {
     this.url_state = args.url_state;
   }
   toStorageString() {
-    new Logger("State").create("toStorageString");
+    new Logger2("State").create("toStorageString");
     return JSON.stringify({
       id: this.id,
       data: this.data,
@@ -68064,11 +71183,11 @@ var State$1 = class _State {
     });
   }
   static fromStorageString(storageString) {
-    Logger.createStatic("State", "fromStorageString");
+    Logger2.createStatic("State", "fromStorageString");
     return Promise.resolve(new _State(JSON.parse(storageString)));
   }
   static async clearStaleState(storage, age) {
-    const logger2 = Logger.createStatic("State", "clearStaleState");
+    const logger2 = Logger2.createStatic("State", "clearStaleState");
     const cutoff = Timer.getEpochTime() - age;
     const keys2 = await storage.getAllKeys();
     logger2.debug("got keys", keys2);
@@ -68123,7 +71242,7 @@ var SigninState = class _SigninState extends State$1 {
     });
   }
   toStorageString() {
-    new Logger("SigninState").create("toStorageString");
+    new Logger2("SigninState").create("toStorageString");
     return JSON.stringify({
       id: this.id,
       data: this.data,
@@ -68143,7 +71262,7 @@ var SigninState = class _SigninState extends State$1 {
     });
   }
   static fromStorageString(storageString) {
-    Logger.createStatic("SigninState", "fromStorageString");
+    Logger2.createStatic("SigninState", "fromStorageString");
     const data2 = JSON.parse(storageString);
     return _SigninState.create(data2);
   }
@@ -68253,7 +71372,7 @@ var _SigninRequest = class _SigninRequest2 {
     });
   }
 };
-_SigninRequest._logger = new Logger("SigninRequest");
+_SigninRequest._logger = new Logger2("SigninRequest");
 var SigninRequest = _SigninRequest;
 var OidcScope = "openid";
 var SigninResponse = class {
@@ -68303,7 +71422,7 @@ var SignoutRequest = class {
     client_id,
     url_state
   }) {
-    this._logger = new Logger("SignoutRequest");
+    this._logger = new Logger2("SignoutRequest");
     if (!url2) {
       this._logger.error("ctor: No url passed");
       throw new Error("url");
@@ -68364,7 +71483,7 @@ var InternalRequiredProtocolClaims = ["sub", "iss", "aud", "exp", "iat"];
 var ClaimsService = class {
   constructor(_settings) {
     this._settings = _settings;
-    this._logger = new Logger("ClaimsService");
+    this._logger = new Logger2("ClaimsService");
   }
   filterProtocolClaims(claims) {
     const result2 = { ...claims };
@@ -68417,7 +71536,7 @@ var DPoPState = class {
 };
 var OidcClient = class {
   constructor(settings2, metadataService) {
-    this._logger = new Logger("OidcClient");
+    this._logger = new Logger2("OidcClient");
     this.settings = settings2 instanceof OidcClientSettingsStore ? settings2 : new OidcClientSettingsStore(settings2);
     this.metadataService = metadataService != null ? metadataService : new MetadataService(this.settings);
     this._claimsService = new ClaimsService(this.settings);
@@ -68703,7 +71822,7 @@ var OidcClient = class {
 var SessionMonitor = class {
   constructor(_userManager) {
     this._userManager = _userManager;
-    this._logger = new Logger("SessionMonitor");
+    this._logger = new Logger2("SessionMonitor");
     this._start = async (user) => {
       const session_state = user.session_state;
       if (!session_state) {
@@ -68866,7 +71985,7 @@ var User = class _User {
     return (_b = (_a2 = this.scope) == null ? void 0 : _a2.split(" ")) != null ? _b : [];
   }
   toStorageString() {
-    new Logger("User").create("toStorageString");
+    new Logger2("User").create("toStorageString");
     return JSON.stringify({
       id_token: this.id_token,
       session_state: this.session_state,
@@ -68879,7 +71998,7 @@ var User = class _User {
     });
   }
   static fromStorageString(storageString) {
-    Logger.createStatic("User", "fromStorageString");
+    Logger2.createStatic("User", "fromStorageString");
     return new _User(JSON.parse(storageString));
   }
 };
@@ -68949,7 +72068,7 @@ var AbstractChildWindow = class {
       url: url2,
       keepOpen
     };
-    const logger2 = new Logger("_notifyParent");
+    const logger2 = new Logger2("_notifyParent");
     if (parent2) {
       logger2.debug("With parent. Using parent.postMessage.");
       parent2.postMessage(msgData, targetOrigin);
@@ -69041,7 +72160,7 @@ var IFrameWindow = class _IFrameWindow extends AbstractChildWindow {
     silentRequestTimeoutInSeconds = DefaultSilentRequestTimeoutInSeconds
   }) {
     super();
-    this._logger = new Logger("IFrameWindow");
+    this._logger = new Logger2("IFrameWindow");
     this._timeoutInSeconds = silentRequestTimeoutInSeconds;
     this._frame = _IFrameWindow.createHiddenIframe();
     this._window = this._frame.contentWindow;
@@ -69086,7 +72205,7 @@ var IFrameWindow = class _IFrameWindow extends AbstractChildWindow {
 var IFrameNavigator = class {
   constructor(_settings) {
     this._settings = _settings;
-    this._logger = new Logger("IFrameNavigator");
+    this._logger = new Logger2("IFrameNavigator");
   }
   async prepare({
     silentRequestTimeoutInSeconds = this._settings.silentRequestTimeoutInSeconds
@@ -69108,7 +72227,7 @@ var PopupWindow = class extends AbstractChildWindow {
     popupAbortOnClose
   }) {
     super();
-    this._logger = new Logger("PopupWindow");
+    this._logger = new Logger2("PopupWindow");
     const centeredPopup = PopupUtils.center({ ...DefaultPopupWindowFeatures, ...popupWindowFeatures });
     this._window = window.open(void 0, popupWindowTarget, PopupUtils.serialize(centeredPopup));
     this.abortOnClose = Boolean(popupAbortOnClose);
@@ -69164,7 +72283,7 @@ var PopupWindow = class extends AbstractChildWindow {
 var PopupNavigator = class {
   constructor(_settings) {
     this._settings = _settings;
-    this._logger = new Logger("PopupNavigator");
+    this._logger = new Logger2("PopupNavigator");
   }
   async prepare({
     popupWindowFeatures = this._settings.popupWindowFeatures,
@@ -69187,7 +72306,7 @@ var PopupNavigator = class {
 var RedirectNavigator = class {
   constructor(_settings) {
     this._settings = _settings;
-    this._logger = new Logger("RedirectNavigator");
+    this._logger = new Logger2("RedirectNavigator");
   }
   async prepare({
     redirectMethod = this._settings.redirectMethod,
@@ -69225,7 +72344,7 @@ var RedirectNavigator = class {
 var UserManagerEvents = class extends AccessTokenEvents {
   constructor(settings2) {
     super({ expiringNotificationTimeInSeconds: settings2.accessTokenExpiringNotificationTimeInSeconds });
-    this._logger = new Logger("UserManagerEvents");
+    this._logger = new Logger2("UserManagerEvents");
     this._userLoaded = new Event$2("User loaded");
     this._userUnloaded = new Event$2("User unloaded");
     this._silentRenewError = new Event$2("Silent renew error");
@@ -69346,7 +72465,7 @@ var UserManagerEvents = class extends AccessTokenEvents {
 var SilentRenewService = class {
   constructor(_userManager) {
     this._userManager = _userManager;
-    this._logger = new Logger("SilentRenewService");
+    this._logger = new Logger2("SilentRenewService");
     this._isStarted = false;
     this._retryTimer = new Timer("Retry Silent Renew");
     this._timeoutRetryCount = 0;
@@ -69417,7 +72536,7 @@ var RefreshState = class {
 };
 var UserManager = class {
   constructor(settings2, redirectNavigator, popupNavigator, iframeNavigator) {
-    this._logger = new Logger("UserManager");
+    this._logger = new Logger2("UserManager");
     this.settings = new UserManagerSettingsStore(settings2);
     this._client = new OidcClient(settings2);
     this._redirectNavigator = redirectNavigator != null ? redirectNavigator : new RedirectNavigator(this.settings);
@@ -70087,438 +73206,23 @@ var UserManager = class {
   }
 };
 const userManager = typeof window !== "undefined" ? new UserManager({
-  authority: void 0,
+  authority: "http://localhost:44447/auth/realms/blog",
   client_id: "frontend-auth",
   redirect_uri: location.origin + "/auth/callback",
   automaticSilentRenew: true
 }) : null;
-if (typeof window !== "undefined")
+if (userManager !== null) {
   userManager.events.addSilentRenewError(async () => {
     await userManager.removeUser();
   });
-const AVATAR_ENDPOINT = typeof window !== "undefined" ? location.origin.concat("/api/file") : "";
-const apiClient = typeof window !== "undefined" ? axios.create({
-  baseURL: void 0,
-  withCredentials: true
-}) : null;
-async function getAccessToken() {
-  const user = await userManager.getUser();
-  if (!user || user.expired) {
-    return null;
-  }
-  return user.access_token;
-}
-if (apiClient !== null)
-  apiClient.interceptors.request.use(async (config2) => {
-    const token2 = await getAccessToken();
-    if (token2) {
-      config2.headers.Authorization = `Bearer ${token2}`;
-    }
-    return config2;
-  });
-const ClientContext = reactExports.createContext(false);
-const useClient = () => reactExports.useContext(ClientContext);
-const warn$1 = (i18n, code, msg, rest) => {
-  const args = [msg, {
-    code,
-    ...rest || {}
-  }];
-  if (i18n?.services?.logger?.forward) {
-    return i18n.services.logger.forward(args, "warn", "react-i18next::", true);
-  }
-  if (isString(args[0])) args[0] = `react-i18next:: ${args[0]}`;
-  if (i18n?.services?.logger?.warn) {
-    i18n.services.logger.warn(...args);
-  } else if (console?.warn) {
-    console.warn(...args);
-  }
-};
-const alreadyWarned = {};
-const warnOnce = (i18n, code, msg, rest) => {
-  if (isString(msg) && alreadyWarned[msg]) return;
-  if (isString(msg)) alreadyWarned[msg] = /* @__PURE__ */ new Date();
-  warn$1(i18n, code, msg, rest);
-};
-const loadedClb = (i18n, cb) => () => {
-  if (i18n.isInitialized) {
-    cb();
-  } else {
-    const initialized = () => {
-      setTimeout(() => {
-        i18n.off("initialized", initialized);
-      }, 0);
-      cb();
-    };
-    i18n.on("initialized", initialized);
-  }
-};
-const loadNamespaces = (i18n, ns, cb) => {
-  i18n.loadNamespaces(ns, loadedClb(i18n, cb));
-};
-const loadLanguages = (i18n, lng, ns, cb) => {
-  if (isString(ns)) ns = [ns];
-  if (i18n.options.preload && i18n.options.preload.indexOf(lng) > -1) return loadNamespaces(i18n, ns, cb);
-  ns.forEach((n2) => {
-    if (i18n.options.ns.indexOf(n2) < 0) i18n.options.ns.push(n2);
-  });
-  i18n.loadLanguages(lng, loadedClb(i18n, cb));
-};
-const hasLoadedNamespace = (ns, i18n, options2 = {}) => {
-  if (!i18n.languages || !i18n.languages.length) {
-    warnOnce(i18n, "NO_LANGUAGES", "i18n.languages were undefined or empty", {
-      languages: i18n.languages
-    });
-    return true;
-  }
-  return i18n.hasLoadedNamespace(ns, {
-    lng: options2.lng,
-    precheck: (i18nInstance2, loadNotPending) => {
-      if (options2.bindI18n && options2.bindI18n.indexOf("languageChanging") > -1 && i18nInstance2.services.backendConnector.backend && i18nInstance2.isLanguageChangingTo && !loadNotPending(i18nInstance2.isLanguageChangingTo, ns)) return false;
-    }
-  });
-};
-const isString = (obj) => typeof obj === "string";
-const isObject = (obj) => typeof obj === "object" && obj !== null;
-const matchHtmlEntity = /&(?:amp|#38|lt|#60|gt|#62|apos|#39|quot|#34|nbsp|#160|copy|#169|reg|#174|hellip|#8230|#x2F|#47);/g;
-const htmlEntities = {
-  "&amp;": "&",
-  "&#38;": "&",
-  "&lt;": "<",
-  "&#60;": "<",
-  "&gt;": ">",
-  "&#62;": ">",
-  "&apos;": "'",
-  "&#39;": "'",
-  "&quot;": '"',
-  "&#34;": '"',
-  "&nbsp;": " ",
-  "&#160;": " ",
-  "&copy;": "©",
-  "&#169;": "©",
-  "&reg;": "®",
-  "&#174;": "®",
-  "&hellip;": "…",
-  "&#8230;": "…",
-  "&#x2F;": "/",
-  "&#47;": "/"
-};
-const unescapeHtmlEntity = (m) => htmlEntities[m];
-const unescape$1 = (text) => text.replace(matchHtmlEntity, unescapeHtmlEntity);
-let defaultOptions = {
-  bindI18n: "languageChanged",
-  bindI18nStore: "",
-  transEmptyNodeValue: "",
-  transSupportBasicHtmlNodes: true,
-  transWrapTextNodes: "",
-  transKeepBasicHtmlNodesFor: ["br", "strong", "i", "p"],
-  useSuspense: true,
-  unescape: unescape$1,
-  transDefaultProps: void 0
-};
-const getDefaults = () => defaultOptions;
-let i18nInstance;
-const getI18n = () => i18nInstance;
-const I18nContext = reactExports.createContext();
-class ReportNamespaces {
-  constructor() {
-    this.usedNamespaces = {};
-  }
-  addUsedNamespaces(namespaces) {
-    namespaces.forEach((ns) => {
-      if (!this.usedNamespaces[ns]) this.usedNamespaces[ns] = true;
-    });
-  }
-  getUsedNamespaces() {
-    return Object.keys(this.usedNamespaces);
-  }
-}
-var shim = { exports: {} };
-var useSyncExternalStoreShim_production = {};
-var hasRequiredUseSyncExternalStoreShim_production;
-function requireUseSyncExternalStoreShim_production() {
-  if (hasRequiredUseSyncExternalStoreShim_production) return useSyncExternalStoreShim_production;
-  hasRequiredUseSyncExternalStoreShim_production = 1;
-  var React2 = requireReact();
-  function is(x3, y3) {
-    return x3 === y3 && (0 !== x3 || 1 / x3 === 1 / y3) || x3 !== x3 && y3 !== y3;
-  }
-  var objectIs = "function" === typeof Object.is ? Object.is : is, useState = React2.useState, useEffect = React2.useEffect, useLayoutEffect = React2.useLayoutEffect, useDebugValue = React2.useDebugValue;
-  function useSyncExternalStore$2(subscribe, getSnapshot) {
-    var value2 = getSnapshot(), _useState = useState({ inst: { value: value2, getSnapshot } }), inst = _useState[0].inst, forceUpdate = _useState[1];
-    useLayoutEffect(
-      function() {
-        inst.value = value2;
-        inst.getSnapshot = getSnapshot;
-        checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-      },
-      [subscribe, value2, getSnapshot]
-    );
-    useEffect(
-      function() {
-        checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-        return subscribe(function() {
-          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-        });
-      },
-      [subscribe]
-    );
-    useDebugValue(value2);
-    return value2;
-  }
-  function checkIfSnapshotChanged(inst) {
-    var latestGetSnapshot = inst.getSnapshot;
-    inst = inst.value;
+  userManager.events.addAccessTokenExpired(async () => {
     try {
-      var nextValue = latestGetSnapshot();
-      return !objectIs(inst, nextValue);
+      await userManager.signinSilent();
     } catch (error2) {
-      return true;
+      await userManager.removeUser();
     }
-  }
-  function useSyncExternalStore$1(subscribe, getSnapshot) {
-    return getSnapshot();
-  }
-  var shim2 = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1 : useSyncExternalStore$2;
-  useSyncExternalStoreShim_production.useSyncExternalStore = void 0 !== React2.useSyncExternalStore ? React2.useSyncExternalStore : shim2;
-  return useSyncExternalStoreShim_production;
+  });
 }
-var useSyncExternalStoreShim_development = {};
-var hasRequiredUseSyncExternalStoreShim_development;
-function requireUseSyncExternalStoreShim_development() {
-  if (hasRequiredUseSyncExternalStoreShim_development) return useSyncExternalStoreShim_development;
-  hasRequiredUseSyncExternalStoreShim_development = 1;
-  "production" !== process.env.NODE_ENV && (function() {
-    function is(x3, y3) {
-      return x3 === y3 && (0 !== x3 || 1 / x3 === 1 / y3) || x3 !== x3 && y3 !== y3;
-    }
-    function useSyncExternalStore$2(subscribe, getSnapshot) {
-      didWarnOld18Alpha || void 0 === React2.startTransition || (didWarnOld18Alpha = true, console.error(
-        "You are using an outdated, pre-release alpha of React 18 that does not support useSyncExternalStore. The use-sync-external-store shim will not work correctly. Upgrade to a newer pre-release."
-      ));
-      var value2 = getSnapshot();
-      if (!didWarnUncachedGetSnapshot) {
-        var cachedValue = getSnapshot();
-        objectIs(value2, cachedValue) || (console.error(
-          "The result of getSnapshot should be cached to avoid an infinite loop"
-        ), didWarnUncachedGetSnapshot = true);
-      }
-      cachedValue = useState({
-        inst: { value: value2, getSnapshot }
-      });
-      var inst = cachedValue[0].inst, forceUpdate = cachedValue[1];
-      useLayoutEffect(
-        function() {
-          inst.value = value2;
-          inst.getSnapshot = getSnapshot;
-          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-        },
-        [subscribe, value2, getSnapshot]
-      );
-      useEffect(
-        function() {
-          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-          return subscribe(function() {
-            checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-          });
-        },
-        [subscribe]
-      );
-      useDebugValue(value2);
-      return value2;
-    }
-    function checkIfSnapshotChanged(inst) {
-      var latestGetSnapshot = inst.getSnapshot;
-      inst = inst.value;
-      try {
-        var nextValue = latestGetSnapshot();
-        return !objectIs(inst, nextValue);
-      } catch (error2) {
-        return true;
-      }
-    }
-    function useSyncExternalStore$1(subscribe, getSnapshot) {
-      return getSnapshot();
-    }
-    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-    var React2 = requireReact(), objectIs = "function" === typeof Object.is ? Object.is : is, useState = React2.useState, useEffect = React2.useEffect, useLayoutEffect = React2.useLayoutEffect, useDebugValue = React2.useDebugValue, didWarnOld18Alpha = false, didWarnUncachedGetSnapshot = false, shim2 = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1 : useSyncExternalStore$2;
-    useSyncExternalStoreShim_development.useSyncExternalStore = void 0 !== React2.useSyncExternalStore ? React2.useSyncExternalStore : shim2;
-    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
-  })();
-  return useSyncExternalStoreShim_development;
-}
-var hasRequiredShim;
-function requireShim() {
-  if (hasRequiredShim) return shim.exports;
-  hasRequiredShim = 1;
-  if (process.env.NODE_ENV === "production") {
-    shim.exports = requireUseSyncExternalStoreShim_production();
-  } else {
-    shim.exports = requireUseSyncExternalStoreShim_development();
-  }
-  return shim.exports;
-}
-var shimExports = requireShim();
-const notReadyT = (k, optsOrDefaultValue) => {
-  if (isString(optsOrDefaultValue)) return optsOrDefaultValue;
-  if (isObject(optsOrDefaultValue) && isString(optsOrDefaultValue.defaultValue)) return optsOrDefaultValue.defaultValue;
-  if (typeof k === "function") return "";
-  if (Array.isArray(k)) {
-    const last = k[k.length - 1];
-    return typeof last === "function" ? "" : last;
-  }
-  return k;
-};
-const notReadySnapshot = {
-  t: notReadyT,
-  ready: false
-};
-const dummySubscribe = () => () => {
-};
-const useTranslation = (ns, props = {}) => {
-  const {
-    i18n: i18nFromProps
-  } = props;
-  const {
-    i18n: i18nFromContext,
-    defaultNS: defaultNSFromContext
-  } = reactExports.useContext(I18nContext) || {};
-  const i18n = i18nFromProps || i18nFromContext || getI18n();
-  if (i18n && !i18n.reportNamespaces) i18n.reportNamespaces = new ReportNamespaces();
-  if (!i18n) {
-    warnOnce(i18n, "NO_I18NEXT_INSTANCE", "useTranslation: You will need to pass in an i18next instance by using initReactI18next");
-  }
-  const i18nOptions = reactExports.useMemo(() => ({
-    ...getDefaults(),
-    ...i18n?.options?.react,
-    ...props
-  }), [i18n, props]);
-  const {
-    useSuspense,
-    keyPrefix
-  } = i18nOptions;
-  const nsOrContext = defaultNSFromContext || i18n?.options?.defaultNS;
-  const unstableNamespaces = isString(nsOrContext) ? [nsOrContext] : nsOrContext || ["translation"];
-  const namespaces = reactExports.useMemo(() => unstableNamespaces, unstableNamespaces);
-  i18n?.reportNamespaces?.addUsedNamespaces?.(namespaces);
-  const revisionRef = reactExports.useRef(0);
-  const subscribe = reactExports.useCallback((callback) => {
-    if (!i18n) return dummySubscribe;
-    const {
-      bindI18n,
-      bindI18nStore
-    } = i18nOptions;
-    const wrappedCallback = () => {
-      revisionRef.current += 1;
-      callback();
-    };
-    if (bindI18n) i18n.on(bindI18n, wrappedCallback);
-    if (bindI18nStore) i18n.store.on(bindI18nStore, wrappedCallback);
-    return () => {
-      if (bindI18n) bindI18n.split(" ").forEach((e2) => i18n.off(e2, wrappedCallback));
-      if (bindI18nStore) bindI18nStore.split(" ").forEach((e2) => i18n.store.off(e2, wrappedCallback));
-    };
-  }, [i18n, i18nOptions]);
-  const snapshotRef = reactExports.useRef();
-  const getSnapshot = reactExports.useCallback(() => {
-    if (!i18n) {
-      return notReadySnapshot;
-    }
-    const calculatedReady = !!(i18n.isInitialized || i18n.initializedStoreOnce) && namespaces.every((n2) => hasLoadedNamespace(n2, i18n, i18nOptions));
-    const currentLng = props.lng || i18n.language;
-    const currentRevision = revisionRef.current;
-    const lastSnapshot = snapshotRef.current;
-    if (lastSnapshot && lastSnapshot.ready === calculatedReady && lastSnapshot.lng === currentLng && lastSnapshot.keyPrefix === keyPrefix && lastSnapshot.revision === currentRevision) {
-      return lastSnapshot;
-    }
-    const calculatedT = i18n.getFixedT(currentLng, i18nOptions.nsMode === "fallback" ? namespaces : namespaces[0], keyPrefix, {
-      scopeNs: namespaces
-    });
-    const newSnapshot = {
-      t: calculatedT,
-      ready: calculatedReady,
-      lng: currentLng,
-      keyPrefix,
-      revision: currentRevision
-    };
-    snapshotRef.current = newSnapshot;
-    return newSnapshot;
-  }, [i18n, namespaces, keyPrefix, i18nOptions, props.lng]);
-  const [loadCount, setLoadCount] = reactExports.useState(0);
-  const {
-    t: t2,
-    ready
-  } = shimExports.useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
-  reactExports.useEffect(() => {
-    if (i18n && !ready && !useSuspense) {
-      const onLoaded = () => setLoadCount((c2) => c2 + 1);
-      if (props.lng) {
-        loadLanguages(i18n, props.lng, namespaces, onLoaded);
-      } else {
-        loadNamespaces(i18n, namespaces, onLoaded);
-      }
-    }
-  }, [i18n, props.lng, namespaces, ready, useSuspense, loadCount]);
-  const finalI18n = i18n || {};
-  const wrapperRef = reactExports.useRef(null);
-  const wrapperLangRef = reactExports.useRef();
-  const createI18nWrapper = (original) => {
-    const descriptors = Object.getOwnPropertyDescriptors(original);
-    if (descriptors.__original) delete descriptors.__original;
-    const wrapper2 = Object.create(Object.getPrototypeOf(original), descriptors);
-    if (!Object.prototype.hasOwnProperty.call(wrapper2, "__original")) {
-      try {
-        Object.defineProperty(wrapper2, "__original", {
-          value: original,
-          writable: false,
-          enumerable: false,
-          configurable: false
-        });
-      } catch (_) {
-      }
-    }
-    return wrapper2;
-  };
-  const ret = reactExports.useMemo(() => {
-    const original = finalI18n;
-    const lang = original?.language;
-    let i18nWrapper = original;
-    if (original) {
-      if (wrapperRef.current && wrapperRef.current.__original === original) {
-        if (wrapperLangRef.current !== lang) {
-          i18nWrapper = createI18nWrapper(original);
-          wrapperRef.current = i18nWrapper;
-          wrapperLangRef.current = lang;
-        } else {
-          i18nWrapper = wrapperRef.current;
-        }
-      } else {
-        i18nWrapper = createI18nWrapper(original);
-        wrapperRef.current = i18nWrapper;
-        wrapperLangRef.current = lang;
-      }
-    }
-    const effectiveT = !ready && !useSuspense ? (...args) => {
-      warnOnce(i18n, "USE_T_BEFORE_READY", "useTranslation: t was called before ready. When using useSuspense: false, make sure to check the ready flag before using t.");
-      return t2(...args);
-    } : t2;
-    const arr = [effectiveT, i18nWrapper, ready];
-    arr.t = effectiveT;
-    arr.i18n = i18nWrapper;
-    arr.ready = ready;
-    return arr;
-  }, [t2, finalI18n, ready, finalI18n.resolvedLanguage, finalI18n.language, finalI18n.languages]);
-  if (i18n && useSuspense && !ready) {
-    throw new Promise((resolve) => {
-      const onLoaded = () => resolve();
-      if (props.lng) {
-        loadLanguages(i18n, props.lng, namespaces, onLoaded);
-      } else {
-        loadNamespaces(i18n, namespaces, onLoaded);
-      }
-    });
-  }
-  return ret;
-};
 const AuthContext = reactExports.createContext(null);
 const useAuth = () => {
   const context = reactExports.useContext(AuthContext);
@@ -70577,590 +73281,16 @@ const AccountCircleIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("p
 const PeopleIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
   d: "M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3m-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3m0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5"
 }), "People");
-const UserInfo = () => {
-  const isClient = useClient();
-  const auth = useAuth();
-  const attributes2 = auth?.user?.profile["attributes"];
-  const username = auth?.user?.profile.preferred_username;
-  const avatarId = attributes2?.["avatarId"]?.[0];
-  const navigate = useNavigate();
-  const { t: t2 } = useTranslation();
-  const ref = reactExports.useRef(null);
-  const [isOpen, setIsOpen] = reactExports.useState(false);
-  const handleLogin = () => {
-    if (typeof window !== "undefined" && auth)
-      auth.login();
-  };
-  const LoginButton = ({ callback }) => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Button,
-      {
-        onClick: () => callback(),
-        size: "large",
-        variant: "text",
-        startIcon: /* @__PURE__ */ jsxRuntimeExports.jsx(LoginIcon, { fontSize: "small" }),
-        children: t2("login")
-      }
-    ) });
-  };
-  if (!isClient || !auth.user)
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(LoginButton, { callback: handleLogin });
-  const handlePopoverOpen = () => {
-    setIsOpen(true);
-  };
-  const handlePopoverClose = () => {
-    setIsOpen(false);
-  };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      px: 1
-    }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        Box,
-        {
-          ref,
-          onClick: handlePopoverOpen,
-          sx: (theme) => ({
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            px: 1,
-            py: 0.5,
-            borderRadius: 1,
-            cursor: "pointer",
-            transition: theme.transitions.create(
-              ["background-color", "color"],
-              { duration: theme.transitions.duration.short }
-            ),
-            "&:hover": {
-              bgcolor: "action.hover"
-            }
-          }),
-          children: [
-            avatarId ? /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar, { src: `${AVATAR_ENDPOINT}/${avatarId}`, sx: { width: 32, height: 32 } }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar, { sx: { width: 32, height: 32 }, children: username?.substring(0, 2).toLocaleUpperCase() }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(Typography$1, { fontSize: 14, fontWeight: 500, noWrap: true, children: [
-              " ",
-              username
-            ] })
-          ]
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        IconButton,
-        {
-          size: "small",
-          sx: (theme) => ({
-            transition: theme.transitions.create(
-              ["color", "background-color", "transform"],
-              { duration: theme.transitions.duration.short }
-            ),
-            "&:hover": {
-              color: "error.main",
-              bgcolor: "action.hover",
-              transform: "scale(1.1)"
-            }
-          }),
-          onClick: () => auth.logout(),
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(LogoutIcon, { fontSize: "small" })
-        }
-      )
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      Menu$1,
-      {
-        anchorEl: ref.current,
-        open: isOpen,
-        onClose: handlePopoverClose,
-        disableScrollLock: true,
-        children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            Box,
-            {
-              sx: {
-                px: 2,
-                py: 1.5,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 2,
-                minWidth: 260
-              },
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  Box,
-                  {
-                    sx: {
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1.5
-                    },
-                    children: [
-                      avatarId ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        Avatar,
-                        {
-                          src: `${AVATAR_ENDPOINT}/${avatarId}`,
-                          sx: { width: 40, height: 40 }
-                        }
-                      ) : /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar, { sx: { width: 40, height: 40 }, children: username?.slice(0, 2).toUpperCase() }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(
-                          Typography$1,
-                          {
-                            variant: "body2",
-                            fontWeight: 600,
-                            noWrap: true,
-                            children: username
-                          }
-                        ),
-                        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                          Typography$1,
-                          {
-                            variant: "caption",
-                            color: "text.secondary",
-                            noWrap: true,
-                            children: [
-                              "@",
-                              auth.user?.profile.preferred_username
-                            ]
-                          }
-                        )
-                      ] })
-                    ]
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  IconButton,
-                  {
-                    size: "small",
-                    onClick: () => auth.logout(),
-                    children: /* @__PURE__ */ jsxRuntimeExports.jsx(LogoutIcon, { fontSize: "small" })
-                  }
-                )
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Divider$1, {}),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            MenuItem,
-            {
-              onClick: () => {
-                handlePopoverClose();
-                navigate(
-                  `profile/${auth.user?.profile.preferred_username}`
-                );
-              },
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemIcon, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(AccountCircleIcon, {}) }),
-                "Profile"
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            MenuItem,
-            {
-              onClick: () => {
-                handlePopoverClose();
-                navigate("follows/");
-              },
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemIcon, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(PeopleIcon, {}) }),
-                "Follows"
-              ]
-            }
-          )
-        ]
-      }
-    )
-  ] });
-};
-const ThemeContext = reactExports.createContext(void 0);
-const useTheme = () => {
-  const context = reactExports.useContext(ThemeContext);
-  if (!context)
-    throw new Error("useTheme must be used within ThemeProvider");
-  return context;
-};
-const ThemeProvider = ({ children: children2 }) => {
-  const [paletteMode, setPaletteMode] = reactExports.useState(() => {
-    const type2 = typeof window !== "undefined" ? localStorage.getItem("paletteMode") : "";
-    return type2 === "light" ? "light" : "dark";
-  });
-  const theme = reactExports.useMemo(
-    () => {
-      let theme2 = createTheme({
-        palette: {
-          mode: paletteMode,
-          background: {
-            paper: paletteMode === "light" ? "#f7f8fa" : "#1e1e1e",
-            default: paletteMode === "light" ? "#f6f7f9" : "#121212"
-          }
-        },
-        typography: {
-          fontFamily: ["Inter", "sans-serif"].join(",")
-        }
-      });
-      return responsiveFontSizes(theme2);
-    },
-    [paletteMode]
-  );
-  reactExports.useEffect(() => {
-    localStorage.setItem("paletteMode", paletteMode);
-  }, [paletteMode]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeContext.Provider, { value: { paletteMode, setPaletteMode }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeProvider$1, { theme, children: children2 }) });
-};
-const ThemeSwitchUI = styled(Switch)(({ theme }) => ({
-  width: 62,
-  height: 34,
-  padding: 7,
-  "& .MuiSwitch-switchBase": {
-    margin: 1,
-    padding: 0,
-    transform: "translateX(6px)",
-    "&.Mui-checked": {
-      color: "#fff",
-      transform: "translateX(22px)",
-      "& .MuiSwitch-thumb:before": {
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-          "#fff"
-        )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`
-      },
-      "& + .MuiSwitch-track": {
-        opacity: 1,
-        backgroundColor: "#aab4be",
-        ...theme.applyStyles("dark", {
-          backgroundColor: "#8796A5"
-        })
-      }
-    }
-  },
-  "& .MuiSwitch-thumb": {
-    backgroundColor: "#001e3c",
-    width: 32,
-    height: 32,
-    "&::before": {
-      content: "''",
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      left: 0,
-      top: 0,
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-        "#fff"
-      )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`
-    },
-    ...theme.applyStyles("dark", {
-      backgroundColor: "#003892"
-    })
-  },
-  "& .MuiSwitch-track": {
-    opacity: 1,
-    backgroundColor: "#aab4be",
-    borderRadius: 20 / 2,
-    ...theme.applyStyles("dark", {
-      backgroundColor: "#8796A5"
-    })
-  }
-}));
-const ThemeSwitch = () => {
-  const { paletteMode, setPaletteMode } = useTheme();
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeSwitchUI, { checked: paletteMode === "dark", onChange: () => setPaletteMode(paletteMode === "light" ? "dark" : "light") });
-};
-const SearchIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
-  d: "M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
-}), "Search");
-const SearchContext = reactExports.createContext(null);
-const useSearchOption = () => {
-  const context = reactExports.useContext(SearchContext);
-  if (!context)
-    throw new Error("useSearchOption must be used within SearchOptionProvider");
-  return context;
-};
-const SearchOptionProvider = ({ children: children2 }) => {
-  const [searchOption, setSearchOption] = reactExports.useState(null);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(SearchContext.Provider, { value: { searchOption, setSearchOption }, children: children2 });
-};
-async function getUserInfo(ids) {
-  const users = /* @__PURE__ */ new Map();
-  (await apiClient.post("/api/public/user/info", ids)).data.forEach((val) => users.set(val.id, val));
-  return users;
-}
-async function searchUsers(text) {
-  return (await apiClient.get("/api/public/profile", {
-    params: {
-      searchString: text
-    }
-  })).data;
-}
-const HASHTAG_REGEX = /#[\p{L}\p{N}_]+/gu;
-const USERNAME_REGEX = /@([\p{L}\p{N}_]+)$/u;
-const SearchInput = () => {
-  const navigate = useNavigate();
-  const { t: t2 } = useTranslation();
-  const [tags2, setTags] = reactExports.useState([]);
-  const [inputValue, setInputValue] = reactExports.useState("");
-  const [error2, setError] = reactExports.useState(false);
-  const { searchOption, setSearchOption } = useSearchOption();
-  const [searchUser, setSearchUser] = reactExports.useState([]);
-  const [mention, setMention] = reactExports.useState(null);
-  const inputRef = reactExports.useRef(null);
-  const handleSearch = () => {
-    const cleanTags = tags2.map((t22) => t22.substring(1));
-    const params = new URLSearchParams();
-    if (inputValue.length < 3) {
-      setError(true);
-      return;
-    }
-    if (searchOption?.type === "COMMUNITY") {
-      params.set("ci", searchOption.id.toString());
-      params.set("cn", searchOption.name);
-    }
-    if (searchOption?.type === "USER") {
-      params.set("ui", searchOption.id);
-      params.set("un", searchOption.username);
-    }
-    if (inputValue.trim()) {
-      const cleanQuery = inputValue.replace(HASHTAG_REGEX, "").trim();
-      if (cleanQuery) {
-        params.set("q", cleanQuery);
-      }
-    }
-    if (cleanTags.length > 0) {
-      params.set("tags", cleanTags.join(","));
-    }
-    const queryString = params.toString();
-    const searchUrl = queryString ? `/search?${queryString}` : "/search";
-    navigate(searchUrl);
-  };
-  const onKeyDown = (e2) => {
-    setError(false);
-    if (e2.key === "Enter") {
-      handleSearch();
-    } else if (e2.key === " ") {
-      const cursor2 = e2.currentTarget.selectionStart;
-      const beforeCursor = e2.currentTarget.value.slice(0, cursor2);
-      const lastWord = beforeCursor.split(/\s+/).at(-1);
-      if (lastWord?.startsWith("#")) {
-        e2.preventDefault();
-        const trimmed = lastWord.trim();
-        const newTag = trimmed.toLowerCase();
-        if (!tags2.includes(newTag) && tags2.length < 4) {
-          setTags((prev2) => [...prev2, newTag]);
-        }
-        setInputValue(inputValue.replace(lastWord, ""));
-      }
-    }
-  };
-  const detectMention = (value2, cursor2) => {
-    const beforeCursor = value2.slice(0, cursor2);
-    const match2 = beforeCursor.match(USERNAME_REGEX);
-    if (!match2)
-      return null;
-    return {
-      start: cursor2 - match2[0].length,
-      query: match2[1]
-    };
-  };
-  const handleTagDelete = (tagToRemove) => {
-    setTags((prev2) => prev2.filter((t22) => t22 !== tagToRemove));
-  };
-  const handleSearchOptionDelete = () => {
-    setSearchOption(null);
-  };
-  const onInputChange = (e2) => {
-    const value2 = e2.target.value;
-    const cursor2 = e2.target.selectionStart ?? value2.length;
-    setInputValue(value2);
-    const mention2 = detectMention(value2, cursor2);
-    if (mention2) {
-      setMention(mention2);
-    } else {
-      setMention(null);
-    }
-  };
-  reactExports.useEffect(() => {
-    if (!mention || mention.query.length <= 2)
-      return;
-    const timeout3 = setTimeout(() => {
-      search();
-    }, 300);
-    return () => clearTimeout(timeout3);
-  }, [mention]);
-  async function search() {
-    try {
-      setSearchUser(await searchUsers(mention.query));
-    } catch (error22) {
-      console.log(error22);
-    }
-  }
-  function selectUser(user) {
-    if (!mention)
-      return;
-    const before = inputValue.slice(0, mention.start);
-    const after = inputValue.slice(
-      mention.start + mention.query.length + 1
-    );
-    setSearchOption({
-      type: "USER",
-      id: user.id,
-      username: user.username,
-      avatarId: user.avatarId
-    });
-    setInputValue(`${before}${after}`);
-    setSearchUser([]);
-    setMention(null);
-  }
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    Paper,
-    {
-      sx: {
-        borderRadius: "12px",
-        p: "5px 8px",
-        bgcolor: "background.default",
-        border: "1px solid",
-        borderColor: "text.secondary",
-        transition: "border-color 0.3s ease, background-color 0.3s ease",
-        display: "flex",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: 0.5,
-        minHeight: "36px",
-        "&:hover": {
-          borderColor: "primary.main"
-        },
-        "&:focus-within": {
-          borderColor: "primary.main",
-          backgroundColor: "action.hover"
-        }
-      },
-      children: [
-        searchOption !== null && (searchOption.type === "COMMUNITY" && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Chip,
-          {
-            avatar: searchOption.avatarId ? /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar, { src: `${AVATAR_ENDPOINT}/${searchOption.avatarId}` }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar, { children: searchOption.name[0] }),
-            label: searchOption.name,
-            onDelete: handleSearchOptionDelete
-          }
-        ) || searchOption.type === "USER" && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Chip,
-          {
-            avatar: searchOption.avatarId ? /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar, { src: `${AVATAR_ENDPOINT}/${searchOption.avatarId}` }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar, { children: searchOption.username[0] }),
-            label: searchOption.username,
-            onDelete: handleSearchOptionDelete
-          }
-        )),
-        tags2.map((tag) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Chip,
-          {
-            label: tag,
-            size: "small",
-            onDelete: () => handleTagDelete(tag),
-            sx: {
-              bgcolor: "primary.light",
-              color: "primary.contrastText",
-              "& .MuiChip-deleteIcon": {
-                color: "primary.contrastText",
-                "&:hover": {
-                  color: "rgba(255,255,255,0.7)"
-                }
-              }
-            }
-          },
-          tag
-        )),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Tooltip,
-          {
-            open: error2,
-            title: t2("search.size-constraint"),
-            placement: "bottom",
-            sx: {
-              zIndex: 4444
-            },
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-              InputBase,
-              {
-                inputRef,
-                sx: { flex: 1 },
-                placeholder: t2("search.placeholder"),
-                value: inputValue,
-                onChange: onInputChange,
-                onKeyDown,
-                startAdornment: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  SearchIcon,
-                  {
-                    sx: {
-                      cursor: "pointer",
-                      mr: 1,
-                      transition: "color 0.3s ease",
-                      "&:hover": {
-                        color: "primary.main"
-                      }
-                    },
-                    onClick: handleSearch
-                  }
-                )
-              }
-            )
-          }
-        ),
-        searchUser.length !== 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Popper2,
-          {
-            open: Boolean(mention),
-            anchorEl: inputRef.current,
-            sx: {
-              zIndex: 3333
-            },
-            modifiers: [
-              {
-                name: "offset",
-                options: {
-                  offset: [0, 8]
-                }
-              }
-            ],
-            placement: "bottom-start",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(Paper, { sx: {
-              width: inputRef.current?.clientWidth,
-              maxHeight: 300,
-              overflowY: "auto"
-            }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(List$1, { children: searchUser.map((user) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              ListItemButton,
-              {
-                onClick: () => selectUser(user),
-                children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemAvatar, { children: user.avatarId ? /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar, { alt: user.username, src: AVATAR_ENDPOINT + "/" + user.avatarId }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar, { alt: user.username, children: user.username[0] }) }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemText, { primary: user.username })
-                ]
-              },
-              user.id
-            )) }) })
-          }
-        )
-      ]
-    }
-  );
-};
-const UpperBar = () => {
-  const navigate = useNavigate();
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(AppBar, { position: "fixed", color: "default", id: "upperBar", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Container, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Toolbar, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { display: "flex", flexDirection: "row", justifyContent: "space-between", width: "100%", alignItems: "center", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h5", onClick: () => {
-      navigate("/");
-    }, sx: { cursor: "pointer" }, children: "Blog app" }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { display: "flex", flexDirection: "row", alignItems: "center", gap: "12px", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SearchInput, {}) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { display: "flex", flexDirection: "row", alignItems: "center", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeSwitch, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(UserInfo, {})
-      ] })
-    ] })
-  ] }) }) }) });
-};
+const SettingsIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6"
+}), "Settings");
+const ForumIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1m-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1"
+}), "Forum");
+const AddIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"
+}), "Add");
+const axios = {};
 function r$1(e2) {
   var t2, f, n2 = "";
   if ("string" == typeof e2 || "number" == typeof e2) n2 += e2;
@@ -71503,7 +73633,7 @@ var Transition = /* @__PURE__ */ (function(_React$Component) {
   };
   _createClass(Transition2, [{
     key: "node",
-    get: function get2() {
+    get: function get3() {
       var _this$props$nodeRef;
       var node2 = (_this$props$nodeRef = this.props.nodeRef) === null || _this$props$nodeRef === void 0 ? void 0 : _this$props$nodeRef.current;
       if (!node2) {
@@ -72582,12 +74712,1115 @@ var SnackbarProvider = /* @__PURE__ */ (function(_Component) {
   };
   _createClass(SnackbarProvider2, [{
     key: "maxSnack",
-    get: function get2() {
+    get: function get3() {
       return this.props.maxSnack || defaults$1.maxSnack;
     }
   }]);
   return SnackbarProvider2;
 })(reactExports.Component);
+const AVATAR_ENDPOINT = typeof window !== "undefined" ? void 0 : "";
+const apiClient = typeof window !== "undefined" ? axios.create({
+  baseURL: "http://localhost:44556",
+  withCredentials: true
+}) : null;
+async function getAccessToken() {
+  const user = await userManager.getUser();
+  if (!user || user.expired) {
+    return null;
+  }
+  return user.access_token;
+}
+function parseRfc9457Error(error2) {
+  return error2.response?.data;
+}
+if (apiClient !== null) {
+  apiClient.interceptors.request.use(async (config2) => {
+    const token2 = await getAccessToken();
+    if (token2) {
+      config2.headers.Authorization = `Bearer ${token2}`;
+    }
+    return config2;
+  });
+  apiClient.interceptors.response.use(
+    (request) => request,
+    (error2) => {
+      const parsedError = parseRfc9457Error(error2);
+      enqueueSnackbar({
+        variant: "error",
+        message: parsedError.detail
+      });
+      return Promise.reject(error2);
+    }
+  );
+}
+const GroupIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3m-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3m0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5"
+}), "Group");
+const Avatar2 = ({
+  name: name2,
+  avatarId,
+  navLink,
+  baseProps,
+  iconProps
+}) => {
+  const navigate = useNavigate();
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: avatarId ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+    Avatar$1,
+    {
+      sx: { cursor: "pointer", ...baseProps?.sx },
+      onClick: () => {
+        navLink ? navigate(navLink) : null;
+      },
+      src: `${AVATAR_ENDPOINT}/${avatarId}`,
+      ...baseProps
+    }
+  ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+    Avatar$1,
+    {
+      sx: { cursor: "pointer", ...baseProps?.sx },
+      onClick: () => {
+        navLink ? navigate(navLink) : null;
+      },
+      ...baseProps,
+      children: name2 && name2.substring(0, 2) || /* @__PURE__ */ jsxRuntimeExports.jsx(GroupIcon, { ...iconProps })
+    }
+  ) });
+};
+const SCOPES = [
+  "POST_DELETE",
+  "COMMENT_DELETE",
+  "USER_BAN",
+  "USER_UNBAN",
+  "FOLLOW_MANAGE"
+];
+async function getCommunities(filter) {
+  const params = new URLSearchParams();
+  if (filter?.searchString) params.append("searchString", filter.searchString);
+  if (filter?.lastSeenId) params.append("lastSeenId", String(filter.lastSeenId));
+  if (filter?.lastSeenScore) params.append("lastSeenScore", String(filter.lastSeenScore));
+  if (filter?.lastSeenInstant) params.append("lastSeenInstant", String(filter.lastSeenInstant));
+  if (filter?.tags) filter.tags.forEach((tag) => params.append("tags", tag));
+  if (filter?.direction) params.append("direction", filter.direction);
+  const queryString = params.toString();
+  const url2 = queryString ? `/api/v1/public/community?${queryString}` : "/api/v1/public/community";
+  return (await apiClient.get(url2)).data;
+}
+async function createCommunity(data2) {
+  return (await apiClient.post("/api/v1/community", data2)).data;
+}
+async function editCommunity(id2, data2) {
+  return (await apiClient.patch(`/api/v1/community/${id2}`, data2)).data;
+}
+async function editCommunityScopes(id2, scopes) {
+  await apiClient.put(`/api/v1/community/${id2}/scopes`, scopes);
+}
+async function getCommunityScopes(id2) {
+  return (await apiClient.get(`/api/v1/community/${id2}/scopes`)).data;
+}
+async function checkSlug(slug) {
+  return (await apiClient.post(
+    `/api/v1/community/slugcheck`,
+    {
+      slug
+    }
+  )).data;
+}
+const TAG_REGEXP = /^#?[A-Za-z][A-Za-z0-9_-]*$/;
+const CommunityCreateDialog = ({
+  open,
+  closeDialog
+}) => {
+  const [displayedName, setDisplayedName] = reactExports.useState("");
+  const [displayedNameError, setDisplayedNameError] = reactExports.useState(null);
+  const [slug, setSlug] = reactExports.useState("");
+  const [slugError, setSlugError] = reactExports.useState(null);
+  const [stepError, setStepError] = reactExports.useState(null);
+  const [loading2, setLoading] = reactExports.useState(false);
+  const [tags2, setTags] = reactExports.useState([]);
+  const [isPrivate, setIsPrivate] = reactExports.useState(false);
+  const [step, setStep] = reactExports.useState(0);
+  const [tagInput, setTagInput] = reactExports.useState("");
+  const navigate = useNavigate();
+  const validateDisplayedName = () => {
+    if (displayedName.length < 6)
+      setDisplayedNameError("Name is too short");
+    if (displayedName.length >= 40)
+      setDisplayedNameError("Name is too long!");
+  };
+  const validateSlug = () => {
+    if (slug.length < 6) {
+      setSlugError("Short name is too short!");
+    }
+    if (slug.length >= 32)
+      setSlugError("Short name is too long!");
+  };
+  const validatorMap = {
+    0: () => true,
+    1: () => {
+      validateDisplayedName();
+      validateSlug();
+      if (slugError || displayedNameError)
+        return false;
+      return true;
+    },
+    2: () => true
+  };
+  const stepErrorCallbackMap = {
+    1: () => {
+      if (displayedNameError)
+        setDisplayedName("");
+      if (slugError)
+        setSlug("");
+    }
+  };
+  const handleTagAdd = (tag) => {
+    const normalized = tag.startsWith("#") ? tag : `#${tag}`;
+    if (!normalized.match(TAG_REGEXP))
+      return;
+    setTags((prev2) => prev2.includes(normalized) || prev2.length >= 3 ? prev2 : [...prev2, normalized]);
+  };
+  const handleTagDelete = (tag) => {
+    setTags((prev2) => prev2.filter((val, _) => val !== tag));
+  };
+  const handleCommunityCreate = async () => {
+    try {
+      const resp = await createCommunity({
+        displayedName,
+        slug,
+        isPrivate,
+        tags: tags2
+      });
+      handleClose();
+      navigate(`/community/${resp.slug}`);
+    } catch (error2) {
+      enqueueSnackbar({
+        variant: "error",
+        message: "Can't create community!"
+      });
+    }
+  };
+  const isValid = () => {
+    if (validatorMap[step]) {
+      return validatorMap[step]();
+    }
+    return true;
+  };
+  const handleStepForward = () => {
+    if (loading2)
+      return;
+    if (step < 2) {
+      if (!isValid()) {
+        return;
+      }
+      setStep((prev2) => prev2 + 1);
+    } else {
+      handleCommunityCreate();
+    }
+  };
+  const handleStepBack = () => {
+    if (!isValid() && stepErrorCallbackMap[step]) {
+      stepErrorCallbackMap[step]();
+    }
+    setStepError(null);
+    if (step === 0) {
+      handleClose();
+      return;
+    }
+    setStep((prev2) => prev2 - 1);
+  };
+  const handleClose = (event, reason2) => {
+    if (reason2 && reason2 === "backdropClick") {
+      return;
+    }
+    closeDialog();
+  };
+  reactExports.useEffect(() => {
+    if (slug.length < 6)
+      return;
+    const timeout3 = setTimeout(() => {
+      isSlugClaimed();
+    }, 300);
+    return () => clearTimeout(timeout3);
+  }, [slug]);
+  const isSlugClaimed = async () => {
+    try {
+      setLoading(true);
+      const claimed = await checkSlug(slug);
+      if (claimed) {
+        setSlugError("Name already claimed!");
+      }
+    } catch (error2) {
+      setStepError("Can't create community now!");
+      console.log(error2);
+    } finally {
+      setLoading(false);
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    Dialog,
+    {
+      open,
+      onClose: handleClose,
+      disableScrollLock: true,
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: "Create community" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(Stepper, { activeStep: step, sx: { pl: 2, pb: 1, pr: 2 }, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Step$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(StepLabel, { children: "Tags" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Step$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(StepLabel, { children: "Name" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Step$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(StepLabel, { children: "Privacy" }) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          DialogContent,
+          {
+            sx: { overflow: "hidden", p: 0 },
+            children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: {
+              display: "flex",
+              transform: `translateX(-${step * 100}%)`,
+              transition: "transform .3s ease"
+            }, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                Box,
+                {
+                  sx: {
+                    flex: "0 0 100%",
+                    p: 3,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                    boxSizing: "border-box"
+                  },
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h6", children: "Community tags" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      Typography$1,
+                      {
+                        variant: "body2",
+                        color: "text.secondary",
+                        children: "Add tags that describe your community. They help users discover it."
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      TextField,
+                      {
+                        fullWidth: true,
+                        placeholder: "Type a tag and press Enter",
+                        value: tagInput,
+                        "aria-label": "Tags",
+                        onChange: (e2) => setTagInput(e2.target.value),
+                        onKeyDown: (e2) => {
+                          if (e2.key === "Enter") {
+                            e2.preventDefault();
+                            handleTagAdd(tagInput);
+                            setTagInput("");
+                          }
+                        }
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      Stack,
+                      {
+                        direction: "row",
+                        spacing: 1,
+                        useFlexGap: true,
+                        flexWrap: "wrap",
+                        children: tags2.map((tag) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+                          Chip,
+                          {
+                            label: tag,
+                            color: "primary",
+                            onDelete: () => handleTagDelete(tag)
+                          },
+                          tag
+                        ))
+                      }
+                    )
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                Box,
+                {
+                  sx: {
+                    flex: "0 0 100%",
+                    p: 3,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                    boxSizing: "border-box"
+                  },
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h6", children: "Community name" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      Typography$1,
+                      {
+                        variant: "body2",
+                        color: "text.secondary",
+                        children: "Pick a unique and memorable name."
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      TextField,
+                      {
+                        fullWidth: true,
+                        label: "Name",
+                        value: displayedName,
+                        onChange: (e2) => {
+                          setDisplayedName(e2.target.value);
+                          setStepError(null);
+                        },
+                        helperText: displayedNameError !== null ? stepError : "",
+                        error: !!displayedNameError
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      TextField,
+                      {
+                        fullWidth: true,
+                        label: "URL name",
+                        value: slug,
+                        onChange: (e2) => {
+                          const val = e2.target.value.toLocaleLowerCase().replace(/[^a-z0-9-_]/g, "");
+                          setSlug(val);
+                          setSlugError(null);
+                        },
+                        helperText: slugError ? slugError : `Your community URL: /communities/${slug || "your-name"}`,
+                        error: !!slugError
+                      }
+                    )
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                Box,
+                {
+                  sx: {
+                    flex: "0 0 100%",
+                    p: 3,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                    boxSizing: "border-box"
+                  },
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h6", children: "Privacy" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      Typography$1,
+                      {
+                        color: "text.secondary",
+                        sx: { mb: 2 },
+                        children: "Private communities require approval or invitation to join."
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      Paper,
+                      {
+                        variant: "outlined",
+                        sx: {
+                          p: 2,
+                          borderRadius: 2
+                        },
+                        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                          FormControlLabel,
+                          {
+                            control: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                              Switch,
+                              {
+                                checked: isPrivate,
+                                onChange: (e2) => setIsPrivate(e2.target.checked)
+                              }
+                            ),
+                            label: "Private community"
+                          }
+                        )
+                      }
+                    )
+                  ]
+                }
+              )
+            ] })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogActions, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleStepBack, children: step !== 0 ? "Back" : "Cancel" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleStepForward, children: step !== 2 ? "Next" : "Create" })
+        ] })
+      ]
+    }
+  );
+};
+const UserInfo = () => {
+  const isClient = useClient();
+  const auth = useAuth();
+  const attributes2 = auth?.user?.profile["attributes"];
+  const username = auth?.user?.profile.preferred_username;
+  const avatarId = attributes2?.["avatarId"]?.[0];
+  const navigate = useNavigate();
+  const { t: t2 } = useTranslation();
+  const ref = reactExports.useRef(null);
+  const [isOpen, setIsOpen] = reactExports.useState(false);
+  const [isCommunityCreateOpen, setIsCommunityCreateOpen] = reactExports.useState(false);
+  const handleLogin = () => {
+    if (typeof window !== "undefined" && auth)
+      auth.login();
+  };
+  const LoginButton = ({ callback }) => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Button,
+      {
+        "aria-label": "Login",
+        onClick: () => callback(),
+        size: "large",
+        variant: "text",
+        startIcon: /* @__PURE__ */ jsxRuntimeExports.jsx(LoginIcon, { fontSize: "small" }),
+        children: t2("login")
+      }
+    ) });
+  };
+  if (!isClient || !auth.user)
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(LoginButton, { callback: handleLogin });
+  const handlePopoverOpen = () => {
+    setIsOpen(true);
+  };
+  const handlePopoverClose = () => {
+    setIsOpen(false);
+  };
+  const handleCommunityCreateOpen = () => {
+    setIsCommunityCreateOpen(true);
+  };
+  const handleCommunityCreateClose = () => {
+    setIsCommunityCreateOpen(false);
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      px: 1
+    }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Box,
+        {
+          ref,
+          onClick: handlePopoverOpen,
+          sx: (theme) => ({
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            px: 1,
+            py: 0.5,
+            borderRadius: 1,
+            cursor: "pointer",
+            transition: theme.transitions.create(
+              ["background-color", "color"],
+              { duration: theme.transitions.duration.short }
+            ),
+            "&:hover": {
+              bgcolor: "action.hover"
+            }
+          }),
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Avatar2,
+              {
+                avatarId,
+                baseProps: {
+                  alt: username,
+                  sx: { width: 32, height: 32 }
+                },
+                name: username?.substring(0, 2).toLocaleLowerCase()
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(Typography$1, { fontSize: 14, fontWeight: 500, noWrap: true, children: [
+              " ",
+              username
+            ] })
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        IconButton,
+        {
+          "aria-label": "Logout",
+          size: "small",
+          sx: (theme) => ({
+            transition: theme.transitions.create(
+              ["color", "background-color", "transform"],
+              { duration: theme.transitions.duration.short }
+            ),
+            "&:hover": {
+              color: "error.main",
+              bgcolor: "action.hover",
+              transform: "scale(1.1)"
+            }
+          }),
+          onClick: () => auth.logout(),
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(LogoutIcon, { fontSize: "small" })
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      Menu$1,
+      {
+        anchorEl: ref.current,
+        open: isOpen,
+        onClose: handlePopoverClose,
+        disableScrollLock: true,
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            Box,
+            {
+              sx: {
+                px: 2,
+                py: 1.5,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 2,
+                minWidth: 260
+              },
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  Box,
+                  {
+                    sx: {
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1.5
+                    },
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(
+                        Avatar2,
+                        {
+                          avatarId,
+                          baseProps: {
+                            sx: { width: 40, height: 40 },
+                            alt: username
+                          },
+                          name: username?.slice(0, 2).toUpperCase(),
+                          navLink: `/profile/${username}`
+                        }
+                      ),
+                      /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(
+                          Typography$1,
+                          {
+                            variant: "body2",
+                            fontWeight: 600,
+                            noWrap: true,
+                            children: username
+                          }
+                        ),
+                        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                          Typography$1,
+                          {
+                            variant: "caption",
+                            color: "text.secondary",
+                            noWrap: true,
+                            children: [
+                              "@",
+                              auth.user?.profile.preferred_username
+                            ]
+                          }
+                        )
+                      ] })
+                    ]
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  IconButton,
+                  {
+                    size: "small",
+                    "aria-label": "Logout",
+                    onClick: () => auth.logout(),
+                    children: /* @__PURE__ */ jsxRuntimeExports.jsx(LogoutIcon, { fontSize: "small" })
+                  }
+                )
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Divider$1, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            MenuItem,
+            {
+              onClick: () => {
+                handlePopoverClose();
+                navigate(
+                  `profile/${auth.user?.profile.preferred_username}`
+                );
+              },
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemIcon, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(AccountCircleIcon, {}) }),
+                "Profile"
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            MenuItem,
+            {
+              onClick: () => {
+                handlePopoverClose();
+                navigate("follows/users");
+              },
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemIcon, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(PeopleIcon, {}) }),
+                "Followed users"
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            MenuItem,
+            {
+              onClick: () => {
+                handlePopoverClose();
+                navigate("follows/communities");
+              },
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemIcon, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(ForumIcon, {}) }),
+                "My communities"
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            MenuItem,
+            {
+              onClick: () => {
+                handlePopoverClose();
+                navigate(`profile/settings`);
+              },
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemIcon, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SettingsIcon, {}) }),
+                "Settings"
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            MenuItem,
+            {
+              onClick: handleCommunityCreateOpen,
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemIcon, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(AddIcon, {}) }),
+                "Create community"
+              ]
+            }
+          )
+        ]
+      }
+    ),
+    isCommunityCreateOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      CommunityCreateDialog,
+      {
+        open: isCommunityCreateOpen,
+        closeDialog: handleCommunityCreateClose
+      }
+    )
+  ] });
+};
+const ThemeContext = reactExports.createContext(void 0);
+const useTheme = () => {
+  const context = reactExports.useContext(ThemeContext);
+  if (!context)
+    throw new Error("useTheme must be used within ThemeProvider");
+  return context;
+};
+const ThemeProvider = ({ children: children2 }) => {
+  const [paletteMode, setPaletteMode] = reactExports.useState(() => {
+    const type2 = typeof window !== "undefined" ? localStorage.getItem("paletteMode") : "";
+    return type2 === "light" ? "light" : "dark";
+  });
+  const theme = reactExports.useMemo(
+    () => {
+      let theme2 = createTheme({
+        palette: {
+          mode: paletteMode,
+          background: {
+            paper: paletteMode === "light" ? "#f7f8fa" : "#1e1e1e",
+            default: paletteMode === "light" ? "#f6f7f9" : "#121212"
+          }
+        },
+        typography: {
+          fontFamily: ["Inter", "sans-serif"].join(",")
+        }
+      });
+      return responsiveFontSizes(theme2);
+    },
+    [paletteMode]
+  );
+  reactExports.useEffect(() => {
+    localStorage.setItem("paletteMode", paletteMode);
+  }, [paletteMode]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeContext.Provider, { value: { paletteMode, setPaletteMode }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeProvider$1, { theme, children: children2 }) });
+};
+const ThemeSwitchUI = styled(Switch)(({ theme }) => ({
+  width: 62,
+  height: 34,
+  padding: 7,
+  "& .MuiSwitch-switchBase": {
+    margin: 1,
+    padding: 0,
+    transform: "translateX(6px)",
+    "&.Mui-checked": {
+      color: "#fff",
+      transform: "translateX(22px)",
+      "& .MuiSwitch-thumb:before": {
+        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+          "#fff"
+        )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`
+      },
+      "& + .MuiSwitch-track": {
+        opacity: 1,
+        backgroundColor: "#aab4be",
+        ...theme.applyStyles("dark", {
+          backgroundColor: "#8796A5"
+        })
+      }
+    }
+  },
+  "& .MuiSwitch-thumb": {
+    backgroundColor: "#001e3c",
+    width: 32,
+    height: 32,
+    "&::before": {
+      content: "''",
+      position: "absolute",
+      width: "100%",
+      height: "100%",
+      left: 0,
+      top: 0,
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+        "#fff"
+      )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`
+    },
+    ...theme.applyStyles("dark", {
+      backgroundColor: "#003892"
+    })
+  },
+  "& .MuiSwitch-track": {
+    opacity: 1,
+    backgroundColor: "#aab4be",
+    borderRadius: 20 / 2,
+    ...theme.applyStyles("dark", {
+      backgroundColor: "#8796A5"
+    })
+  }
+}));
+const ThemeSwitch = () => {
+  const { paletteMode, setPaletteMode } = useTheme();
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeSwitchUI, { checked: paletteMode === "dark", onChange: () => setPaletteMode(paletteMode === "light" ? "dark" : "light") });
+};
+const SearchIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+}), "Search");
+const SearchContext = reactExports.createContext(null);
+const useSearchOption = () => {
+  const context = reactExports.useContext(SearchContext);
+  if (!context)
+    throw new Error("useSearchOption must be used within SearchOptionProvider");
+  return context;
+};
+const SearchOptionProvider = ({ children: children2 }) => {
+  const [searchOption, setSearchOption] = reactExports.useState(null);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(SearchContext.Provider, { value: { searchOption, setSearchOption }, children: children2 });
+};
+async function getUserInfo(ids) {
+  const users = /* @__PURE__ */ new Map();
+  (await apiClient.post("/api/v1/public/profile/info", ids)).data.forEach((val) => users.set(val.id, val));
+  return users;
+}
+async function searchUsers(text) {
+  return (await apiClient.get("/api/v1/public/profile", {
+    params: {
+      searchString: text
+    }
+  })).data;
+}
+const HASHTAG_REGEX = /#[\p{L}\p{N}_]+/gu;
+const USERNAME_REGEX = /@([\p{L}\p{N}_]+)$/u;
+const SearchInput = () => {
+  const navigate = useNavigate();
+  const { t: t2 } = useTranslation();
+  const [tags2, setTags] = reactExports.useState([]);
+  const [inputValue, setInputValue] = reactExports.useState("");
+  const [error2, setError] = reactExports.useState(false);
+  const { searchOption, setSearchOption } = useSearchOption();
+  const [searchUser, setSearchUser] = reactExports.useState([]);
+  const [mention, setMention] = reactExports.useState(null);
+  const inputRef = reactExports.useRef(null);
+  const handleSearch = () => {
+    const cleanTags = tags2.map((t22) => t22.substring(1));
+    const params = new URLSearchParams();
+    if (inputValue.length < 3) {
+      setError(true);
+      return;
+    }
+    if (searchOption?.type === "COMMUNITY") {
+      params.set("ci", searchOption.id.toString());
+      params.set("cn", searchOption.slug);
+    }
+    if (searchOption?.type === "USER") {
+      params.set("ui", searchOption.id);
+      params.set("un", searchOption.username);
+    }
+    if (inputValue.trim()) {
+      const cleanQuery = inputValue.replace(HASHTAG_REGEX, "").trim();
+      if (cleanQuery) {
+        params.set("q", cleanQuery);
+      }
+    }
+    if (cleanTags.length > 0) {
+      params.set("tags", cleanTags.join(","));
+    }
+    const queryString = params.toString();
+    const searchUrl = queryString ? `/search?${queryString}` : "/search";
+    navigate(searchUrl);
+  };
+  const onKeyDown = (e2) => {
+    setError(false);
+    if (e2.key === "Enter") {
+      handleSearch();
+    } else if (e2.key === " ") {
+      const cursor2 = e2.currentTarget.selectionStart;
+      const beforeCursor = e2.currentTarget.value.slice(0, cursor2);
+      const lastWord = beforeCursor.split(/\s+/).at(-1);
+      if (lastWord?.startsWith("#")) {
+        e2.preventDefault();
+        const trimmed = lastWord.trim();
+        const newTag = trimmed.toLowerCase();
+        if (!tags2.includes(newTag) && tags2.length < 4) {
+          setTags((prev2) => [...prev2, newTag]);
+        }
+        setInputValue(inputValue.replace(lastWord, ""));
+      }
+    }
+  };
+  const detectUserMention = (value2, cursor2) => {
+    const beforeCursor = value2.slice(0, cursor2);
+    const match2 = beforeCursor.match(USERNAME_REGEX);
+    if (!match2)
+      return null;
+    return {
+      start: cursor2 - match2[0].length,
+      query: match2[1]
+    };
+  };
+  const handleTagDelete = (tagToRemove) => {
+    setTags((prev2) => prev2.filter((t22) => t22 !== tagToRemove));
+  };
+  const handleSearchOptionDelete = () => {
+    setSearchOption(null);
+  };
+  const onInputChange = (e2) => {
+    const value2 = e2.target.value;
+    const cursor2 = e2.target.selectionStart ?? value2.length;
+    setInputValue(value2);
+    const mention2 = detectUserMention(value2, cursor2);
+    if (mention2) {
+      setSearchUser([]);
+      setMention(mention2);
+    } else {
+      setMention(null);
+    }
+  };
+  reactExports.useEffect(() => {
+    if (!mention || mention.query.length <= 2)
+      return;
+    const timeout3 = setTimeout(() => {
+      search();
+    }, 300);
+    return () => clearTimeout(timeout3);
+  }, [mention]);
+  async function search() {
+    try {
+      setSearchUser(await searchUsers(mention.query));
+    } catch (error22) {
+      console.log(error22);
+    }
+  }
+  function selectUser(user) {
+    if (!mention)
+      return;
+    const before = inputValue.slice(0, mention.start);
+    const after = inputValue.slice(
+      mention.start + mention.query.length + 1
+    );
+    setSearchOption({
+      type: "USER",
+      id: user.id,
+      username: user.username,
+      avatarId: user.avatarId
+    });
+    setInputValue(`${before}${after}`);
+    setSearchUser([]);
+    setMention(null);
+  }
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    Paper,
+    {
+      sx: {
+        borderRadius: "12px",
+        p: "5px 8px",
+        bgcolor: "background.default",
+        border: "1px solid",
+        borderColor: "text.secondary",
+        transition: "border-color 0.3s ease, background-color 0.3s ease",
+        display: "flex",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: 0.5,
+        minHeight: "36px",
+        "&:hover": {
+          borderColor: "primary.main"
+        },
+        "&:focus-within": {
+          borderColor: "primary.main",
+          backgroundColor: "action.hover"
+        }
+      },
+      children: [
+        searchOption !== null && (searchOption.type === "COMMUNITY" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Chip,
+          {
+            avatar: /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Avatar2,
+              {
+                avatarId: searchOption.avatarId
+              }
+            ),
+            label: searchOption.slug,
+            onDelete: handleSearchOptionDelete
+          }
+        ) || searchOption.type === "USER" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Chip,
+          {
+            avatar: /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Avatar2,
+              {
+                avatarId: searchOption.avatarId,
+                name: searchOption.username
+              }
+            ),
+            label: searchOption.username,
+            onDelete: handleSearchOptionDelete
+          }
+        )),
+        tags2.map((tag) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Chip,
+          {
+            label: tag,
+            size: "small",
+            onDelete: () => handleTagDelete(tag),
+            sx: {
+              bgcolor: "primary.light",
+              color: "primary.contrastText",
+              "& .MuiChip-deleteIcon": {
+                color: "primary.contrastText",
+                "&:hover": {
+                  color: "rgba(255,255,255,0.7)"
+                }
+              }
+            }
+          },
+          tag
+        )),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Tooltip,
+          {
+            open: error2,
+            title: t2("search.size-constraint"),
+            placement: "bottom",
+            sx: {
+              zIndex: 4444
+            },
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+              InputBase,
+              {
+                inputRef,
+                sx: { flex: 1 },
+                placeholder: t2("search.placeholder"),
+                value: inputValue,
+                onChange: onInputChange,
+                onKeyDown,
+                startAdornment: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  SearchIcon,
+                  {
+                    sx: {
+                      cursor: "pointer",
+                      mr: 1,
+                      transition: "color 0.3s ease",
+                      "&:hover": {
+                        color: "primary.main"
+                      }
+                    },
+                    onClick: handleSearch
+                  }
+                )
+              }
+            )
+          }
+        ),
+        searchUser.length !== 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Popper2,
+          {
+            open: Boolean(mention),
+            anchorEl: inputRef.current,
+            sx: {
+              zIndex: 3333
+            },
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [0, 8]
+                }
+              }
+            ],
+            placement: "bottom-start",
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(Paper, { sx: {
+              width: inputRef.current?.clientWidth,
+              maxHeight: 300,
+              overflowY: "auto"
+            }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(List$1, { children: searchUser.map((user) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              ListItemButton,
+              {
+                onClick: () => selectUser(user),
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemAvatar, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    Avatar2,
+                    {
+                      avatarId: user.avatarId,
+                      name: user.username,
+                      baseProps: {
+                        alt: user.username
+                      }
+                    }
+                  ) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemText, { primary: user.username })
+                ]
+              },
+              user.id
+            )) }) })
+          }
+        )
+      ]
+    }
+  );
+};
+const UpperBar = () => {
+  const navigate = useNavigate();
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(AppBar, { position: "fixed", color: "default", id: "upperBar", sx: {}, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Container, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Toolbar, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { display: "flex", flexDirection: "row", justifyContent: "space-between", width: "100%", alignItems: "center", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h5", onClick: () => {
+      navigate("/");
+    }, sx: { cursor: "pointer" }, children: "Blog app" }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { display: "flex", flexDirection: "row", alignItems: "center", gap: "12px", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SearchInput, {}) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { display: "flex", flexDirection: "row", alignItems: "center", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeSwitch, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(UserInfo, {})
+      ] })
+    ] })
+  ] }) }) }) });
+};
 const NotificationType = {
   CommentNotification: "COMMENT_NOTIFICATION",
   PostLike: "POST_LIKE",
@@ -72603,8 +75836,8 @@ const NotificationProvider = ({ children: children2 }) => {
   const eventTarget2 = reactExports.useMemo(() => new EventTarget(), []);
   reactExports.useEffect(() => {
     const endpoint = auth.user ? "user" : "public";
-    const url2 = `/api/${endpoint}/notification`;
-    setEventSource(new EventSource(url2));
+    const url2 = `api/${endpoint}/notification`;
+    setEventSource(new EventSource(`${"http://localhost:44556"}/${url2}`));
     if (!eventSource) {
       return;
     }
@@ -72633,39 +75866,39 @@ const NotificationProvider = ({ children: children2 }) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(NotificationContext.Provider, { value: { eventTarget: eventTarget2, setFilter }, children: children2 });
 };
 const Root = () => {
+  useTheme$1();
   return /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(AuthProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(NotificationProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
     SnackbarProvider,
     {
       autoHideDuration: 3e3,
       anchorOrigin: { vertical: "top", horizontal: "right" },
       children: /* @__PURE__ */ jsxRuntimeExports.jsx(SearchOptionProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: {
-        minHeight: "100vh",
         display: "flex",
-        flexDirection: "column"
+        flexDirection: "column",
+        minHeight: "100vh"
       }, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(UpperBar, {}),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Toolbar, {}),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Paper, { elevation: 0, sx: {
-          width: "100%",
-          minHeight: "100vh",
-          borderRadius: 0
+          flex: 1,
+          borderRadius: 0,
+          overflow: "auto"
         }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Outlet, {}) })
       ] }) })
     }
   ) }) }) });
 };
-const ErrorDisplay = () => {
-  const error2 = useRouteError();
-  if (!isRouteErrorResponse(error2)) {
+const ErrorDisplay = ({ status, statusText }) => {
+  let error2 = useRouteError();
+  const isRouteError = isRouteErrorResponse(error2);
+  if (!isRouteError && (!status && !statusText)) {
     return null;
   }
   let parsedError;
-  try {
-    parsedError = JSON.parse(error2.data);
-  } catch {
-    parsedError = void 0;
+  if (isRouteError) {
+    parsedError = parseRouteError(error2);
   }
-  const isServerError = error2.status >= 500;
+  const isServerError = (status ?? error2.status) >= 500;
   const imageSrc = isServerError ? "/confused_cirno" : "/dangerous_cirno";
   const imageAlt = isServerError ? "Server error" : "Client error";
   return /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Container, { maxWidth: "md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -72680,9 +75913,9 @@ const ErrorDisplay = () => {
       gap: 3,
       children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Typography$1, { variant: "h2", fontWeight: 700, children: [
-          error2.status,
+          status ?? error2.status,
           " ",
-          parsedError && parsedError["title"] ? parsedError["title"] : error2.statusText
+          statusText ?? (parsedError && parsedError["title"] ? parsedError["title"] : error2.statusText)
         ] }),
         parsedError ? /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "body1", color: "text.secondary", children: parsedError && parsedError["title"] ? `${parsedError["title"]}. ${parsedError["detail"]}` : "" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, {}),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -72707,6 +75940,15 @@ const ErrorDisplay = () => {
     }
   ) }) });
 };
+function parseRouteError(error2) {
+  let parsedError;
+  try {
+    parsedError = JSON.parse(error2.data);
+  } catch {
+    parsedError = void 0;
+  }
+  return parsedError;
+}
 const ArticleIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
   d: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m-5 14H7v-2h7zm3-4H7v-2h10zm0-4H7V7h10z"
 }), "Article");
@@ -72785,6 +76027,7 @@ const Home = () => {
         display: "flex",
         flexDirection: "row"
       },
+      maxWidth: "xl",
       children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: { position: "fixed" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Menu2, {}) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: { width: menuWith, flexShrink: 0 } }),
@@ -72803,36 +76046,14 @@ const LoginClient = () => {
   userManager.signinRedirect();
   return /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Redirecting to IDP..." });
 };
-const UserAvatar = ({ username, avatarId, baseProps }) => {
-  const navigate = useNavigate();
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: avatarId ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Avatar,
-    {
-      sx: { cursor: "pointer", ...baseProps?.sx },
-      onClick: () => {
-        navigate(`/profile/${username}`);
-      },
-      alt: username,
-      src: `${AVATAR_ENDPOINT}/${avatarId}`,
-      ...baseProps
-    }
-  ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Avatar,
-    {
-      sx: { cursor: "pointer", ...baseProps?.sx },
-      onClick: () => {
-        navigate(`/profile/${username}`);
-      },
-      alt: username,
-      ...baseProps,
-      children: username.substring(0, 2)
-    }
-  ) });
-};
 const MenuIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
   d: "M3 18h18v-2H3zm0-5h18v-2H3zm0-7v2h18V6z"
 }), "Menu");
-const PostDropdownMenu = ({ postId }) => {
+const PostDropdownMenu = ({
+  id: id2,
+  scopes,
+  deleteCallback
+}) => {
   const auth = useAuth();
   const [anchorEl, setAnchorEl] = reactExports.useState(null);
   const open = Boolean(anchorEl);
@@ -72841,6 +76062,10 @@ const PostDropdownMenu = ({ postId }) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleDelete2 = () => {
+    deleteCallback(id2);
     setAnchorEl(null);
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -72853,6 +76078,7 @@ const PostDropdownMenu = ({ postId }) => {
         onClose: handleClose,
         disableScrollLock: true,
         children: [
+          scopes && scopes.has("POST_DELETE") && /* @__PURE__ */ jsxRuntimeExports.jsx(MenuItem, { onClick: handleDelete2 }),
           auth.user && auth.user?.scope?.includes("admin") && /* @__PURE__ */ jsxRuntimeExports.jsx(MenuItem, { onClick: handleClose, children: t2("postMenu.hide") }),
           auth.user && auth.user?.scope?.includes("user") && /* @__PURE__ */ jsxRuntimeExports.jsx(MenuItem, { onClick: handleClose, children: t2("postMenu.test") })
         ]
@@ -72871,7 +76097,7 @@ const PostHead = ({ ...props }) => {
         alignItems: "flex-start",
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { display: "flex", gap: 1.5, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(UserAvatar, { ...props }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar2, { ...props }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 Typography$1,
@@ -72899,7 +76125,7 @@ const PostHead = ({ ...props }) => {
               )
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(PostDropdownMenu, { postId: props.id })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(PostDropdownMenu, { id: props.id })
         ]
       }
     ),
@@ -76505,7 +79731,7 @@ class Mapping {
   }
 }
 const stepsByID = /* @__PURE__ */ Object.create(null);
-class Step {
+class Step2 {
   /**
   Get the step map that represents the changes made by this step,
   and which can be used to transform between positions in the old
@@ -76595,7 +79821,7 @@ function mapFragment(fragment, f, parent2) {
   }
   return Fragment.fromArray(mapped);
 }
-class AddMarkStep extends Step {
+class AddMarkStep extends Step2 {
   /**
   Create a mark step.
   */
@@ -76646,8 +79872,8 @@ class AddMarkStep extends Step {
     return new AddMarkStep(json.from, json.to, schema.markFromJSON(json.mark));
   }
 }
-Step.jsonID("addMark", AddMarkStep);
-class RemoveMarkStep extends Step {
+Step2.jsonID("addMark", AddMarkStep);
+class RemoveMarkStep extends Step2 {
   /**
   Create a mark-removing step.
   */
@@ -76695,8 +79921,8 @@ class RemoveMarkStep extends Step {
     return new RemoveMarkStep(json.from, json.to, schema.markFromJSON(json.mark));
   }
 }
-Step.jsonID("removeMark", RemoveMarkStep);
-class AddNodeMarkStep extends Step {
+Step2.jsonID("removeMark", RemoveMarkStep);
+class AddNodeMarkStep extends Step2 {
   /**
   Create a node mark step.
   */
@@ -76741,8 +79967,8 @@ class AddNodeMarkStep extends Step {
     return new AddNodeMarkStep(json.pos, schema.markFromJSON(json.mark));
   }
 }
-Step.jsonID("addNodeMark", AddNodeMarkStep);
-class RemoveNodeMarkStep extends Step {
+Step2.jsonID("addNodeMark", AddNodeMarkStep);
+class RemoveNodeMarkStep extends Step2 {
   /**
   Create a mark-removing step.
   */
@@ -76780,8 +80006,8 @@ class RemoveNodeMarkStep extends Step {
     return new RemoveNodeMarkStep(json.pos, schema.markFromJSON(json.mark));
   }
 }
-Step.jsonID("removeNodeMark", RemoveNodeMarkStep);
-class ReplaceStep extends Step {
+Step2.jsonID("removeNodeMark", RemoveNodeMarkStep);
+class ReplaceStep extends Step2 {
   /**
   The given `slice` should fit the 'gap' between `from` and
   `to`—the depths must line up, and the surrounding nodes must be
@@ -76847,8 +80073,8 @@ class ReplaceStep extends Step {
   }
 }
 ReplaceStep.MAP_BIAS = 1;
-Step.jsonID("replace", ReplaceStep);
-class ReplaceAroundStep extends Step {
+Step2.jsonID("replace", ReplaceStep);
+class ReplaceAroundStep extends Step2 {
   /**
   Create a replace-around step with the given range and gap.
   `insert` should be the point in the slice into which the content
@@ -76922,7 +80148,7 @@ class ReplaceAroundStep extends Step {
     return new ReplaceAroundStep(json.from, json.to, json.gapFrom, json.gapTo, Slice.fromJSON(schema, json.slice), json.insert, !!json.structure);
   }
 }
-Step.jsonID("replaceAround", ReplaceAroundStep);
+Step2.jsonID("replaceAround", ReplaceAroundStep);
 function contentBetween(doc2, from3, to) {
   let $from = doc2.resolve(from3), dist = to - from3, depth = $from.depth;
   while (dist > 0 && depth > 0 && $from.indexAfter(depth) == $from.node(depth).childCount) {
@@ -77718,7 +80944,7 @@ function coveredDepths($from, $to) {
   }
   return result2;
 }
-class AttrStep extends Step {
+class AttrStep extends Step2 {
   /**
   Construct an attribute step.
   */
@@ -77758,8 +80984,8 @@ class AttrStep extends Step {
     return new AttrStep(json.pos, json.attr, json.value);
   }
 }
-Step.jsonID("attr", AttrStep);
-class DocAttrStep extends Step {
+Step2.jsonID("attr", AttrStep);
+class DocAttrStep extends Step2 {
   /**
   Construct an attribute step.
   */
@@ -77794,7 +81020,7 @@ class DocAttrStep extends Step {
     return new DocAttrStep(json.attr, json.value);
   }
 }
-Step.jsonID("docAttr", DocAttrStep);
+Step2.jsonID("docAttr", DocAttrStep);
 let TransformError = class extends Error {
 };
 TransformError = function TransformError2(message) {
@@ -78538,8 +81764,8 @@ class FieldDesc {
     }
   }),
   new FieldDesc("selection", {
-    init(config2, instance) {
-      return config2.selection || Selection$2.atStart(instance.doc);
+    init(config2, instance2) {
+      return config2.selection || Selection$2.atStart(instance2.doc);
     },
     apply(tr2) {
       return tr2.selection;
@@ -107931,7 +111157,7 @@ function decodeXML(xmlString) {
   return xmlDecoder(xmlString, DecodingMode.Strict);
 }
 function getEscaper(regex, map2) {
-  return function escape(data2) {
+  return function escape2(data2) {
     let match2;
     let lastIndex = 0;
     let result2 = "";
@@ -108801,11 +112027,11 @@ class AttributeUtility {
    * @param context.instance
    */
   static validateAttributeName(name2, contentType2, context) {
-    const { method: method2, instance } = context;
+    const { method: method2, instance: instance2 } = context;
     if (contentType2 === "text/html") {
       const normalizedName = String(name2).toLowerCase();
       if (HTML_INVALID_ATTRIBUTE_NAME_CHARACTER_REGEX.test(normalizedName) || normalizedName.length === 0 || normalizedName[0] === "-") {
-        throw new DOMException$1(`Uncaught InvalidCharacterError: Failed to execute '${method2}' on '${instance}': '${name2}' is not a valid attribute name.`, DOMExceptionNameEnum$1.invalidCharacterError);
+        throw new DOMException$1(`Uncaught InvalidCharacterError: Failed to execute '${method2}' on '${instance2}': '${name2}' is not a valid attribute name.`, DOMExceptionNameEnum$1.invalidCharacterError);
       }
     }
   }
@@ -121561,8 +124787,8 @@ class HTMLScriptElement extends HTMLElement$1 {
    *
    * @param defer Defer.
    */
-  set defer(defer) {
-    if (!defer) {
+  set defer(defer2) {
+    if (!defer2) {
       this.removeAttribute("defer");
     } else {
       this.setAttribute("defer", "");
@@ -134152,7 +137378,7 @@ var hasRequiredWebsocket;
 function requireWebsocket() {
   if (hasRequiredWebsocket) return websocket;
   hasRequiredWebsocket = 1;
-  const EventEmitter = require$$0$2;
+  const EventEmitter2 = require$$0$2;
   const https = HTTPS;
   const http = HTTP;
   const net = require$$3;
@@ -134184,7 +137410,7 @@ function requireWebsocket() {
   const protocolVersions = [8, 13];
   const readyStates = ["CONNECTING", "OPEN", "CLOSING", "CLOSED"];
   const subprotocolRegex = /^[!#$%&'*+\-.0-9A-Z^_`|a-z~]+$/;
-  class WebSocket2 extends EventEmitter {
+  class WebSocket2 extends EventEmitter2 {
     /**
      * Create a new `WebSocket`.
      *
@@ -135189,7 +138415,7 @@ var hasRequiredWebsocketServer;
 function requireWebsocketServer() {
   if (hasRequiredWebsocketServer) return websocketServer;
   hasRequiredWebsocketServer = 1;
-  const EventEmitter = require$$0$2;
+  const EventEmitter2 = require$$0$2;
   const http = HTTP;
   const { Duplex } = Stream;
   const { createHash } = Crypto;
@@ -135202,7 +138428,7 @@ function requireWebsocketServer() {
   const RUNNING = 0;
   const CLOSING = 1;
   const CLOSED = 2;
-  class WebSocketServer extends EventEmitter {
+  class WebSocketServer extends EventEmitter2 {
     /**
      * Create a `WebSocketServer` instance.
      *
@@ -152906,7 +156132,7 @@ RopeSequence.prototype.slice = function slice2(from3, to) {
   }
   return this.sliceInner(Math.max(0, from3), Math.min(this.length, to));
 };
-RopeSequence.prototype.get = function get(i) {
+RopeSequence.prototype.get = function get2(i) {
   if (i < 0 || i >= this.length) {
     return void 0;
   }
@@ -156616,8 +159842,8 @@ function optionsToId(options2) {
 }
 function createObserver(options2) {
   const id2 = optionsToId(options2);
-  let instance = observerMap.get(id2);
-  if (!instance) {
+  let instance2 = observerMap.get(id2);
+  if (!instance2) {
     const elements2 = /* @__PURE__ */ new Map();
     let thresholds;
     const observer = new IntersectionObserver((entries2) => {
@@ -156633,14 +159859,14 @@ function createObserver(options2) {
       });
     }, options2);
     thresholds = observer.thresholds || (Array.isArray(options2.threshold) ? options2.threshold : [options2.threshold || 0]);
-    instance = {
+    instance2 = {
       id: id2,
       observer,
       elements: elements2
     };
-    observerMap.set(id2, instance);
+    observerMap.set(id2, instance2);
   }
-  return instance;
+  return instance2;
 }
 function observe(element, callback, options2 = {}, fallbackInView = unsupportedValue) {
   if (typeof window.IntersectionObserver === "undefined" && fallbackInView !== void 0) {
@@ -156775,43 +160001,15 @@ const AttachFileIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path
 const SendIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
   d: "M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"
 }), "Send");
-function isRootComment(val) {
-  return val && (val.parentComment === void 0 || val.parentComment === null);
-}
-function isTreeComment(val) {
-  return val && typeof val.parentComment === "number";
-}
 async function getRootCommentsForPost(postId, filter) {
-  const res = await apiClient.get(`/api/public/post/${postId}/comments`, {
+  return await apiClient.get(`/api/v1/public/post/${postId}/comments`, {
     params: {
       ...filter
     }
   });
-  if (!res.data[0])
-    return [];
-  const users = /* @__PURE__ */ new Set();
-  res.data.forEach((val) => users.add(val.userId));
-  const userData = await getUserInfo(Array.from(users));
-  return res.data.filter(isRootComment).map((val) => {
-    return {
-      comment: val,
-      user: userData.get(val.userId) ?? { id: "", avatarId: "", username: "" }
-    };
-  });
 }
-async function getCommentTree(postId, commentId) {
-  const res = await apiClient.get(`/api/public/comment/${commentId}/tree`);
-  if (!res.data[0])
-    return [];
-  const users = /* @__PURE__ */ new Set();
-  res.data.forEach((val) => users.add(val.userId));
-  const userData = await getUserInfo(Array.from(users));
-  return res.data.filter(isTreeComment).map((val) => {
-    return {
-      comment: val,
-      user: userData.get(val.userId) ?? { id: "", avatarId: "", username: "" }
-    };
-  });
+async function getCommentTree(commentId) {
+  return await apiClient.get(`/api/v1/public/comment/${commentId}/tree`);
 }
 async function createComment(createComment2, file) {
   const form = new FormData();
@@ -156821,18 +160019,13 @@ async function createComment(createComment2, file) {
       type: "application/json"
     })
   );
-  return (await apiClient.post("/api/user/comment", form)).data;
+  return (await apiClient.post("/api/v1/comment", form)).data;
 }
 async function likeComment(commentId) {
-  return apiClient.post(`/api/user/comment/${commentId}/like`);
+  return apiClient.post(`/api/v1/comment/${commentId}/like`);
 }
 async function unlikeComment(commentId) {
-  return apiClient.delete(`/api/user/comment/${commentId}/like`);
-}
-async function getCommentsCount(postIds) {
-  const commentCount = /* @__PURE__ */ new Map();
-  (await apiClient.post(`/api/public/comment/number`, postIds)).data.forEach((val) => commentCount.set(val.postId, val.commentCount));
-  return commentCount;
+  return apiClient.delete(`/api/v1/comment/${commentId}/like`);
 }
 const CommentWriter = ({ setResponseId, addComment, ...props }) => {
   const [commentText, setCommentText] = reactExports.useState("");
@@ -156891,7 +160084,7 @@ const CommentWriter = ({ setResponseId, addComment, ...props }) => {
       },
       children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
-          UserAvatar,
+          Avatar2,
           {
             username: auth.user.profile.preferred_username,
             avatarId: auth.user.profile["attributes"]?.["avatarId"]?.[0],
@@ -157022,7 +160215,7 @@ const Comment2 = ({ toggleLike, setResponseId, ...props }) => {
             flexDirection: "row",
             gap: 1.5,
             children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(UserAvatar, { ...props }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar2, { ...props }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "caption", color: "text.secondary", children: new Date(props.createdAt).toLocaleString() }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -157392,26 +160585,24 @@ async function getPosts(filter) {
   }
   const uniqueUsers = /* @__PURE__ */ new Set();
   res.data.forEach((val) => uniqueUsers.add(val.authorId));
-  return Promise.allSettled([getCommentsCount(res.data.map((val) => val.id)), getUserInfo(Array.from(uniqueUsers))]).then(([countRes, usersRes]) => {
-    const count = countRes.status === "fulfilled" ? countRes.value : void 0;
+  return Promise.allSettled([getUserInfo(Array.from(uniqueUsers))]).then(([usersRes]) => {
     const users = usersRes.status === "fulfilled" ? usersRes.value : void 0;
     return res.data.map((val) => {
       return {
         post: val,
-        user: users?.get(val.authorId) ?? { id: val.authorId, username: "" },
-        commentCount: count?.get(val.id) ?? 0
+        user: users?.get(val.authorId) ?? { id: val.authorId, username: "", firstName: "", lastName: "" }
       };
     });
   });
 }
 async function likePost(id2) {
-  return apiClient.post(`/api/user/post/${id2}/like`);
+  return apiClient.post(`/api/v1/post/${id2}/like`);
 }
 async function unlikePost(id2) {
-  return apiClient.delete(`/api/user/post/${id2}/like`);
+  return apiClient.delete(`/api/v1/post/${id2}/like`);
 }
 async function getLike(id2) {
-  return (await apiClient.get(`/api/user/post/${id2}/like`)).data;
+  return (await apiClient.get(`/api/v1/post/${id2}/like`)).data;
 }
 const Post = ({ ...props }) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
@@ -157473,7 +160664,10 @@ const PostContainer = () => {
     notification?.eventTarget.addEventListener(NotificationType.CommentCreation, (event) => {
       setPost((prev2) => ({
         ...prev2,
-        commentCount: prev2.commentCount + 1
+        post: {
+          ...prev2.post,
+          commentCount: prev2.post.commentCount + 1
+        }
       }));
     });
     return () => notification?.setFilter({
@@ -157481,12 +160675,10 @@ const PostContainer = () => {
     });
   }, []);
   async function dataAggregation() {
-    Promise.allSettled([getCommentsCount([preLoadPost.id]), getUserInfo([preLoadPost.authorId])]).then(([countRes, userDataRes]) => {
-      const count = countRes.status === "fulfilled" ? countRes.value : void 0;
+    Promise.allSettled([getUserInfo([preLoadPost.authorId])]).then(([userDataRes]) => {
       const userData = userDataRes.status === "fulfilled" ? userDataRes.value : void 0;
       setPost((prev2) => ({
         post: prev2?.post ? prev2.post : preLoadPost,
-        commentCount: count?.get(preLoadPost.id) ?? 0,
         user: userData?.get(preLoadPost.authorId) ?? { avatarId: "", id: preLoadPost.authorId, username: "" }
       }));
     });
@@ -157506,7 +160698,6 @@ const PostContainer = () => {
             ...preLoadPost,
             isLiked
           },
-          commentCount: 0,
           user: { avatarId: "", id: preLoadPost.authorId, username: "" }
         };
       });
@@ -157550,12 +160741,14 @@ const PostContainer = () => {
   }, [auth.user]);
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: navigation.state === "loading" ? /* @__PURE__ */ jsxRuntimeExports.jsx(PostSkeleton, {}) : post ? /* @__PURE__ */ jsxRuntimeExports.jsx(Post, { ...post, toggleLike: handleLikeToggle }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Container, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(ErrorDisplay, {}) }) });
 };
-const PostHeadPreview = ({ ...props }) => {
+const PostHeadPreview = ({
+  ...props
+}) => {
   const navigate = useNavigate();
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { display: "flex", flexDirection: "column", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { display: "flex", gap: 5, justifyContent: "space-between", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { display: "flex", gap: 1, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(UserAvatar, { ...props }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar2, { ...props }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             Typography$1,
@@ -157583,7 +160776,7 @@ const PostHeadPreview = ({ ...props }) => {
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(PostDropdownMenu, { postId: props.id }) })
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(PostDropdownMenu, { ...props }) })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       Typography$1,
@@ -157687,7 +160880,7 @@ const PostPreview = reactExports.forwardRef(
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(PostHeadPreview, { userId: props.user.id, ...props.user, ...props.post }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(PostBody, { doc: isViewPost(props.post) ? props.post.preview : props.post.content }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(PostFooterPreview, { ...props.post, commentCount: props.commentCount, toggleLike: props.toggleLike })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(PostFooterPreview, { ...props.post, commentCount: props.post.commentCount, toggleLike: props.toggleLike })
         ]
       },
       props.post.id
@@ -157788,9 +160981,24 @@ const PostEmpty = ({ type: type2, authorId }) => {
     }
   );
 };
+async function getUnpublished(pageable) {
+  return (await apiClient.get("/api/v1/me/post", {
+    params: {
+      ...pageable || {}
+    }
+  })).data;
+}
+async function deleteDraftPost(postId) {
+  return await apiClient.delete(`/api/v1/me/post/${postId}`);
+}
+async function createDraft(title) {
+  return (await apiClient.post("/api/v1/me/post", {
+    title
+  })).data;
+}
 const PostPreviewContainer = ({
-  authorId,
-  postFilter
+  postFilter,
+  scopes
 }) => {
   const type2 = postFilter.searchType ?? "POPULAR";
   const sentientRef = reactExports.useRef(null);
@@ -157829,10 +161037,12 @@ const PostPreviewContainer = ({
       const data2 = await getPosts(
         currentPosts.length === 0 ? {
           searchType: type2,
-          authorId: authorId ? authorId : void 0
+          authorId: postFilter.authorId ? postFilter.authorId : void 0,
+          communityId: postFilter.communityId ? postFilter.communityId : void 0
         } : {
           searchType: type2,
-          authorId: authorId ? authorId : void 0,
+          authorId: postFilter.authorId ? postFilter.authorId : void 0,
+          communityId: postFilter.communityId ? postFilter.communityId : void 0,
           lastScore: currentPosts[currentPosts.length - 1].post.score,
           lastSeenId: currentPosts[currentPosts.length - 1].post.id,
           lastSeenInstant: currentPosts[currentPosts.length - 1].post.publishedAt
@@ -157880,28 +161090,9 @@ const PostPreviewContainer = ({
       " ",
       /* @__PURE__ */ jsxRuntimeExports.jsx(PostSkeleton, {})
     ] }),
-    !loading2 && !hasMore && /* @__PURE__ */ jsxRuntimeExports.jsx(PostEmpty, { type: type2, authorId })
+    !loading2 && !hasMore && /* @__PURE__ */ jsxRuntimeExports.jsx(PostEmpty, { type: type2, authorId: postFilter.authorId })
   ] });
 };
-const GroupIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
-  d: "M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3m-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3m0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5"
-}), "Group");
-async function getCommunities(filter) {
-  const params = new URLSearchParams();
-  if (filter?.searchString) params.append("searchString", filter.searchString);
-  if (filter?.lastSeenId) params.append("lastSeenId", String(filter.lastSeenId));
-  if (filter?.lastSeenScore) params.append("lastSeenScore", String(filter.lastSeenScore));
-  if (filter?.lastSeenInstant) params.append("lastSeenInstant", String(filter.lastSeenInstant));
-  if (filter?.tags) filter.tags.forEach((tag) => params.append("tags", tag));
-  if (filter?.direction) params.append("direction", filter.direction);
-  const queryString = params.toString();
-  const url2 = queryString ? `/api/public/community?${queryString}` : "/api/public/community";
-  return (await apiClient.get(url2)).data;
-}
-async function getCommunity(communityId) {
-  return (await apiClient.get(`/api/public/community/${communityId}`)).data;
-}
-const avatarPlaceholder = /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar, { sx: { bgcolor: "primary.main", width: 56, height: 56 }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(GroupIcon, { fontSize: "large" }) });
 const CommunityList = () => {
   const navigate = useNavigate();
   const { t: t2 } = useTranslation();
@@ -157937,8 +161128,8 @@ const CommunityList = () => {
   reactExports.useEffect(() => {
     fetchCommunities();
   }, []);
-  const handleCommunityClick = (communityId) => {
-    navigate(`/community/${communityId}`);
+  const handleCommunityClick = (slug) => {
+    navigate(`/community/${slug}`);
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: { p: 2 }, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h4", gutterBottom: true, sx: { mb: 3, fontWeight: 600 }, children: t2("community.title") }),
@@ -157950,7 +161141,7 @@ const CommunityList = () => {
         children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
           ListItemButton,
           {
-            onClick: () => handleCommunityClick(community.id),
+            onClick: () => handleCommunityClick(community.slug),
             sx: {
               borderRadius: 2,
               border: 1,
@@ -157962,17 +161153,27 @@ const CommunityList = () => {
               }
             },
             children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemAvatar, { sx: { minWidth: 72, mr: 2 }, children: community.avatarId ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-                Avatar,
+              /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemAvatar, { sx: { minWidth: 72, mr: 2 }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                Avatar2,
                 {
-                  src: `/api/public/media/${community.avatarId}`,
-                  sx: { width: 56, height: 56, borderRadius: 2 }
+                  avatarId: community.avatarId,
+                  baseProps: {
+                    sx: {
+                      width: 56,
+                      height: 56,
+                      bgcolor: "primary.main"
+                    },
+                    alt: community.slug
+                  },
+                  iconProps: {
+                    fontSize: "large"
+                  }
                 }
-              ) : avatarPlaceholder }),
+              ) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 ListItemText,
                 {
-                  primary: /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h6", fontWeight: 600, children: community.name }),
+                  primary: /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h6", fontWeight: 600, children: community.displayedName }),
                   secondary: /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: { mt: 0.5 }, children: [
                     /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: { display: "flex", alignItems: "center", mb: 1 }, children: [
                       /* @__PURE__ */ jsxRuntimeExports.jsx(GroupIcon, { fontSize: "small", sx: { mr: 0.5, fontSize: 16 } }),
@@ -157992,7 +161193,12 @@ const CommunityList = () => {
                       },
                       tag
                     )) })
-                  ] })
+                  ] }),
+                  slotProps: {
+                    secondary: {
+                      component: "div"
+                    }
+                  }
                 }
               )
             ]
@@ -158012,12 +161218,6 @@ const CommunityList = () => {
     communities.length === 0 && !loading2 && /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "body1", color: "text.secondary", align: "center", sx: { mt: 4 }, children: t2("community.empty") })
   ] });
 };
-const CloseIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
-  d: "M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-}), "Close");
-const CalendarTodayIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
-  d: "M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m0 18H4V8h16z"
-}), "CalendarToday");
 const ArrowUpwardIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
   d: "m4 12 1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8z"
 }), "ArrowUpward");
@@ -158143,205 +161343,1146 @@ const PostSelector = ({
     }
   );
 };
-const CommunityDetail = () => {
+const CommunityHeader = ({
+  avatarId,
+  slug,
+  displayedName,
+  followCount,
+  createdAt,
+  isPrivate
+}) => {
   const { t: t2 } = useTranslation();
-  const { communityId } = useParams();
-  const communityData = useLoaderData();
-  const [community, setCommunity] = reactExports.useState(communityData);
-  const [loading2, setLoading] = reactExports.useState(!communityData);
-  const [searchType, setSearchType] = reactExports.useState("POPULAR");
-  const [sortOption, setSortOption] = reactExports.useState("date");
-  const [direction2, setDirection] = reactExports.useState("DESC");
-  const [showCommunityFilter, setShowCommunityFilter] = reactExports.useState(true);
-  const { setSearchOption } = useSearchOption();
-  const postFilter = {
-    searchType,
-    communityId: showCommunityFilter ? Number.parseInt(communityId) : void 0,
-    sortOption,
-    direction: direction2
-  };
-  reactExports.useEffect(() => {
-    setSearchOption({
-      type: "COMMUNITY",
-      ...communityData
-    });
-    return () => setSearchOption(null);
-  }, []);
-  reactExports.useEffect(() => {
-    if (!communityData) {
-      const fetchCommunity = async () => {
-        try {
-          const data2 = await getCommunity(Number.parseInt(communityId));
-          setCommunity(data2);
-        } catch (error2) {
-          console.error("Failed to fetch community:", error2);
-        } finally {
-          setLoading(false);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Paper, { elevation: 24, sx: { borderRadius: 3 }, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Box,
+      {
+        sx: {
+          mt: 3,
+          height: 140,
+          borderRadius: 3,
+          background: "linear-gradient(135deg, #3f71a3 0%, #35668f 100%)"
         }
-      };
-      fetchCommunity();
-    }
-  }, [communityId, communityData]);
-  if (loading2) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: { p: 3, maxWidth: 1200, mx: "auto" }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { variant: "rectangular", height: 200, sx: { borderRadius: 2 } }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: { mt: 2 }, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { width: "60%", height: 32 }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { width: "40%", height: 24, sx: { mt: 1 } }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Divider$1, { sx: { my: 2 } }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { height: 400 })
-      ] })
-    ] });
-  }
-  if (!community) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: { p: 3, textAlign: "center" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h5", color: "text.secondary", children: t2("community.notFound") }) });
-  }
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: { maxWidth: 1200, mx: "auto", p: { xs: 2, md: 3 } }, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { sx: { mb: 3, borderRadius: 2, overflow: "hidden" }, children: [
-      community.avatarId && /* @__PURE__ */ jsxRuntimeExports.jsx(
-        CardMedia,
-        {
-          component: "div",
-          sx: {
-            height: 200,
-            bgcolor: "grey.200",
-            backgroundImage: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      Box,
+      {
+        sx: {
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: {
+            xs: "flex-start",
+            md: "center"
           },
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Box,
+          flexDirection: {
+            xs: "column",
+            md: "row"
+          },
+          gap: 3,
+          mt: -5,
+          px: 2
+        },
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Stack, { direction: "row", spacing: 3, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Avatar2,
+              {
+                avatarId,
+                name: slug,
+                baseProps: {
+                  sx: {
+                    width: 80,
+                    height: 80,
+                    border: "4px solid",
+                    borderColor: "background.default",
+                    boxShadow: 2
+                  }
+                }
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                Typography$1,
+                {
+                  variant: "body2",
+                  display: "inline-flex",
+                  fontWeight: 700,
+                  sx: {
+                    color: "text.secondary",
+                    bgcolor: "action.hover",
+                    borderRadius: 10,
+                    px: 1,
+                    py: 0.25,
+                    transition: "color 0.5s",
+                    "&:hover": {
+                      color: "text.primary",
+                      cursor: "pointer",
+                      bgcolor: "action.selected"
+                    }
+                  },
+                  children: `@${slug}`
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h4", fontWeight: 700, children: displayedName }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                Typography$1,
+                {
+                  variant: "body2",
+                  color: "text.secondary",
+                  sx: { mt: 0.5 },
+                  children: [
+                    followCount.toLocaleString(),
+                    " ",
+                    t2("community.followers"),
+                    " • ",
+                    new Date(createdAt).toLocaleDateString(),
+                    isPrivate && ` • ${t2("community.private")}`
+                  ]
+                }
+              )
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Button,
             {
-              sx: {
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%"
-              },
-              children: /* @__PURE__ */ jsxRuntimeExports.jsx(GroupIcon, { sx: { fontSize: 100, color: "rgba(255,255,255,0.3)" } })
+              variant: "contained",
+              size: "large",
+              children: t2("community.join")
             }
           )
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { sx: { position: "relative", pt: 4 }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        ]
+      }
+    )
+  ] });
+};
+const TagIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M20 10V8h-4V4h-2v4h-4V4H8v4H4v2h4v4H4v2h4v4h2v-4h4v4h2v-4h4v-2h-4v-4zm-6 4h-4v-4h4z"
+}), "Tag");
+const InfoOutlinedIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8"
+}), "InfoOutlined");
+const GavelOutlinedIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M1 21h12v2H1zM5.24 8.07l2.83-2.83 14.14 14.14-2.83 2.83zM12.32 1l5.66 5.66-2.83 2.83-5.66-5.66zM3.83 9.48l5.66 5.66-2.83 2.83L1 12.31z"
+}), "GavelOutlined");
+const ShieldOutlinedIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M12 2 4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5zm6 9.09c0 4-2.55 7.7-6 8.83-3.45-1.13-6-4.82-6-8.83v-4.7l6-2.25 6 2.25z"
+}), "ShieldOutlined");
+const SectionTitle = ({ icon, children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  Stack,
+  {
+    direction: "row",
+    spacing: 1,
+    alignItems: "center",
+    mb: 1,
+    children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Box,
         {
           sx: {
             display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            alignItems: { xs: "flex-start", md: "center" },
-            gap: 2
+            color: "text.secondary"
+          },
+          children: icon
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Typography$1,
+        {
+          variant: "overline",
+          fontWeight: 700,
+          color: "text.secondary",
+          children: children2
+        }
+      )
+    ]
+  }
+);
+const TagsTitle = () => {
+  const { t: t2 } = useTranslation();
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(SectionTitle, { icon: /* @__PURE__ */ jsxRuntimeExports.jsx(TagIcon, { fontSize: "small" }), children: t2("community.tags") });
+};
+const AboutTitle = () => {
+  const { t: t2 } = useTranslation();
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(SectionTitle, { icon: /* @__PURE__ */ jsxRuntimeExports.jsx(InfoOutlinedIcon, { fontSize: "small" }), children: t2("community.about") });
+};
+const RulesTitle = () => {
+  const { t: t2 } = useTranslation();
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(SectionTitle, { icon: /* @__PURE__ */ jsxRuntimeExports.jsx(GavelOutlinedIcon, { fontSize: "small" }), children: t2("community.rules") });
+};
+const ModeratorsTitle = () => {
+  const { t: t2 } = useTranslation();
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(SectionTitle, { icon: /* @__PURE__ */ jsxRuntimeExports.jsx(ShieldOutlinedIcon, { fontSize: "small" }), children: t2("community.moderators") });
+};
+function isInfoLoaded(user) {
+  return "username" in user;
+}
+function missingScopes(scopes) {
+  return SCOPES.filter((scope) => !scopes.includes(scope));
+}
+const UserView = ({
+  user
+}) => {
+  const isLoaded = isInfoLoaded(user);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Typography$1,
+      {
+        variant: "body1",
+        color: "text.primary",
+        fontWeight: 600,
+        noWrap: true,
+        children: isLoaded ? `${user.firstName} ${user.lastName}` : user.id
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      Typography$1,
+      {
+        variant: "body2",
+        color: "text.secondary",
+        fontWeight: 600,
+        noWrap: true,
+        children: [
+          "@",
+          isLoaded ? user.username : user.id
+        ]
+      }
+    )
+  ] });
+};
+const CommunitySideBarView = ({
+  description,
+  rules,
+  tags: tags2,
+  communityModerators
+}) => {
+  const navigate = useNavigate();
+  const { t: t2 } = useTranslation();
+  const TagSection2 = () => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TagsTitle, {}),
+      tags2?.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Stack,
+        {
+          direction: "row",
+          spacing: 1,
+          useFlexGap: true,
+          flexWrap: "wrap",
+          children: tags2.map((tag) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Chip,
+            {
+              label: tag,
+              size: "small",
+              sx: {
+                borderRadius: 2,
+                bgcolor: "action.hover",
+                border: "none",
+                fontWeight: 500
+              }
+            },
+            tag
+          ))
+        }
+      )
+    ] });
+  };
+  const AboutSection2 = () => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(AboutTitle, {}),
+      description ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Typography$1,
+        {
+          variant: "body2",
+          color: "text.secondary",
+          sx: {
+            whiteSpace: "pre-wrap",
+            lineHeight: 1.8
+          },
+          children: description
+        }
+      ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Typography$1,
+        {
+          variant: "body2",
+          color: "text.disabled",
+          sx: {
+            fontStyle: "italic",
+            lineHeight: 1.8
+          },
+          children: t2("community.descriptionPlaceholder")
+        }
+      )
+    ] });
+  };
+  const RulesSection2 = () => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(RulesTitle, {}),
+      rules?.length ? /* @__PURE__ */ jsxRuntimeExports.jsx(Stack, { spacing: 1.5, children: rules.map((rule, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Box,
+        {
+          sx: {
+            display: "flex",
+            gap: 1.5,
+            alignItems: "flex-start"
           },
           children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               Box,
               {
                 sx: {
-                  width: 100,
-                  height: 100,
-                  borderRadius: 2,
-                  overflow: "hidden",
-                  border: (theme) => `4px solid ${theme.palette.background.paper}`,
-                  boxShadow: 2,
-                  bgcolor: "grey.200",
                   flexShrink: 0,
+                  width: 28,
+                  height: 28,
+                  borderRadius: "50%",
+                  bgcolor: "action.hover",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center"
+                  justifyContent: "center",
+                  fontSize: 13,
+                  fontWeight: 700
                 },
-                children: community.avatarId ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "img",
-                  {
-                    src: `/api/public/media/${community.avatarId}`,
-                    alt: community.name,
-                    style: {
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover"
-                    }
-                  }
-                ) : /* @__PURE__ */ jsxRuntimeExports.jsx(GroupIcon, { sx: { fontSize: 60, color: "text.secondary" } })
+                children: index + 1
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: { flex: 1 }, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h4", fontWeight: 700, gutterBottom: true, children: community.name }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(Grid, { container: true, spacing: 2, sx: { mt: 1 }, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Grid, { sx: { display: "flex" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  Chip,
-                  {
-                    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(GroupIcon, {}),
-                    label: /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                      community.followCount ?? 0,
-                      " ",
-                      t2("community.followers")
-                    ] }),
-                    size: "small",
-                    sx: { bgcolor: "primary.light", color: "primary.contrastText" }
-                  }
-                ) }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Grid, { sx: { display: "flex" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  Chip,
-                  {
-                    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(CalendarTodayIcon, {}),
-                    label: `Created ${new Date(community.createdAt).toLocaleDateString()}`,
-                    size: "small"
-                  }
-                ) }),
-                community.isPrivate && /* @__PURE__ */ jsxRuntimeExports.jsx(Grid, { sx: { display: "flex" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  Chip,
-                  {
-                    label: "Private",
-                    size: "small",
-                    color: "warning",
-                    sx: { fontWeight: 600 }
-                  }
-                ) })
-              ] })
-            ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
-              Button,
+              Typography$1,
               {
-                variant: "outlined",
-                size: "large",
-                sx: { mt: { xs: 2, md: 0 } },
-                children: t2("community.join")
+                variant: "body2",
+                sx: {
+                  pt: 0.5,
+                  lineHeight: 1.6
+                },
+                children: rule
               }
             )
           ]
+        },
+        index
+      )) }) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Typography$1,
+        {
+          variant: "body2",
+          color: "text.disabled",
+          sx: {
+            fontStyle: "italic"
+          },
+          children: t2("community.rulesPlaceholder")
         }
-      ) })
-    ] }),
-    community.description && /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { sx: { mb: 3, borderRadius: 2 }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h6", fontWeight: 600, gutterBottom: true, children: t2("community.about") }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "body1", color: "text.secondary", sx: { mt: 1 }, children: community.description }),
-      community.tags && community.tags.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: { mt: 2, display: "flex", flexWrap: "wrap", gap: 1 }, children: community.tags.map((tag) => /* @__PURE__ */ jsxRuntimeExports.jsx(Chip, { label: tag, variant: "outlined" }, tag)) })
-    ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: { display: "flex", alignItems: "center", gap: 1, mb: 2 }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Chip,
+      )
+    ] });
+  };
+  const ModeratorSection = () => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(ModeratorsTitle, {}),
+      communityModerators?.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(Stack, { spacing: 1, children: communityModerators.map((moderator, index) => {
+        const isLoaded = isInfoLoaded(moderator);
+        const username = isLoaded ? moderator.username : moderator.id;
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          Box,
+          {
+            onClick: () => isLoaded ? navigate(
+              `/profile/${moderator.username}`
+            ) : null,
+            sx: {
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+              p: 1,
+              borderRadius: 2,
+              transition: "0.2s",
+              cursor: isLoaded ? "pointer" : "default",
+              "&:hover": isLoaded ? {
+                bgcolor: "action.hover"
+              } : {}
+            },
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                Avatar2,
+                {
+                  name: isLoaded ? moderator.firstName : username,
+                  avatarId: isLoaded ? moderator.avatarId : void 0,
+                  baseProps: {
+                    alt: username,
+                    sx: {
+                      width: 36,
+                      height: 36
+                    }
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                UserView,
+                {
+                  user: moderator
+                }
+              )
+            ]
+          },
+          index
+        );
+      }) })
+    ] });
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Stack, { mb: 1.5, gap: 1.5, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TagSection2, {}),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(AboutSection2, {}),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(RulesSection2, {}),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(ModeratorSection, {})
+  ] });
+};
+const DeleteIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"
+}), "Delete");
+const TagSection = ({ initTags, setPatch }) => {
+  const [tags2, setTags] = reactExports.useState(initTags);
+  const [inputTag, setInputTag] = reactExports.useState("");
+  const addTag = (tag) => {
+    const normalized = tag.startsWith("#") ? tag : `#${tag}`;
+    if (!normalized.match(TAG_REGEXP))
+      return;
+    setTags((prev2) => {
+      const next2 = (prev2 ?? []).includes(normalized) || prev2.length >= 3 ? prev2 : [...prev2, normalized];
+      setPatch(next2);
+      return next2;
+    });
+  };
+  const deleteTag = (index) => {
+    setTags((prev2) => {
+      const next2 = prev2.filter((_, idx) => idx !== index);
+      setPatch(next2);
+      return next2;
+    });
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TagsTitle, {}),
+    tags2?.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Stack,
       {
-        label: `${t2("community.about")}: ${community.name}`,
-        size: "small",
-        sx: { bgcolor: "primary.light", color: "primary.contrastText" },
-        onDelete: () => setShowCommunityFilter(false),
-        deleteIcon: /* @__PURE__ */ jsxRuntimeExports.jsx(CloseIcon, {})
-      }
-    ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      PostSelector,
-      {
-        searchType,
-        direction: direction2,
-        changeDirection: setDirection,
-        availableSearchTypes: ["BEST", "LATEST", "POPULAR"],
-        changeSearchType: setSearchType
+        direction: "row",
+        spacing: 1,
+        useFlexGap: true,
+        flexWrap: "wrap",
+        sx: {
+          mb: 2
+        },
+        children: tags2.map((tag, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Chip,
+          {
+            label: tag,
+            size: "small",
+            onDelete: () => deleteTag(index),
+            sx: {
+              borderRadius: 2,
+              bgcolor: "action.hover",
+              border: "none",
+              fontWeight: 500
+            }
+          },
+          tag
+        ))
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(PostPreviewContainer, { postFilter })
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      TextField,
+      {
+        label: t$1("community.tagsPlaceholder"),
+        value: inputTag,
+        size: "small",
+        onKeyDown: (e2) => {
+          if (e2.key === "Enter") {
+            addTag(inputTag);
+            setInputTag("");
+          }
+        },
+        onChange: (e2) => setInputTag(e2.target.value),
+        fullWidth: true
+      }
+    )
+  ] });
+};
+const AboutSection = ({ initAbout, setPatch }) => {
+  const [description, setDescription] = reactExports.useState(initAbout);
+  const { t: t2 } = useTranslation();
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(AboutTitle, {}),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      TextField,
+      {
+        label: t2("community.descriptionPlaceholder"),
+        size: "small",
+        value: description,
+        fullWidth: true,
+        onChange: (e2) => {
+          setDescription(e2.target.value);
+          setPatch(e2.target.value);
+        },
+        multiline: true
+      }
+    )
+  ] });
+};
+const RulesSection = ({ initRules, setPatch }) => {
+  const [rules, setRules] = reactExports.useState(initRules);
+  const addRule = () => {
+    if (rules && rules.length >= 5)
+      return;
+    setRules((prev2) => {
+      const next2 = [...prev2 ?? [], ""];
+      setPatch(next2);
+      return next2;
+    });
+  };
+  const deleteRule = (index) => {
+    setRules((prev2) => {
+      const next2 = prev2.filter((val, idx) => idx !== index);
+      setPatch(next2);
+      return next2;
+    });
+  };
+  const handleInput = (index, input) => {
+    setRules((prev2) => {
+      const next2 = [...prev2];
+      next2[index] = input;
+      setPatch(next2);
+      return next2;
+    });
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: {
+      position: "relative"
+    }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      IconButton,
+      {
+        size: "small",
+        onClick: addRule,
+        sx: {
+          position: "absolute",
+          right: 0
+        },
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(AddIcon, {})
+      }
+    ) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(RulesTitle, {}),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Stack, { spacing: 1.5, children: rules && rules.length > 0 && rules.map((rule, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      Box,
+      {
+        sx: {
+          display: "flex",
+          gap: 1.5,
+          alignItems: "flex-start"
+        },
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Box,
+            {
+              sx: {
+                flexShrink: 0,
+                width: 28,
+                height: 28,
+                borderRadius: "50%",
+                bgcolor: "action.hover",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 13,
+                fontWeight: 700
+              },
+              children: index + 1
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            TextField,
+            {
+              size: "small",
+              value: rules[index],
+              onChange: (e2) => handleInput(index, e2.target.value),
+              multiline: true
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            IconButton,
+            {
+              size: "small",
+              onClick: () => deleteRule(index),
+              sx: {
+                position: "relative",
+                right: 0
+              },
+              children: /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteIcon, {})
+            }
+          )
+        ]
+      },
+      index
+    )) || /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Typography$1,
+      {
+        variant: "body2",
+        color: "text.disabled",
+        sx: {
+          fontStyle: "italic",
+          lineHeight: 1.8
+        },
+        children: t$1("community.rulesPlaceholder")
+      }
+    ) })
+  ] });
+};
+const CommunitySideBarEdit = ({
+  description,
+  rules,
+  tags: tags2,
+  communityModerators,
+  setPatch
+}) => {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Stack, { mb: 1.5, gap: 1.5, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TagSection, { initTags: tags2, setPatch: (tags22) => setPatch((prev2) => ({ ...prev2, tags: tags22 })) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(AboutSection, { initAbout: description, setPatch: (description2) => setPatch((prev2) => ({ ...prev2, description: description2 })) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(RulesSection, { initRules: rules, setPatch: (rules2) => setPatch((prev2) => ({ ...prev2, rules: rules2 })) })
+  ] });
+};
+const EditIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75z"
+}), "Edit");
+const AddModeratorIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M13.22 22.61c-.4.15-.8.29-1.22.39-5.16-1.26-9-6.45-9-12V5l9-4 9 4v6c0 .9-.11 1.78-.3 2.65-.81-.41-1.73-.65-2.7-.65-3.31 0-6 2.69-6 6 0 1.36.46 2.61 1.22 3.61M19 20v2.99s-1.99.01-2 0V20h-3v-2h3v-3h2v3h3v2z"
+}), "AddModerator");
+const ModeratorEditDialog = ({
+  communityModerators,
+  ownerId,
+  communityId,
+  isOpen,
+  close: close2,
+  editScopes
+}) => {
+  const [info, setInfo] = reactExports.useState(
+    communityModerators.filter((user) => user.id !== ownerId)
+  );
+  const [userScopes, setUserScopes] = reactExports.useState([]);
+  const [isLoading, setIsLoading] = reactExports.useState(false);
+  const [searchedUsers, setSearchedUsers] = reactExports.useState([]);
+  const [searchString, setSearchString] = reactExports.useState("");
+  const inputRef = reactExports.useRef(null);
+  const [userAnchorEl, setUserAnchorEl] = reactExports.useState(null);
+  const [selectedUserIdx, setSelectedUserIdx] = reactExports.useState();
+  const { t: t2 } = useTranslation();
+  async function getCurrentScopes() {
+    try {
+      const data2 = await getCommunityScopes(communityId);
+      setUserScopes(data2.filter((user) => user.userId !== ownerId));
+    } catch (error2) {
+      console.log(error2);
+    }
+  }
+  const handleSearch = async () => {
+    if (searchString.length < 3)
+      return;
+    try {
+      setSearchedUsers(await searchUsers(searchString));
+    } catch (error2) {
+      console.log(error2);
+    }
+  };
+  const handleScopeRemove = (userIdx, scopeIdx) => {
+    setUserScopes((prev2) => {
+      const next2 = [...prev2];
+      next2[userIdx].scopes = next2[userIdx].scopes.filter((_, index) => index !== scopeIdx);
+      return next2;
+    });
+  };
+  const handleScopeAdd = (userIdx, scope) => {
+    setUserScopes((prev2) => {
+      const next2 = [...prev2];
+      next2[userIdx].scopes.push(scope);
+      return next2;
+    });
+  };
+  const handleClose = (event, reason2) => {
+    if (reason2 && reason2 === "backdropClick") {
+      return;
+    }
+    close2();
+  };
+  const handleEdit = async () => {
+    try {
+      setIsLoading(true);
+      await editScopes(userScopes, info);
+      close2();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleUserAdd = (user) => {
+    if (userScopes.length >= 5)
+      return;
+    if (user.id === ownerId || userScopes.find((foundUser) => foundUser.userId === user.id)) {
+      setSearchedUsers([]);
+      setSearchString("");
+      return;
+    }
+    setInfo((prev2) => [...prev2, user]);
+    setUserScopes((prev2) => [...prev2, {
+      userId: user.id,
+      scopes: []
+    }]);
+    setSearchString("");
+    setSearchedUsers([]);
+  };
+  const handleUserRemove = (idx) => {
+    setInfo((prev2) => prev2.filter((user) => user.id !== userScopes[idx].userId));
+    setUserScopes((prev2) => prev2.filter((_, index) => index !== idx));
+  };
+  const handleScopeMenuOpen = (event, userIdx) => {
+    setSelectedUserIdx(userIdx);
+    setUserAnchorEl(event.currentTarget);
+  };
+  const handleScopeMenuClose = () => {
+    setSelectedUserIdx(null);
+    setUserAnchorEl(null);
+  };
+  reactExports.useEffect(() => {
+    getCurrentScopes();
+  }, []);
+  reactExports.useEffect(() => {
+    const timeout3 = setTimeout(
+      () => {
+        handleSearch();
+      },
+      500
+    );
+    return () => clearTimeout(timeout3);
+  }, [searchString]);
+  const scopesByUser = reactExports.useMemo(
+    () => new Map(userScopes.map((scope) => [scope.userId, scope.scopes])),
+    [userScopes]
+  );
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    Dialog,
+    {
+      disableScrollLock: true,
+      onClose: handleClose,
+      open: isOpen,
+      maxWidth: "sm",
+      fullWidth: true,
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: "Edit moderators" }),
+        userAnchorEl && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Menu$1,
+          {
+            anchorEl: userAnchorEl,
+            open: userAnchorEl !== null,
+            onClose: handleScopeMenuClose,
+            children: missingScopes(userScopes[selectedUserIdx].scopes).map(
+              (scope) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+                MenuItem,
+                {
+                  onClick: () => handleScopeAdd(selectedUserIdx, scope),
+                  children: t2(`community.scopes.${scope}`)
+                },
+                scope
+              )
+            )
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(DialogContent, { dividers: true, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              TextField,
+              {
+                ref: inputRef,
+                placeholder: t2("search.users"),
+                slotProps: {
+                  input: {
+                    startAdornment: /* @__PURE__ */ jsxRuntimeExports.jsx(SearchIcon, {})
+                  }
+                },
+                value: searchString,
+                onChange: (e2) => {
+                  setSearchedUsers([]);
+                  setSearchString(e2.target.value);
+                }
+              }
+            ),
+            searchedUsers.length !== 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Popper2,
+              {
+                open: searchedUsers.length !== 0,
+                anchorEl: inputRef.current,
+                sx: {
+                  zIndex: 3333
+                },
+                placement: "bottom-start",
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(Paper, { sx: {
+                  width: inputRef.current?.clientWidth,
+                  maxHeight: 300,
+                  overflowY: "auto"
+                }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(List$1, { children: searchedUsers.map((user) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  ListItemButton,
+                  {
+                    onClick: () => handleUserAdd(user),
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemAvatar, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                        Avatar2,
+                        {
+                          avatarId: user.avatarId,
+                          name: user.username,
+                          baseProps: {
+                            alt: user.username
+                          }
+                        }
+                      ) }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(
+                        ListItemText,
+                        {
+                          primary: `${user.firstName} ${user.lastName}`,
+                          secondary: `@${user.username}`
+                        }
+                      )
+                    ]
+                  },
+                  user.id
+                )) }) })
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(List$1, { children: info.map((user, userIndex) => {
+            const isLoaded = isInfoLoaded(user);
+            const username = isLoaded ? user.username : void 0;
+            const scopes = scopesByUser.get(user.id) ?? [];
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              ListItem$1,
+              {
+                divider: true,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(ListItemAvatar, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    Avatar2,
+                    {
+                      avatarId: isLoaded ? user.avatarId : void 0,
+                      baseProps: {
+                        alt: user.id
+                      },
+                      name: isLoaded ? user.firstName : username
+                    }
+                  ) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    Box,
+                    {
+                      sx: {
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between"
+                      },
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                          Box,
+                          {
+                            sx: {
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 2,
+                              flex: 1
+                            },
+                            children: [
+                              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                                UserView,
+                                {
+                                  user
+                                }
+                              ),
+                              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                                Stack,
+                                {
+                                  direction: "row",
+                                  spacing: 1,
+                                  useFlexGap: true,
+                                  flexWrap: "wrap",
+                                  children: scopes.map((scope, scopeIndex) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+                                    Chip,
+                                    {
+                                      label: t2(`community.scopes.${scope}`),
+                                      size: "small",
+                                      onDelete: () => handleScopeRemove(userIndex, scopeIndex)
+                                    },
+                                    scopeIndex
+                                  ))
+                                }
+                              )
+                            ]
+                          }
+                        ),
+                        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                          Box,
+                          {
+                            flexShrink: 2,
+                            children: [
+                              SCOPES.length !== scopes.length && /* @__PURE__ */ jsxRuntimeExports.jsx(IconButton, { onClick: (e2) => handleScopeMenuOpen(e2, userIndex), children: /* @__PURE__ */ jsxRuntimeExports.jsx(AddIcon, {}) }),
+                              /* @__PURE__ */ jsxRuntimeExports.jsx(IconButton, { onClick: () => handleUserRemove(userIndex), children: /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteIcon, {}) })
+                            ]
+                          }
+                        )
+                      ]
+                    }
+                  )
+                ]
+              },
+              user.id
+            );
+          }) }) })
+        ] }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(DialogActions, { children: isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+          CircularProgress,
+          {
+            size: "medium"
+          }
+        ) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleEdit, children: t2("actions.edit") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: close2, children: t2("actions.close") })
+        ] }) })
+      ]
+    }
+  );
+};
+const CommunitySideBar = ({
+  canEdit,
+  save,
+  ...props
+}) => {
+  const [editMode, setEditMode] = reactExports.useState(false);
+  const [isOpen, setIsOpen] = reactExports.useState(false);
+  const [patch, setPatch] = reactExports.useState({});
+  const cancel = () => {
+    setEditMode(false);
+  };
+  const editInfo = () => {
+    setEditMode(true);
+  };
+  const openDialog = () => {
+    setIsOpen(true);
+  };
+  const closeDialog = () => {
+    setIsOpen(false);
+  };
+  const confirmSave = () => {
+    save(patch);
+    setEditMode(false);
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    Paper,
+    {
+      variant: "outlined",
+      sx: {
+        p: 3,
+        minWidth: 280,
+        maxWidth: 280,
+        borderRadius: 4,
+        bgcolor: "background.paper",
+        "&:hover": {
+          ".edit-action": {
+            opacity: canEdit ? 1 : 0
+          }
+        }
+      },
+      children: [
+        isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          ModeratorEditDialog,
+          {
+            isOpen,
+            close: closeDialog,
+            ...props
+          }
+        ),
+        canEdit && (editMode && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Box,
+          {
+            sx: {
+              position: "relative"
+            },
+            children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Box,
+              {
+                display: "flex",
+                justifyContent: "flex-end",
+                sx: {
+                  position: "absolute",
+                  right: 0
+                },
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    Button,
+                    {
+                      onClick: confirmSave,
+                      children: "Save"
+                    }
+                  ),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    Button,
+                    {
+                      onClick: cancel,
+                      children: "Cancel"
+                    }
+                  )
+                ]
+              }
+            )
+          }
+        ) || /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: {
+          display: "flex",
+          position: "relative"
+        }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          Box,
+          {
+            className: "edit-action",
+            sx: {
+              position: "absolute",
+              opacity: 0,
+              transition: "opacity 0.2s ease",
+              left: "auto",
+              right: 0
+            },
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                IconButton,
+                {
+                  "aria-label": "Edit moderators",
+                  title: "Edit moderators",
+                  size: "small",
+                  onClick: openDialog,
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(AddModeratorIcon, {})
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                IconButton,
+                {
+                  "aria-label": "Edit community info",
+                  title: "Edit community info",
+                  onClick: editInfo,
+                  size: "small",
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(EditIcon, {})
+                }
+              )
+            ]
+          }
+        ) })),
+        editMode ? /* @__PURE__ */ jsxRuntimeExports.jsx(CommunitySideBarEdit, { setPatch, ...props }) : /* @__PURE__ */ jsxRuntimeExports.jsx(CommunitySideBarView, { ...props })
+      ]
+    }
+  );
+};
+const CommunityDetail = () => {
+  const { t: t2 } = useTranslation();
+  const { user } = useAuth();
+  const communityData = useLoaderData();
+  const [community, setCommunity] = reactExports.useState(() => ({
+    ...communityData,
+    communityModerators: communityData.communityModerators.map((id2) => ({
+      id: id2
+    }))
+  }));
+  const [searchType, setSearchType] = reactExports.useState("POPULAR");
+  const [sortOption, setSortOption] = reactExports.useState("date");
+  const [direction2, setDirection] = reactExports.useState("DESC");
+  const { setSearchOption } = useSearchOption();
+  const isCreator = communityData.ownerId === user?.profile.sub;
+  const postFilter = {
+    searchType,
+    communityId: communityData.id,
+    sortOption,
+    direction: direction2
+  };
+  const updateInfo = async (patch) => {
+    try {
+      const resp = await editCommunity(
+        communityData.id,
+        patch
+      );
+      setCommunity((prev2) => ({
+        ...resp,
+        communityModerators: prev2.communityModerators
+      }));
+    } catch (error2) {
+      console.log(error2);
+    }
+  };
+  const uploadModeratorsInfo = async () => {
+    try {
+      const mods = communityData.communityModerators;
+      if (mods && mods.length > 0) {
+        const moderators = await getUserInfo(mods);
+        setCommunity((prev2) => ({
+          ...prev2,
+          communityModerators: [...moderators.values()]
+        }));
+      }
+    } catch (error2) {
+      console.log(error2);
+    }
+  };
+  const editScopes = async (userScopes, loadedInfo) => {
+    if (userScopes.find((scope) => scope.scopes.length === 0)) {
+      enqueueSnackbar({
+        variant: "error",
+        message: "Select at least one scope!"
+      });
+      return;
+    }
+    try {
+      await editCommunityScopes(communityData.id, userScopes);
+      setCommunity((prev2) => ({
+        ...prev2,
+        communityModerators: [
+          prev2.communityModerators.find((user2) => user2.id === communityData.ownerId),
+          ...loadedInfo
+        ]
+      }));
+    } catch (error2) {
+      console.log(error2);
+    }
+  };
+  reactExports.useEffect(() => {
+    setSearchOption({
+      type: "COMMUNITY",
+      ...communityData
+    });
+    uploadModeratorsInfo();
+    return () => setSearchOption(null);
+  }, []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { display: "flex", flexDirection: "row", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { flexGrow: 3, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CommunityHeader, { ...community }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Divider$1, { sx: { my: 4 } }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        PostSelector,
+        {
+          searchType,
+          direction: direction2,
+          changeDirection: setDirection,
+          availableSearchTypes: [
+            "BEST",
+            "LATEST",
+            "POPULAR"
+          ],
+          changeSearchType: setSearchType
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { mt: 3, children: /* @__PURE__ */ jsxRuntimeExports.jsx(PostPreviewContainer, { postFilter }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { flexShrink: 2, ml: 5, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      CommunitySideBar,
+      {
+        ownerId: communityData.ownerId,
+        communityId: communityData.id,
+        canEdit: isCreator,
+        save: updateInfo,
+        editScopes,
+        ...community
+      }
+    ) })
   ] });
 };
 async function getReportReasons() {
-  return (await apiClient.get("/api/user/report")).data;
+  return (await apiClient.get("/api/v1/report")).data;
 }
 async function sendReport(request) {
-  return (await apiClient.post("/api/user/report", request)).data;
+  return (await apiClient.post("/api/v1/report", request)).data;
 }
 const ReportDialog = ({ open, onClose, onSuccess, targetType, targetId }) => {
   const [reasons, setReasons] = reactExports.useState([]);
@@ -158540,7 +162681,7 @@ const ProfileCard = ({ ...props }) => {
             flexDirection: "row",
             children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(
-                UserAvatar,
+                Avatar2,
                 {
                   ...props,
                   baseProps: {
@@ -158582,15 +162723,6 @@ const ProfileCard = ({ ...props }) => {
     }
   );
 };
-const AddIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
-  d: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"
-}), "Add");
-const DeleteIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
-  d: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"
-}), "Delete");
-const EditIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
-  d: "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75z"
-}), "Edit");
 const DraftPreview = ({ draft, onDelete }) => {
   const navigate = useNavigate();
   const { t: t2 } = useTranslation();
@@ -158616,21 +162748,6 @@ const DraftPreview = ({ draft, onDelete }) => {
     ] })
   ] }) });
 };
-async function getUnpublished(pageable) {
-  return (await apiClient.get("/api/me/post", {
-    params: {
-      ...pageable || {}
-    }
-  })).data;
-}
-async function deleteDraft(postId) {
-  return await apiClient.delete(`/api/me/post/${postId}`);
-}
-async function createDraft(title) {
-  return (await apiClient.post("/api/me/post", {
-    title
-  })).data;
-}
 const AddCircleOutlineIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
   d: "M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8"
 }), "AddCircleOutline");
@@ -158665,7 +162782,7 @@ const DraftContainer = ({ setDraftCreation, draftCreationOpen }) => {
   };
   async function deleteDraftFunc(postId) {
     try {
-      await deleteDraft(postId);
+      await deleteDraftPost(postId);
       fetchDrafts({
         page: drafts?.number ?? 0,
         size: drafts?.size ?? 10
@@ -158725,186 +162842,6 @@ const DraftContainer = ({ setDraftCreation, draftCreationOpen }) => {
     setError(false);
     setDraftCreation(false);
   };
-  const DeletionDialog = () => /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    Dialog,
-    {
-      open,
-      onClose: handleClose,
-      maxWidth: "sm",
-      fullWidth: true,
-      children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogTitle, { sx: {
-          display: "flex",
-          alignItems: "center",
-          gap: 1
-        }, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteIcon, { color: "error" }),
-          t2("profile.draft.deleteTitle")
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(DialogContentText, { sx: {
-            fontSize: "1rem",
-            lineHeight: 1.6,
-            mt: 1
-          }, children: dialogueValue && `${t2("profile.draft.deleteConfirm")} «${dialogueValue.title}»?` }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "body2", sx: {
-            color: "text.secondary",
-            mt: 2,
-            fontStyle: "italic"
-          }, children: t2("profile.draft.deleteWarning") })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogActions, { sx: { px: 3, pb: 2 }, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Button,
-            {
-              onClick: handleClose,
-              color: "inherit",
-              children: t2("profile.draft.cancelButton")
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Button,
-            {
-              onClick: handleDelete2,
-              variant: "contained",
-              color: "error",
-              sx: { borderRadius: 2 },
-              children: t2("profile.draft.deleteButton")
-            }
-          )
-        ] })
-      ]
-    }
-  );
-  const CreationDialog = () => /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    Dialog,
-    {
-      open: draftCreationOpen,
-      onClose: handleCreationClose,
-      maxWidth: "sm",
-      fullWidth: true,
-      children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { sx: {
-          pb: 1.5,
-          fontSize: "1.25rem"
-        }, children: t2("profile.draft.createTitle") }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(DialogContent, { sx: {
-          pt: 2,
-          display: "flex",
-          flexDirection: "column",
-          gap: 2
-        }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(FormControl, { error: error2, fullWidth: true, variant: "outlined", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(InputLabel, { htmlFor: "title-input", children: t2("profile.draft.titleLabel") }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Input,
-            {
-              id: "title-input",
-              onChange: (e2) => setTitle(e2.target.value),
-              autoComplete: "off"
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(FormHelperText, { children: error2 ? t2("profile.draft.titleError") : t2("profile.draft.titleHelper") })
-        ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogActions, { sx: { px: 3, pb: 2 }, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Button,
-            {
-              onClick: handleCreationClose,
-              color: "inherit",
-              children: t2("profile.draft.cancelButton")
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Button,
-            {
-              onClick: handleDraftCreation,
-              variant: "contained",
-              sx: { borderRadius: 2 },
-              children: t2("profile.draft.createButton")
-            }
-          )
-        ] })
-      ]
-    }
-  );
-  const DraftDisplay = () => /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: {
-    flexGrow: 1,
-    overflowY: "auto",
-    py: 2
-  }, children: drafts?.content && drafts.content.length > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(Stack, { spacing: 1.5, children: /* @__PURE__ */ jsxRuntimeExports.jsx(TransitionGroup, { children: drafts.content.map((draft, idx) => /* @__PURE__ */ jsxRuntimeExports.jsx(Collapse$1, { in: true, timeout: 300, children: /* @__PURE__ */ jsxRuntimeExports.jsx(DraftPreview, { draft, onDelete: handleOpen }) }, idx)) }) }) : (
-    /* Пустое состояние */
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      py: 6,
-      color: "text.secondary"
-    }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(DraftIcon, { sx: {
-        fontSize: 64,
-        color: "text.disabled",
-        mb: 2
-      } }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h6", sx: { mb: 1, color: "text.primary" }, children: t2("profile.draft.emptyTitle") }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "body2", sx: { mb: 2, textAlign: "center" }, children: t2("profile.draft.emptyMessage") }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Button,
-        {
-          variant: "outlined",
-          startIcon: /* @__PURE__ */ jsxRuntimeExports.jsx(AddCircleOutlineIcon, {}),
-          onClick: handleCreationOpen,
-          children: t2("profile.draft.emptyButton")
-        }
-      )
-    ] })
-  ) });
-  const DraftHeader = () => /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    pb: 2,
-    borderBottom: "1px solid",
-    borderColor: "divider"
-  }, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Stack, { direction: "row", alignItems: "center", spacing: 1.5, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar, { sx: {
-        bgcolor: "primary.main",
-        width: 36,
-        height: 36,
-        fontSize: 16
-      }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(DraftIcon, { fontSize: "small" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h5", component: "h2", sx: {
-        fontWeight: 600,
-        color: "text.primary"
-      }, children: t2("profile.draft.sectionTitle") }),
-      drafts?.totalElements !== void 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "caption", sx: {
-        color: "text.secondary",
-        bgcolor: "action.hover",
-        px: 1.5,
-        py: 0.3,
-        borderRadius: 1
-      }, children: drafts.totalElements })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { title: t2("profile.draft.createTooltip"), children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Button,
-      {
-        variant: "contained",
-        startIcon: /* @__PURE__ */ jsxRuntimeExports.jsx(AddCircleOutlineIcon, {}),
-        onClick: handleCreationOpen,
-        sx: {
-          borderRadius: 2,
-          textTransform: "none",
-          px: 2.5,
-          boxShadow: 1,
-          "&:hover": {
-            boxShadow: 3
-          }
-        },
-        children: t2("profile.draft.createNew")
-      }
-    ) })
-  ] });
   reactExports.useEffect(() => {
     fetchDrafts({
       page: 0,
@@ -158916,8 +162853,84 @@ const DraftContainer = ({ setDraftCreation, draftCreationOpen }) => {
     flexDirection: "column",
     height: "100%"
   }, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(DraftHeader, {}),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(DraftDisplay, {}),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      pb: 2,
+      borderBottom: "1px solid",
+      borderColor: "divider"
+    }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Stack, { direction: "row", alignItems: "center", spacing: 1.5, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Avatar$1, { sx: {
+          bgcolor: "primary.main",
+          width: 36,
+          height: 36,
+          fontSize: 16
+        }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(DraftIcon, { fontSize: "small" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h5", component: "h2", sx: {
+          fontWeight: 600,
+          color: "text.primary"
+        }, children: t2("profile.draft.sectionTitle") }),
+        drafts?.totalElements !== void 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "caption", sx: {
+          color: "text.secondary",
+          bgcolor: "action.hover",
+          px: 1.5,
+          py: 0.3,
+          borderRadius: 1
+        }, children: drafts.totalElements })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { title: t2("profile.draft.createTooltip"), children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Button,
+        {
+          variant: "contained",
+          startIcon: /* @__PURE__ */ jsxRuntimeExports.jsx(AddCircleOutlineIcon, {}),
+          onClick: handleCreationOpen,
+          sx: {
+            borderRadius: 2,
+            textTransform: "none",
+            px: 2.5,
+            boxShadow: 1,
+            "&:hover": {
+              boxShadow: 3
+            }
+          },
+          children: t2("profile.draft.createNew")
+        }
+      ) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: {
+      flexGrow: 1,
+      overflowY: "auto",
+      py: 2
+    }, children: drafts?.content && drafts.content.length > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(Stack, { spacing: 1.5, children: /* @__PURE__ */ jsxRuntimeExports.jsx(TransitionGroup, { children: drafts.content.map((draft, idx) => /* @__PURE__ */ jsxRuntimeExports.jsx(Collapse$1, { in: true, timeout: 300, children: /* @__PURE__ */ jsxRuntimeExports.jsx(DraftPreview, { draft, onDelete: handleOpen }) }, idx)) }) }) : (
+      /* Пустое состояние */
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Box, { sx: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        py: 6,
+        color: "text.secondary"
+      }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(DraftIcon, { sx: {
+          fontSize: 64,
+          color: "text.disabled",
+          mb: 2
+        } }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "h6", sx: { mb: 1, color: "text.primary" }, children: t2("profile.draft.emptyTitle") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "body2", sx: { mb: 2, textAlign: "center" }, children: t2("profile.draft.emptyMessage") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Button,
+          {
+            variant: "outlined",
+            startIcon: /* @__PURE__ */ jsxRuntimeExports.jsx(AddCircleOutlineIcon, {}),
+            onClick: handleCreationOpen,
+            children: t2("profile.draft.emptyButton")
+          }
+        )
+      ] })
+    ) }),
     drafts && drafts.totalPages > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: {
       display: "flex",
       justifyContent: "center",
@@ -158940,10 +162953,115 @@ const DraftContainer = ({ setDraftCreation, draftCreationOpen }) => {
         }
       }
     ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(CreationDialog, {}),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(DeletionDialog, {})
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      Dialog,
+      {
+        open: draftCreationOpen,
+        onClose: handleCreationClose,
+        maxWidth: "sm",
+        fullWidth: true,
+        disableScrollLock: false,
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { sx: {
+            pb: 1.5,
+            fontSize: "1.25rem"
+          }, children: t2("profile.draft.createTitle") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(DialogContent, { sx: {
+            pt: 2,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2
+          }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(FormControl, { error: error2, fullWidth: true, variant: "outlined", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(InputLabel, { htmlFor: "title-input", children: t2("profile.draft.titleLabel") }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Input,
+              {
+                id: "title-input",
+                value: title,
+                onChange: (e2) => setTitle(e2.target.value),
+                autoComplete: "off"
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(FormHelperText, { children: error2 ? t2("profile.draft.titleError") : t2("profile.draft.titleHelper") })
+          ] }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogActions, { sx: { px: 3, pb: 2 }, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Button,
+              {
+                onClick: handleCreationClose,
+                color: "inherit",
+                children: t2("profile.draft.cancelButton")
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Button,
+              {
+                onClick: handleDraftCreation,
+                variant: "contained",
+                sx: { borderRadius: 2 },
+                children: t2("profile.draft.createButton")
+              }
+            )
+          ] })
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      Dialog,
+      {
+        open,
+        onClose: handleClose,
+        maxWidth: "sm",
+        fullWidth: true,
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogTitle, { sx: {
+            display: "flex",
+            alignItems: "center",
+            gap: 1
+          }, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteIcon, { color: "error" }),
+            t2("profile.draft.deleteTitle")
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(DialogContentText, { sx: {
+              fontSize: "1rem",
+              lineHeight: 1.6,
+              mt: 1
+            }, children: dialogueValue && `${t2("profile.draft.deleteConfirm")} «${dialogueValue.title}»?` }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Typography$1, { variant: "body2", sx: {
+              color: "text.secondary",
+              mt: 2,
+              fontStyle: "italic"
+            }, children: t2("profile.draft.deleteWarning") })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogActions, { sx: { px: 3, pb: 2 }, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Button,
+              {
+                onClick: handleClose,
+                color: "inherit",
+                children: t2("profile.draft.cancelButton")
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Button,
+              {
+                onClick: handleDelete2,
+                variant: "contained",
+                color: "error",
+                sx: { borderRadius: 2 },
+                children: t2("profile.draft.deleteButton")
+              }
+            )
+          ] })
+        ]
+      }
+    )
   ] });
 };
+const CloseIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+}), "Close");
 const ProfileDataDisplay = () => {
   const data2 = useLoaderData();
   const auth = useAuth();
@@ -159007,7 +163125,7 @@ const ProfileDataDisplay = () => {
               changeDirection: setDirection
             }
           ),
-          category === "published" && /* @__PURE__ */ jsxRuntimeExports.jsx(PostPreviewContainer, { authorId: data2.id, postFilter }),
+          category === "published" && /* @__PURE__ */ jsxRuntimeExports.jsx(PostPreviewContainer, { postFilter }),
           category === "drafts" && /* @__PURE__ */ jsxRuntimeExports.jsx(DraftContainer, { draftCreationOpen: isDraftCreationOpen, setDraftCreation: setIsDraftCreationOpen })
         ] }) || /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: { display: "flex", alignItems: "center", gap: 1, mb: 2 }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -159030,7 +163148,7 @@ const ProfileDataDisplay = () => {
               changeDirection: setDirection
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(PostPreviewContainer, { authorId: data2.id, postFilter })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(PostPreviewContainer, { postFilter })
         ] })
       ] })
     ] })
@@ -159132,7 +163250,7 @@ const routes = [
           },
           {
             id: "community",
-            path: "/community/:communityId",
+            path: "/community/:slug",
             Component: CommunityDetail,
             loader: communityLoader
           },
@@ -159155,6 +163273,11 @@ const routes = [
         loader: userDataLoader
       }
     ]
+  },
+  {
+    id: "auth-callback",
+    path: "/auth/callback",
+    Component: Loading
   },
   {
     id: "editor-route",
@@ -159188,7 +163311,7 @@ async function postPageLoader({ request, params }) {
   return resp;
 }
 async function communityLoader({ request, params }) {
-  const resp = await fetch(`${process.env.SERVICES_COMMUNITY}/api/public/community${params.communityId}`, {
+  const resp = await fetch(`${process.env.SERVICES_COMMUNITY}/api/public/community${params.slug}`, {
     headers: request.headers
   });
   if (resp.status === 401)

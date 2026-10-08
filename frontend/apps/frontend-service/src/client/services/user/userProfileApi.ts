@@ -51,41 +51,35 @@ export function isUserInfo(val: any): val is UserInfo {
 };
 
 export async function getProfileInfo(username: string) {
-    return (await apiClient.get<PublicUserProfile>(`/api/public/profile/${username}`)).data;
-}
-
-export async function updateAboutText(text: string) {
-    return apiClient.patch("/api/user/about", {
-        text: text
-    })
+    return (await apiClient.get<PublicUserProfile>(`/api/v1/public/profile/${username}`)).data;
 }
 
 export async function getAutenticationInfo() {
-    return (await apiClient.get<AuthorizedInfo>("/api/me/profile")).data;
+    return (await apiClient.get<AuthorizedInfo>("/api/v1/me/profile")).data;
 }
 
 export async function setAboutText(text: string) {
-    return apiClient.patch('/user/about', {
+    return apiClient.patch('/api/v1/me/about', {
         text: text
     })
 }
 
 export async function getUserInfo(ids: string[]) {
     const users = new Map<string, UserInfo>();
-    (await apiClient.post<UserInfo[]>("/api/public/profile/info", ids)).data.forEach(val => users.set(val.id, val));
+    (await apiClient.post<UserInfo[]>("/api/v1/public/profile/info", ids)).data.forEach(val => users.set(val.id, val));
     return users;
 }
 
 export async function getMyProfile(){
-    return (await apiClient.get<CurrentUserProfile>("/api/me/profile")).data;
+    return (await apiClient.get<CurrentUserProfile>("/api/v1/me/profile")).data;
 }
 
 export async function updateProfileSettings(settings: ProfileSettings){
-    return (await apiClient.put<{}>("/api/me/profile/settings", settings)).data;
+    return (await apiClient.put<{}>("/api/v1/me/profile/settings", settings)).data;
 }
 
 export async function searchUsers(text: string) {
-    return (await apiClient.get<UserInfo[]>("/api/public/profile", {
+    return (await apiClient.get<UserInfo[]>("/api/v1/public/profile", {
         params: {
             searchString: text
         }

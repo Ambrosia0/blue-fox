@@ -33,7 +33,7 @@ export function isDraft(val: any): val is Draft {
 };
 
 export async function getUnpublished(pageable?: Pageable) {
-    return (await apiClient.get<Page<Draft>>('/api/me/post', {
+    return (await apiClient.get<Page<Draft>>('/api/v1/me/post', {
         params: {
             ...pageable || {}
         }
@@ -41,26 +41,34 @@ export async function getUnpublished(pageable?: Pageable) {
 }
 
 export async function deletePost(postId: number) {
-    return (await apiClient.delete(`/api/me/post/${postId}`));
+    return (await apiClient.delete(`/api/v1/post/${postId}`));
+}
+
+export async function deleteDraftPost(postId: number) {
+    return (await apiClient.delete(`/api/v1/me/post/${postId}`));
 }
 
 export async function getEditablePostContent(postId: number) {
-    return (await apiClient.get<PostEditorContent>(`/api/me/editor/${postId}`)).data;
+    return (await apiClient.get<PostEditorContent>(`/api/v1/me/editor/${postId}`)).data;
 }
 
 export async function publishPost(postId: number) {
-    return (await apiClient.post(`/api/me/post/${postId}/publish`));
+    return (await apiClient.post(`/api/v1/me/post/${postId}/publish`));
+}
+
+export async function unpblishPost(postId: number) {
+    return (await apiClient.post(`/api/v1/me/post/${postId}/unpublish`));
 }
 
 export async function saveContent(postId: number, title: string, post: string) {
-    return (await apiClient.patch(`/api/me/post/${postId}`, {
+    return (await apiClient.patch(`/api/v1/me/post/${postId}`, {
         title: title,
         post: post
     }))
 }
 
 export async function createDraft(title: string) {
-    return (await apiClient.post<PostEditorCreate>('/api/me/post', {
+    return (await apiClient.post<PostEditorCreate>('/api/v1/me/post', {
         title
     })).data;
 }
@@ -73,7 +81,7 @@ export async function attachMedia(
 ) {
     if (!file.get("attachment"))
         return;
-    return (await apiClient.post<string>(`/api/me/post/${postId}/attachment`, file, {
+    return (await apiClient.post<string>(`/api/v1/me/post/${postId}/attachment`, file, {
         signal: abortSignal,
         onUploadProgress: (progressEvent) => {
             if (progressEvent.total) {
@@ -85,9 +93,9 @@ export async function attachMedia(
 }
 
 export async function getAttachedMedia(postId: number) {
-    return (await apiClient.get<PostAttachment[]>(`/api/me/post/${postId}/attachment`)).data;
+    return (await apiClient.get<PostAttachment[]>(`/api/v1/me/post/${postId}/attachment`)).data;
 }
 
 export async function deleteAttachment(postId: number, attachmentId: string) {
-    return (await apiClient.delete(`/api/me/post/${postId}/attachment/${attachmentId}`));
+    return (await apiClient.delete(`/api/v1/me/post/${postId}/attachment/${attachmentId}`));
 }
