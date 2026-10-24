@@ -45,6 +45,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                 SELECT 1 FROM community_ban_projection cb
                 WHERE cb.user_id = :userId
                 AND cb.community_id = cp.id
+                AND cb.before_date > CURRENT_TIMESTAMP
             ) as is_banned,
             EXISTS(
                 SELECT 1 FROM community_permission cpr
@@ -79,6 +80,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                     SELECT 1 FROM community_ban_projection cb
                     WHERE cb.user_id = :userId
                     AND cb.community_id = cp.id
+                    AND cb.before_date > CURRENT_TIMESTAMP
                 ) as posted_is_banned
             FROM community_projection cp
             WHERE cp.id = :communityId
@@ -98,6 +100,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                     SELECT 1 FROM community_ban_projection cb
                     WHERE cb.user_id = :userId
                     AND cb.community_id = cp.id
+                    AND cb.before_date > CURRENT_TIMESTAMP
                 ) as replying_is_banned,
                 EXISTS(
                     SELECT 1 FROM community_permission cpr
@@ -135,6 +138,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                     SELECT 1 FROM community_ban_projection cb
                     WHERE cb.user_id = :userId
                     AND cb.community_id = cp.id
+                    AND cb.before_date > CURRENT_TIMESTAMP
                 ) as is_banned,
                 EXISTS(
                     SELECT 1 FROM community_permission cpr
@@ -158,6 +162,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                     SELECT 1 FROM community_ban_projection cb
                     WHERE cb.user_id = :userId
                     AND cb.community_id = cp.id
+                    AND cb.before_date > CURRENT_TIMESTAMP
                 ) as replying_is_banned,
                 EXISTS(
                     SELECT 1 FROM community_permission cpr
@@ -216,6 +221,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                 SELECT 1 FROM community_ban_projection cb
                 WHERE cb.user_id = :userId
                 AND cb.community_id = cp.id
+                AND cb.before_date > CURRENT_TIMESTAMP
             ) as is_banned,
             EXISTS(
                 SELECT 1 FROM community_permission cpr

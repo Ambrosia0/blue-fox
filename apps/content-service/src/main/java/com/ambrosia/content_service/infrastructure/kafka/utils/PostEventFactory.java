@@ -17,7 +17,7 @@ import com.ambrosia.content_service.post.domain.entity.Post;
 import io.github.robsonkades.uuidv7.UUIDv7;
 
 public class PostEventFactory {
-    public static PostEvent createOperation(PostViewResponse post){
+    public static PostEvent createOperation(PostViewResponse post, Long version){
         var builder = PostCreated.newBuilder()
             .setTitle(post.title())
             .setAuthor(toUser(post.user()))
@@ -30,6 +30,7 @@ public class PostEventFactory {
             builder.setReplyTo(toReplyTo(post.response()));
         return PostEvent.newBuilder()
             .setPostId(post.id())
+            .setVersion(version)
             .setEventId(UUIDv7.randomUUIDString())
             .setCreated(builder.build())
             .build();
@@ -42,6 +43,7 @@ public class PostEventFactory {
             builder.setCommunityId(post.getCommunityId().getId());
         return PostEvent.newBuilder()
             .setPostId(post.getId())
+            .setVersion(post.getVersion())
             .setEventId(UUIDv7.randomUUIDString())
             .setUpdated(builder.build())
             .build();
@@ -54,6 +56,7 @@ public class PostEventFactory {
         return PostEvent.newBuilder()
             .setPostId(deletionProjection.id())
             .setEventId(UUIDv7.randomUUIDString())
+            .setVersion(deletionProjection.version())
             .setDeleted(builder.build())
             .build();
     }

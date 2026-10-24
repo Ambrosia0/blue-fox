@@ -34,6 +34,7 @@ public final class CommunityEventFactory {
             builder.setAvatarId(community.getAvatarId());
         return CommunityEvent.newBuilder()
             .setId(community.getId())
+            .setVersion(community.getVersion())
             .setEventId(UUIDv7.randomUUIDString())
             .setCreate(builder.build())
             .build();
@@ -58,15 +59,18 @@ public final class CommunityEventFactory {
             builder.setAvatarId(community.getAvatarId());
         return CommunityEvent.newBuilder()
             .setId(community.getId())
+            .setVersion(community.getVersion())
             .setEventId(UUIDv7.randomUUIDString())
             .setUpdate(builder.build())
             .build();
     }
 
-    public static CommunityEvent deleteOperation(long id){
+    public static CommunityEvent deleteOperation(
+            com.ambrosia.community_service.community.domain.entity.CommunityDelete delete){
         var deleted = CommunityDelete.newBuilder().build();
         return CommunityEvent.newBuilder()
-            .setId(id)
+            .setId(delete.id())
+            .setVersion(delete.version())
             .setEventId(UUIDv7.randomUUIDString())
             .setDelete(deleted)
             .build();

@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS user_projection(
     username TEXT NOT NULL,
     first_name TEXT,
     last_name TEXT,
-    avatar_id TEXT
+    avatar_id TEXT,
+    version BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS community(

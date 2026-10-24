@@ -6,6 +6,7 @@ import com.ambrosia.profile_service.kafka_events.UserCreated;
 import com.ambrosia.profile_service.kafka_events.UserDeleted;
 import com.ambrosia.profile_service.kafka_events.UserEvent;
 import com.ambrosia.profile_service.kafka_events.UserUpdated;
+import com.ambrosia.profile_service.user.api.dto.DeletedUser;
 import com.ambrosia.profile_service.user.domain.entity.User;
 
 import io.github.robsonkades.uuidv7.UUIDv7;
@@ -22,6 +23,7 @@ public class UserEventFactory {
         return UserEvent.newBuilder()
             .setEventId(UUIDv7.randomUUIDString())
             .setUserId(user.getId().toString())
+            .setVersion(user.getVersion())
             .setCreated(created.build())
             .build();
     }
@@ -36,15 +38,17 @@ public class UserEventFactory {
         return UserEvent.newBuilder()
             .setEventId(UUIDv7.randomUUIDString())
             .setUserId(user.getId().toString())
+            .setVersion(user.getVersion())
             .setUpdated(updated)
             .build();
     }
 
-    public static UserEvent deletedEvent(UUID userId){
+    public static UserEvent deletedEvent(DeletedUser deletedUser){
         var deleted = UserDeleted.newBuilder().build();
         return UserEvent.newBuilder()
             .setEventId(UUIDv7.randomUUIDString())
-            .setUserId(userId.toString())
+            .setUserId(deletedUser.id().toString())
+            .setVersion(deletedUser.version())
             .setDeleted(deleted)
             .build();
     }

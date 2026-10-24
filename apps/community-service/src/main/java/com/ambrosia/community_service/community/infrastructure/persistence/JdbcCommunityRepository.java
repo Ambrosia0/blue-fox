@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.ambrosia.community_service.community.domain.entity.CommunityDelete;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -27,6 +28,13 @@ public interface JdbcCommunityRepository extends
     GROUP BY user_id
     """)
     Optional<CommunityScopeResponse> findUserScopes(long communityId, UUID userId);
-
+    
+    @Query("""
+    DELETE FROM community
+        WHERE id = :id
+    RETURNING id, avatar_id, version
+    """)
+    Optional<CommunityDelete> delete(Long id);
+    
     boolean existsBySlug(String slug);
 }

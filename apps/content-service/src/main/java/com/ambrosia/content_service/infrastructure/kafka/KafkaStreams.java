@@ -84,8 +84,7 @@ public class KafkaStreams {
         var stream = builder.stream(Topics.COMMENT_EVENT, Consumed.with(Serdes.String(), commentEventSerde))
             .filter((key, value) -> value.hasCreated() || value.hasDeleted())
             .selectKey((key, value) -> switch (value.getEventCase()) {
-                case CREATED -> value.getCreated().getPostId();
-                case DELETED -> value.getDeleted().getPostId();
+                case CREATED, DELETED -> value.getPostId();
                 default -> -1L;
             })
             .mapValues(value -> switch (value.getEventCase()) {

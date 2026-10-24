@@ -153,7 +153,11 @@ public class CommunityManageServiceImpl implements CommunityManageService{
         try {
             community.setAvatarId(avatarId);
             community = communityRepository.save(community);
+            
+            var event = CommunityEventFactory.updateOperation(community);
+            
             communityIndexService.reIndex(community);
+            kafkaOutboxService.put(event);
         } catch (RuntimeException e) {
             try {
                 avatarService.delete(communityId, avatarId);
@@ -172,13 +176,18 @@ public class CommunityManageServiceImpl implements CommunityManageService{
             CommunityDeletePolicy.class,
             CommunityEditArg.create(communityId, null)
         );
-        var community = communityRepository.findById(communityId)
+        var delete = communityRepository.delete(communityId)
             .orElseThrow(() -> new CommunityDoesntExistException());
+        
+        var event = CommunityEventFactory.deleteOperation(delete);
 
-        if(community.getAvatarId() != null)
-            avatarService.delete(communityId, community.getAvatarId());
-        communityRepository.deleteById(communityId);
-        communityIndexService.removeFromIndex(community.getId(), community.getVersion());
+        if(delete.avatarId() != null)
+            avatarService.delete(communityId, delete.avatarId());
+        
+        kafkaOutboxService.put(event);
+        eventPublisher.publishEvent(event);
+        
+        communityIndexService.removeFromIndex(delete);
     }
 
     @Override

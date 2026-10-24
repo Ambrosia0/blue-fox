@@ -2,6 +2,7 @@ package com.ambrosia.community_service.community.infrastructure;
 
 import java.util.List;
 
+import com.ambrosia.community_service.community.domain.entity.CommunityDelete;
 import org.springframework.stereotype.Service;
 
 import com.ambrosia.community_service.community.api.dto.request.CommunityEventFilter;
@@ -25,7 +26,7 @@ public class DatabaseCommunityIndexService implements CommunityIndexService, Com
     public void reIndex(Community t) {}
 
     @Override
-    public void removeFromIndex(Long id, Long version) {}
+    public void removeFromIndex(CommunityDelete delete) {}
 
     @Override
     public List<CommunityScoredPreview> search(CommunityEventFilter communityEventFilter, int pageSize) {

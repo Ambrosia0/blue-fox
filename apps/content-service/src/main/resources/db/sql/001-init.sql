@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS user_projection(
     username TEXT NOT NULL,
     first_name TEXT,
     last_name TEXT,
-    avatar_id TEXT
+    avatar_id TEXT,
+    version BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS post(
@@ -71,7 +72,8 @@ CREATE TABLE IF NOT EXISTS community_follow_projection(
 CREATE TABLE IF NOT EXISTS community_ban_projection(
     community_id bigint NOT NULL,
     user_id UUID NOT NULL,
-    PRIMARY KEY(user_id, community_id)
+    before_date TIMESTAMP NOT NULL,
+    PRIMARY KEY(user_id, community_id, before_date)
 );
 
 CREATE TABLE IF NOT EXISTS processed_events(

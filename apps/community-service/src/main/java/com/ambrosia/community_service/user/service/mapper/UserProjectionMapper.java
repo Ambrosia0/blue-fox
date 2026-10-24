@@ -1,12 +1,11 @@
 package com.ambrosia.community_service.user.service.mapper;
 
-import java.util.UUID;
-
-import org.springframework.stereotype.Component;
-
 import com.ambrosia.community_service.user.model.entity.UserProjection;
 import com.ambrosia.profile_service.kafka_events.UserCreated;
 import com.ambrosia.profile_service.kafka_events.UserUpdated;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Component 
 public class UserProjectionMapper {
