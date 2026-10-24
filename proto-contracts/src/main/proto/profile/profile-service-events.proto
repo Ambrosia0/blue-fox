@@ -34,9 +34,10 @@ message UserDeleted {}
 message UserEvent {
     string event_id = 1;
     string user_id = 2;
+    int64 version = 3;
     oneof payload {
-        UserCreated created = 3;
-        UserUpdated updated = 4;
-        UserDeleted deleted = 5;
+        UserCreated created = 4;
+        UserUpdated updated = 5;
+        UserDeleted deleted = 6;
     }
 }

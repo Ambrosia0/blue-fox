@@ -13,9 +13,8 @@ message PostCreated {
     string title = 3;
     string preview = 4;
     optional int64 published_at = 5;
-    int64 reply_id = 6;
-    repeated User collaborators = 7;
-    optional ReplyTo reply_to = 8;
+    repeated User collaborators = 6;
+    optional ReplyTo reply_to = 7;
 }
 
 message PostUpdated {
@@ -30,10 +29,11 @@ message PostDeleted {
 message PostEvent {
     string event_id = 1;
     int64 post_id = 2;
+    int64 version = 3;
     oneof event {
-        PostCreated created = 3;
-        PostDeleted deleted = 4;
-        PostUpdated updated = 5;
+        PostCreated created = 4;
+        PostDeleted deleted = 5;
+        PostUpdated updated = 6;
     }
 }
 
