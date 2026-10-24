@@ -15,3 +15,26 @@ message ActivityEvent {
     int64 timestamp = 2;
     ActivityEventType type = 3;
 }
+
+message TargetedNotification {
+    string user_id = 1;
+    string content = 2;
+}
+
+message CommunityFollowNotification {
+    int64 community_id = 1;
+    string content = 2;
+}
+
+message UserFollowNotification {
+    string user_id = 1;
+    string content = 2;
+}
+
+message Notification {
+    oneof payload {
+        TargetedNotification targeted_notification = 1;
+        CommunityFollowNotification community_notification = 2;
+        UserFollowNotification user_notification = 3;
+    }
+}
