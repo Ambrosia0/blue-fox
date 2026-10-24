@@ -70,36 +70,43 @@ A microservice for managing user profiles, presence, blacklists, and user projec
 
 ## API Endpoints
 
-### Public (No Authentication)
+### Public (`/api/v1/public/profile`)
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/public/profile/{username}` | Get public profile by username (includes follow status if authenticated) |
-| `POST` | `/api/public/profile/info` | Get batch user information by IDs (for inter-service calls) |
-| `GET` | `/api/public/profile` | Search users by string (min 3, max 32 chars, returns up to 10 results) |
+| `GET` | `/{username}` | Get public profile by username (includes follow status if authenticated) |
+| `GET` | (root) | Search users by string (min 3, max 32 chars, returns up to 10 results) |
 
-### User (Authenticated)
+### User (`/api/v1/me/profile`)
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/me/profile` | Get current user's full profile |
-| `PATCH` | `/api/me/profile/about` | Update user's about text (max 500 chars) |
-| `PATCH` | `/api/me/profile/username` | Change username (8–32 chars, tracked in history) |
-| `PATCH` | `/api/me/profile/name` | Update first/last name |
-| `PUT` | `/api/me/profile/avatar` | Upload/update avatar (via presigned URL metadata) |
-| `POST` | `/api/me/profile/avatar/{avatarId}` | Confirm avatar upload |
-| `PUT` | `/api/me/profile/settings` | Update user settings (notifications, privacy) |
-| `GET` | `/api/me/blacklist` | Get user's blacklist (paginated, 20 per page) |
-| `POST` | `/api/me/blacklist/{blacklistedUser}` | Block a user |
-| `DELETE` | `/api/me/blacklist/{userId}` | Unblock a user |
+| `GET` | (root) | Get current user's full profile |
+| `PATCH` | `/about` | Update user's about text (max 500 chars) |
+| `PATCH` | `/username` | Change username (8–32 chars, tracked in history) |
+| `PATCH` | `/name` | Update first/last name |
+| `PUT` | `/avatar` | Upload/update avatar (via presigned URL metadata) |
+| `POST` | `/avatar/{avatarId}` | Confirm avatar upload |
+| `PUT` | `/settings` | Update user settings (notifications, privacy) |
+| `GET` | `/api/v1/me/blacklist` | Get user's blacklist (paginated, 20 per page) |
+| `POST` | `/api/v1/me/blacklist/{blacklistedUser}` | Block a user |
+| `DELETE` | `/api/v1/me/blacklist/{userId}` | Unblock a user |
+
+### User (`/api/v1/me/blacklist`)
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | (root) | Get user's blacklist (paginated, 20 per page) |
+| `POST` | `/{blacklistedUser}` | Block a user |
+| `DELETE` | `/{userId}` | Unblock a user |
 
 ### Admin
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `POST` | `/api/admin/profile/{id}/ban` | Ban a user (sets `enabled=false`, syncs with Keycloak) |
-| `POST` | `/api/admin/profile/{id}/unban` | Unban a user (sets `enabled=true`, syncs with Keycloak) |
-| `GET` | `/api/admin/profile/` | Search and list users with filtering (paginated, 20 per page, default sort: DESC) |
+| `POST` | `/api/v1/admin/profile/{id}/ban` | Ban a user (sets `enabled=false`, syncs with Keycloak) |
+| `POST` | `/api/v1/admin/profile/{id}/unban` | Unban a user (sets `enabled=true`, syncs with Keycloak) |
+| `GET` | `/api/v1/admin/profile/` | Search and list users with filtering (paginated, 20 per page, default sort: DESC) |
 
 ## Kafka Topics
 

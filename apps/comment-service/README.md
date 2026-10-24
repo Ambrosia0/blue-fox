@@ -49,26 +49,22 @@ A microservice for managing comments, replies, and likes in the blog platform. H
 
 ## API Endpoints
 
-### Public (`/api/public`)
+### Public (`/api/v1/public`)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/post/{postId}/comments` | Get root comments for a post (paginated, sortable) |
-| `GET` | `/comment/{commentId}` | Get a single comment with direct replies |
+| `GET` | `/comment/{commentId}` | Get a single comment |
 | `GET` | `/comment/{commentId}/tree` | Get full comment tree for a comment |
+| `GET` | `/comment/user/{userId}` | Get user comments |
 
-### User (`/api/user/comment`)
+### User (`/api/v1/comment`)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `POST` | (root) | Create a comment (supports nested replies) |
 | `POST` | `/{commentId}/attachment/{attachmentId}` | Confirm attachment upload for a comment |
 | `POST` | `/{commentId}/like` | Like a comment |
 | `DELETE` | `/{commentId}/like` | Unlike a comment |
-| `DELETE` | `/{id}` | Delete a comment (as author/moderator) |
-
-### Admin (`/api/admin/comment`)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `DELETE` | `/{id}` | Delete a comment (admin, no auth check) |
+| `DELETE` | `/{commentId}` | Delete a comment (as author/moderator) |
 
 ## Kafka Topics
 
