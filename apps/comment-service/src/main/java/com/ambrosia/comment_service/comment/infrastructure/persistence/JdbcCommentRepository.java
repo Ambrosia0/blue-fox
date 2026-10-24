@@ -3,6 +3,7 @@ package com.ambrosia.comment_service.comment.infrastructure.persistence;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.ambrosia.comment_service.comment.domain.entity.DeletedComment;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.Repository;
@@ -23,9 +24,16 @@ public interface JdbcCommentRepository extends
     @Query("SELECT comment.post_id FROM comment WHERE comment.id = :commentId")
     Optional<Long> getPostId(long commentId);
     
-    @Modifying
-    @Query("UPDATE comment SET user_id = NULL, content = NULL, like_count = NULL, is_visible = false WHERE id = :commentId")
-    long hideCommentById(@Param ("commentId") long commentId);
+    @Query("""
+    UPDATE comment
+        SET user_id = NULL,
+            content = NULL,
+            like_count = NULL,
+            is_visible = false
+        WHERE id = :commentId
+    RETURNING id as comment_id, post_id
+    """)
+    Optional<DeletedComment> hideCommentById(@Param ("commentId") long commentId);
 
     @Query("""
         SELECT community_id FROM comment c

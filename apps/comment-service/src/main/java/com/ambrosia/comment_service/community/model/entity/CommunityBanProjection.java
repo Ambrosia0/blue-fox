@@ -23,11 +23,4 @@ public class CommunityBanProjection implements Persistable<CommunityBanKey>{
 
     @Transient
     private boolean isNew = false;
-
-    public static CommunityBanProjection create(long communityId, UUID userId){
-        return new CommunityBanProjection(
-            new CommunityBanKey(communityId, userId),
-            true
-        );
-    }
 }

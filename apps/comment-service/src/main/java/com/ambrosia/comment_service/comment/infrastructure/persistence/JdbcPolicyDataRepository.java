@@ -33,6 +33,7 @@ public class JdbcPolicyDataRepository implements PolicyDataRepository{
                 SELECT 1 FROM community_ban_projection cbp
                 WHERE cbp.community_id = pp.community_id
                 AND cbp.user_id = :userId
+                AND cbp.before_date > CURRENT_TIMESTAMP
             ) as is_banned,
             EXISTS(
                 SELECT 1 FROM community_permission cpr
@@ -70,6 +71,7 @@ public class JdbcPolicyDataRepository implements PolicyDataRepository{
                 SELECT 1 FROM community_ban_projection cbp
                 WHERE cbp.community_id = pp.community_id
                 AND cbp.user_id = :userId
+                AND cbp.before_date > CURRENT_TIMESTAMP
             ) as is_banned,
             EXISTS(
                 SELECT 1 FROM community_permission cpr
