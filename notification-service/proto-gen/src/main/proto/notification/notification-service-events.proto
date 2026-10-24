@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.ambrosia.notification_service.kafka_events";
+
+
+enum ActivityEventType {
+    CONNECT = 0;
+    DISCONNECT = 1;
+    LEASE_REFRESH = 2;
+}
+
+message ActivityEvent {
+    string user_id = 1;
+    int64 timestamp = 2;
+    ActivityEventType type = 3;
+}
+
+message TargetedNotification {
+    string user_id = 1;
+    string content = 2;
+}
+
+message CommunityFollowNotification {
+    int64 community_id = 1;
+    string content = 2;
+}
+
+message UserFollowNotification {
+    string user_id = 1;
+    string content = 2;
+}
+
+message Notification {
+    oneof payload {
+        TargetedNotification targeted_notification = 1;
+        CommunityFollowNotification community_notification = 2;
+        UserFollowNotification user_notification = 3;
+    }
+}

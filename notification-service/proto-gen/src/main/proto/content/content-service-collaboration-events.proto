@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package content.v1;
+
+option java_multiple_files = true;
+option java_package = "com.ambrosia.content_service.kafka_events.collaboration";
+
+import "content/common.proto";
+
+message CollaborationEvent {
+    int64 post_id = 1;
+    oneof event {
+        CollaborationPostUpdate update = 3;
+        CollaborationPostDelete delete = 4;
+        CollaborationAttachmentCreate attachment_create = 5;
+        CollaborationAttachmentDelete attachment_delete = 6;
+    }
+}
+message CollaborationPostCreate {
+    repeated User collaboration_users = 1;
+}
+
+message CollaborationPostDelete {}
+
+message CollaborationPostUpdate {
+    repeated User collaboration_users = 1;
+    bool is_published = 2;
+}
+
+message CollaborationAttachmentCreate {
+    string attachment_id = 1;
+}
+
+message CollaborationAttachmentDelete {
+    string attachment_id = 1;
+}
