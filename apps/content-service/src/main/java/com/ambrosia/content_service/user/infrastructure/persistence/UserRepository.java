@@ -1,6 +1,7 @@
 package com.ambrosia.content_service.user.infrastructure.persistence;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,7 +16,10 @@ public interface UserRepository extends
         CustomUserRepository{
     @Query("""
     SELECT COUNT(*) FROM user_projection up
-    WHERE up.id IN (:userIds)     
+    WHERE up.id IN (:userIds)
     """)
     int count(Set<UUID> userIds);
+    
+    @Query("SELECT * FROM user_projection WHERE id = :id AND deleted_at IS NULL")
+    Optional<UserProjection> findById(UUID id);
 }

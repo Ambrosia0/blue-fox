@@ -16,13 +16,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class PostProjectionServiceImpl implements PostProjectionCreator, PostProjectionService{
+public class PostProjectionServiceImpl implements PostProjectionService{
     private final PostProjectionRepository postProjectionRepository;
-
-    @Override
-    public void process(List<PostEvent> toInsert, List<PostEvent> toDelete){
-        postProjectionRepository.batchProcess(toInsert, toDelete);
-    }
 
     @Override
     public boolean isExists(long id) {

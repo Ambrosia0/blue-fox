@@ -19,6 +19,7 @@ public class UserCreator {
             .isNew(true)
             .lastName("testname")
             .firstName("testname")
+            .version(0L)
             .username("test"+ThreadLocalRandom.current().nextLong(1L, 999_999_999L))
             .build()
         );

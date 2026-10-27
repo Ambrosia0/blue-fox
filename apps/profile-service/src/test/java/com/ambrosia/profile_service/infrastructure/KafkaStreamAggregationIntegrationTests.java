@@ -61,7 +61,7 @@ public class KafkaStreamAggregationIntegrationTests extends BaseIntegrationTest{
     }
 
     @Test
-    void shouldChangePresenseInfoForUser(){
+    void shouldChangePresenceInfoForUser(){
         var user = userCreator.create();
         var event = createActivityEvent(user.getId(), ActivityEventType.CONNECT);
         kafkaTemplate.send(

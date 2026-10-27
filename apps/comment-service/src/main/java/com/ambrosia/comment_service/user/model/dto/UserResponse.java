@@ -1,5 +1,6 @@
 package com.ambrosia.comment_service.user.model.dto;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 public record UserResponse(
@@ -8,4 +9,4 @@ public record UserResponse(
     String firstName,
     String lastName,
     String avatarId
-) {}
+) implements Serializable {}

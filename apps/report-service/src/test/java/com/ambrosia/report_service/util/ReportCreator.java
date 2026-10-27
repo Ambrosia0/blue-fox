@@ -1,11 +1,7 @@
 package com.ambrosia.report_service.util;
 
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestComponent;
-
+import com.ambrosia.profile_service.kafka_events.UserCreated;
+import com.ambrosia.profile_service.kafka_events.UserEvent;
 import com.ambrosia.report_service.report.domain.entity.Report;
 import com.ambrosia.report_service.report.domain.entity.ReportReason;
 import com.ambrosia.report_service.report.domain.entity.ReportReasonI18n;
@@ -14,28 +10,30 @@ import com.ambrosia.report_service.report.domain.repository.ReportReasonReposito
 import com.ambrosia.report_service.report.domain.repository.ReportRepository;
 import com.ambrosia.report_service.user.entity.UserProjection;
 import com.ambrosia.report_service.user.repository.UserProjectionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestComponent;
 
-import io.github.robsonkades.uuidv7.UUIDv7;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
-@TestComponent 
+
+@TestComponent
 public class ReportCreator {
-    @Autowired UserProjectionRepository userProjectionRepository;
+    @Autowired
+    UserProjectionRepository userProjectionRepository;
 
-    @Autowired ReportReasonRepository reportReasonRepository;
+    @Autowired
+    ReportReasonRepository reportReasonRepository;
 
-    @Autowired ReportRepository reportRepository;
+    @Autowired
+    ReportRepository reportRepository;
 
-    @Autowired ReportReasonI18nRepository reasonI18nRepository;
+    @Autowired
+    ReportReasonI18nRepository reasonI18nRepository;
 
     public Report create(Report.Status status, Report.TargetType targetType){
-        var user = userProjectionRepository.insert(new UserProjection(
-                UUID.randomUUID(), 
-                "testusername",
-                null,
-                true
-            ), 
-            UUID.randomUUID()
-        );
+        var user = createUser();
         var reason = reportReasonRepository.save(ReportReason.builder()
             .code("TestCode"+ThreadLocalRandom.current().nextLong())
             .build()
@@ -59,15 +57,31 @@ public class ReportCreator {
         );
     }
 
-    public UserProjection createUser(){
-        return userProjectionRepository.insert(UserFactory.create(), UUIDv7.randomUUID());
-    }
-
     public ReportReasonI18n createTranslation(short reasonId, String lang){
         return reasonI18nRepository.save(ReportReasonI18n.create(
             reasonId,
             lang, 
             "Test title"
         ));
+    }
+    
+    public UserProjection createUser(){
+        var event = UserEvent.newBuilder()
+            .setUserId(UUID.randomUUID().toString())
+            .setEventId(UUID.randomUUID().toString())
+            .setVersion(0)
+            .setCreated(UserCreated.newBuilder()
+                .setUsername("test"+rand())
+                .setFirstName("test"+rand())
+                .setLastName("test"+rand())
+            )
+            .build();
+        userProjectionRepository.process(List.of(event), List.of());
+        return userProjectionRepository.findById(UUID.fromString(event.getUserId()))
+            .orElseThrow(RuntimeException::new);
+    }
+    
+    private Long rand(){
+        return ThreadLocalRandom.current().nextLong();
     }
 }

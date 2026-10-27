@@ -28,11 +28,10 @@ public class UserSearchIndexOutboxConverter implements ElasticsearchOutboxHandle
     @Override
     public SearchIndexOutbox convert(ElasticUser source) {
         Assert.notNull(source, "Object must not be null!");
-        var casted = (ElasticUser) source;
         return SearchIndexOutbox.from(
-            casted.getId().toString(), 
+            source.getId().toString(),
             ENTITY_TYPE, 
-            objectMapper.writeValueAsString(casted)
+            objectMapper.writeValueAsString(source)
         );
     }
 

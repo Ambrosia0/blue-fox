@@ -8,6 +8,8 @@ public class PostFactory {
     public static PostProjection create(){
         return new PostProjection(
             ThreadLocalRandom.current().nextLong(1L, 999_999_999_999L),
+            true,
+            0L,
             true
         );
     }

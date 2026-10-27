@@ -3,6 +3,7 @@ package com.ambrosia.comment_service.infrastructure.kafka.consumer;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ambrosia.comment_service.post.repository.PostProjectionRepository;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Component
 public class KafkaPostProjectionConsumer {
-    private final PostProjectionCreator postProjectionCreator;
+    private final PostProjectionRepository postProjectionRepository;
 
     @KafkaListener(
         topics = Topics.POST_EVENT,
@@ -40,6 +41,6 @@ public class KafkaPostProjectionConsumer {
         var batches = parsedMessage.values()
             .stream()
             .collect(Collectors.partitioningBy(t -> t.hasCreated() || t.hasUpdated()));
-        postProjectionCreator.process(batches.get(true), batches.get(false));
+        postProjectionRepository.process(batches.get(true), batches.get(false));
     }
 }

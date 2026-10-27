@@ -30,7 +30,7 @@ public interface CommunityProjectionRepository extends
     @Query("""
     SELECT cp.id, cp.is_private FROM community_projection cp
     JOIN post_projection pp ON pp.community_id = cp.id
-    WHERE pp.post_id = :postId
+    WHERE pp.post_id = :postId AND deleted_at IS NULL
     """)
     Optional<CommunityProjection> findByPostId(long postId);
 
@@ -42,18 +42,7 @@ public interface CommunityProjectionRepository extends
     """)
     Optional<CommunityProjection> findByCommentId(long commentId);
 
-    @Query("""
-    WITH inserted AS (
-        INSERT INTO processed_events(id) VALUES (:eventId)
-        ON CONFLICT(id) DO NOTHING
-        RETURNING id
-    )
-    DELETE FROM community_projection cp
-    USING inserted i
-    WHERE cp.id = :communityId
-    """)
-    void delete(Long communityId, UUID eventId);
-
+    @Query("SELECT * FROM community_projection WHERE id = :id AND deleted_at IS NULL")
     Optional<CommunityProjection> findById(Long id);
     void deleteAll();
 }

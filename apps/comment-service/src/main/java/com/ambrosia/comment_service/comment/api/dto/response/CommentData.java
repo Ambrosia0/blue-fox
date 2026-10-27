@@ -3,6 +3,8 @@ package com.ambrosia.comment_service.comment.api.dto.response;
 import java.time.Instant;
 
 import com.ambrosia.comment_service.user.model.dto.UserResponse;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public record CommentData(
     Long id,
@@ -18,5 +20,8 @@ public record CommentData(
 
     Boolean isLiked,
 
-    String attachmentUrl
+    String attachmentUrl,
+    
+    @JsonIgnore
+    Long version
 ){}

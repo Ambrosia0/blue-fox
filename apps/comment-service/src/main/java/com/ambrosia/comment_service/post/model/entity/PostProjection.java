@@ -28,6 +28,9 @@ public class PostProjection implements Persistable<Long>, Serializable {
 
     @Column("is_published")
     private boolean isPublished;
+    
+    @Column("version")
+    private long version;
 
     @Transient
     @Builder.Default

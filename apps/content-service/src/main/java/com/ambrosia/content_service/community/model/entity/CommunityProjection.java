@@ -40,6 +40,9 @@ public class CommunityProjection implements Persistable<Long>{
     @Getter(value = AccessLevel.NONE)
     @MappedCollection(idColumn = "community_id")
     private Set<CommunityPermission> permissions;
+    
+    @Column(value = "version")
+    private Long version;
 
     @Transient
     @Builder.Default

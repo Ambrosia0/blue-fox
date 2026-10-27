@@ -17,6 +17,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor 
 public class UserEventConsumer {
     private final UserRepository userRepository;
+    
+    private final String UPSERT_SQL = """
+    
+    """;
+    
+    private final String DELETE_SQL = """
+    WITH deleted AS (
+        INSERT INTO processed_events(id) VALUES (?)
+        ON CONFLICT (id) DO NOTHING
+        RETURNING id
+    )
+    DELETE
+    """;
 
     @KafkaListener(
         topics = Topics.USER_EVENT,

@@ -21,7 +21,7 @@ public interface JdbcCommentRepository extends
     int countByPostId(long postId);
     boolean existsByPostId(long postId);
 
-    @Query("SELECT comment.post_id FROM comment WHERE comment.id = :commentId")
+    @Query("SELECT post_id FROM comment WHERE id = :commentId")
     Optional<Long> getPostId(long commentId);
     
     @Query("""
@@ -31,7 +31,7 @@ public interface JdbcCommentRepository extends
             like_count = NULL,
             is_visible = false
         WHERE id = :commentId
-    RETURNING id as comment_id, post_id
+    RETURNING id as comment_id, post_id, version
     """)
     Optional<DeletedComment> hideCommentById(@Param ("commentId") long commentId);
 
@@ -46,8 +46,25 @@ public interface JdbcCommentRepository extends
 
     @Query("""
     WITH inserted_comment AS ( 
-        INSERT INTO comment(post_id, user_id, content, parent_comment_id, like_count, number_of_children, is_visible) 
-        SELECT p.id, :#{#comment.userId}, :#{#comment.content}, :#{#comment.parentCommentId}, :#{#comment.likeCount}, :#{#comment.numberOfChildren}, :#{#comment.isVisible} 
+        INSERT INTO comment(
+            post_id,
+            user_id,
+            content,
+            parent_comment_id,
+            like_count,
+            number_of_children,
+            is_visible,
+            version
+        )
+        SELECT
+            p.id,
+            :#{#comment.userId},
+            :#{#comment.content},
+            :#{#comment.parentCommentId},
+            :#{#comment.likeCount},
+            :#{#comment.numberOfChildren},
+            :#{#comment.isVisible},
+            :#{#comment.version}
         FROM (SELECT :#{#comment.postId} AS id) p 
         JOIN post_projection pp ON pp.post_id = p.id
         WHERE pp.is_published = 'true' 

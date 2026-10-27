@@ -18,3 +18,11 @@ databaseChangeLog:
       changes:
         - sqlFile:
             path: db/sql/003-indices.sql
+  - include:
+      id: kafka-outbox
+      author: me
+      file: db/changelog/kafka-outbox.yaml
+  - include:
+      id: search-index-outbox
+      author: me
+      file: db/changelog/search-index-outbox.yaml

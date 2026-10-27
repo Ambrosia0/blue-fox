@@ -2,18 +2,18 @@ package com.ambrosia.comment_service.utils;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.ambrosia.comment_service.utils.repository.PostProjectionCrudRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.annotation.Import;
 
 import com.ambrosia.comment_service.community.model.entity.CommunityProjection;
 import com.ambrosia.comment_service.post.model.entity.PostProjection;
-import com.ambrosia.comment_service.post.repository.PostProjectionRepository;
 
 @TestComponent
 @Import({CommunityCreator.class})
 public class PostProjectionCreator {
-    @Autowired PostProjectionRepository postProjectionRepository;
+    @Autowired PostProjectionCrudRepository postProjectionRepository;
 
     @Autowired CommunityCreator communityCreator;
 
@@ -22,6 +22,7 @@ public class PostProjectionCreator {
             .communityId(communityId)
             .id(ThreadLocalRandom.current().nextLong(1L, 999_999_999L))
             .isPublished(true)
+            .version(0)
             .isNew(true)
             .build()
         );
@@ -43,6 +44,7 @@ public class PostProjectionCreator {
                 .id(ThreadLocalRandom.current().nextLong())
                 .isNew(true)
                 .isPublished(true)
+                .version(0)
                 .communityId(community.getId())
                 .build()
             ), 

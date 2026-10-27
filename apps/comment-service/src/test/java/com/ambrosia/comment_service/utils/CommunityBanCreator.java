@@ -1,5 +1,7 @@
 package com.ambrosia.comment_service.utils;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,24 +16,26 @@ public class CommunityBanCreator {
     @Autowired
     private CommunityBanRepository communityBanRepository;
 
-    public CommunityBanProjection create(long communityId){
+    public CommunityBanProjection create(long communityId, Instant before){
         return communityBanRepository.save(
             new CommunityBanProjection(
                 new CommunityBanKey(
                     communityId,
-                    UUID.randomUUID()
+                    UUID.randomUUID(),
+                    before
                 ),
                 true
             )
         );
     }
 
-    public CommunityBanProjection create(long communityId, UUID userId){
+    public CommunityBanProjection create(long communityId, UUID userId, Instant before){
         return communityBanRepository.save(
             new CommunityBanProjection(
                 new CommunityBanKey(
                     communityId,
-                    userId
+                    userId,
+                    before
                 ),
                 true
             )

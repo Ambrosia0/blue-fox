@@ -7,8 +7,8 @@ import com.ambrosia.comment_service.kafka_events.CommentDeleted;
 import com.ambrosia.comment_service.kafka_events.CommentEvent;
 import com.ambrosia.comment_service.kafka_events.User;
 import com.ambrosia.comment_service.user.model.dto.UserResponse;
+import com.github.f4b6a3.uuid.UuidCreator;
 
-import io.github.robsonkades.uuidv7.UUIDv7;
 
 public class CommentMessageFactory {
     public static CommentEvent createOperation(CommentData comment){
@@ -23,7 +23,8 @@ public class CommentMessageFactory {
         return CommentEvent.newBuilder()
             .setPostId(comment.postId())
             .setCommentId(comment.id())
-            .setEventId(UUIDv7.randomUUIDString())
+            .setVersion(comment.version())
+            .setEventId(UuidCreator.getTimeOrderedEpoch().toString())
             .setCreated(builder.build())
             .build();
     }
@@ -31,8 +32,9 @@ public class CommentMessageFactory {
     public static CommentEvent deleteOperation(DeletedComment deletedComment){
         return CommentEvent.newBuilder()
             .setCommentId(deletedComment.commentId())
-            .setEventId(UUIDv7.randomUUIDString())
+            .setEventId(UuidCreator.getTimeOrderedEpoch().toString())
             .setPostId(deletedComment.postId())
+            .setVersion(deletedComment.version())
             .setDeleted(CommentDeleted.newBuilder()
                 .build())
             .build();

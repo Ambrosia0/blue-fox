@@ -10,29 +10,24 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.ambrosia.comment_service.comment.api.dto.PostCommentTuple;
 import com.ambrosia.comment_service.post.model.entity.PostProjection;
+import org.springframework.data.repository.Repository;
 
 
-@CacheConfig(cacheNames = "post_projection")
-public interface PostProjectionRepository extends 
-        CrudRepository<PostProjection, Long>,
+public interface PostProjectionRepository extends
+        Repository<PostProjection, Long>,
         CustomPostProjectionRepository{
-    @Modifying
-    @Query("UPDATE post_projection SET comment_count = comment_count+1 WHERE post_id = :postId")
-    void incrementCounterById(long postId);
-
-    List<PostCommentTuple> findAllByIdIn(List<Long> ids);
-
-    @Modifying
-    @Query("UPDATE post_projection SET is_visible = :isVisible WHERE post_id = :postId")
-    long updateVisibility(long postId, boolean isVisible);
     
-    @Modifying
-    @Query("UPDATE post_projection SET community_id = NULL WHERE community_id = :communityId")
-    long deleteCommunityId(long communityId);
-
-    @Override
+    @Query("SELECT * FROM post_projection WHERE post_id = :id AND deleted_at IS NULL")
     Optional<PostProjection> findById(Long id);
     
-    @Override
+    @Query("""
+    SELECT EXISTS(
+        SELECT 1 FROM post_projection
+        WHERE post_id = :id
+        AND deleted_at IS NULL
+    )
+    """)
+    boolean existsById(Long id);
+    
     void deleteById(Long id);
 }

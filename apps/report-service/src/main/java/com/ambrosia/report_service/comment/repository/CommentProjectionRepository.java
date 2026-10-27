@@ -1,36 +1,27 @@
 package com.ambrosia.report_service.comment.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
+import com.ambrosia.report_service.comment.repository.custom.CustomCommentRepository;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import com.ambrosia.report_service.comment.entity.CommentProjection;
+import org.springframework.data.repository.Repository;
 
-public interface CommentProjectionRepository extends CrudRepository<CommentProjection, Long> {
+public interface CommentProjectionRepository extends
+        Repository<CommentProjection, Long>,
+        CustomCommentRepository {
+    @Query("SELECT * FROM comment_projection WHERE id = :id AND deleted_at IS NULL")
+    Optional<CommentProjection> findById(Long id);
+    
     @Query("""
-    WITH inserted AS (
-        INSERT INTO processed_events(id) VALUES (:eventId)
-        ON CONFLICT(id) DO NOTHING
-        RETURNING id
+    SELECT EXISTS(
+        SELECT 1 FROM comment_projection
+        WHERE id = :id
+        AND deleted_at IS NULL
     )
-    INSERT INTO comment_projection(id)
-    SELECT :#{#commentProjection.id}
-    FROM inserted
-    RETURNING id
-    """
-    )
-    CommentProjection insert(CommentProjection commentProjection, UUID eventId);
-
-    @Query("""
-    WITH inserted AS (
-        INSERT INTO processed_events(id) VALUES (:eventId)
-        ON CONFLICT(id) DO NOTHING
-        RETURNING id
-    )
-    DELETE FROM comment_projection cp
-    USING inserted i
-    WHERE cp.id = :commentId
     """)
-    void delete(Long commentId, UUID eventId);
+    boolean existsById(Long id);
 }

@@ -1,19 +1,28 @@
 CREATE TABLE IF NOT EXISTS community_projection(
-    id bigint PRIMARY KEY
+    id bigint PRIMARY KEY,
+    version BIGINT NOT NULL,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS user_projection(
     id UUID PRIMARY KEY,
     username TEXT,
-    avatar_id TEXT
+    avatar_id TEXT,
+    version BIGINT NOT NULL,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS post_projection(
-    id bigint PRIMARY KEY
+    id BIGINT PRIMARY KEY,
+    is_published BOOLEAN,
+    version BIGINT NOT NULL,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS comment_projection(
-    id bigint PRIMARY KEY
+    id bigint PRIMARY KEY,
+    version BIGINT NOT NULL,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS report_reason(

@@ -56,13 +56,13 @@ public class UserCommentServiceImpl implements UserCommentService {
 
         var savedComment = commentRepository.insert(commentMapper.toEntity(actor.id(), request))
             .orElseThrow(CommentOrPostDoesntExistException::new);
-
+        
         if(request.fileMetadata() == null){
-            applicationEventPublisher.publishEvent(
-                CommentMessageFactory.createOperation(
-                    commentQueryService.getComment(savedComment.getId(), actor)
-                )
+            var event = CommentMessageFactory.createOperation(
+                commentQueryService.getComment(savedComment.getId(), actor)
             );
+            applicationEventPublisher.publishEvent(event);
+            kafkaOutbox.put(event);
             return savedComment;
         }
 

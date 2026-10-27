@@ -112,15 +112,15 @@ public class User implements Persistable<UUID>{
 
     @Builder 
     private User(
-            UUID id,
-            String username,
-            String firstName,
-            String lastName,
-            String password,
-            Role role,
-            boolean isEnabled,
-            String avatarId,
-            String email
+        UUID id,
+        String username,
+        String firstName,
+        String lastName,
+        String password,
+        Role role,
+        boolean isEnabled,
+        @org.jspecify.annotations.Nullable String avatarId,
+        String email
     ){
         this.id = id;
         this.username = username;
