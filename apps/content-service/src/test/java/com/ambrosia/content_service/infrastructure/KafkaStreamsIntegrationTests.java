@@ -52,10 +52,10 @@ public class KafkaStreamsIntegrationTests extends BaseIntegrationTest{
     private CommentEvent createCommentEvent(Long postId){
         return CommentEvent.newBuilder()
             .setCommentId(ThreadLocalRandom.current().nextLong(1L, 999_999_999L))
+            .setPostId(postId)
             .setCreated(CommentCreated.newBuilder()
                 .setContent("Test content")
                 .setCreatedAt(Instant.now().toEpochMilli())
-                .setPostId(postId)
                 .setUser(User.newBuilder()
                     .setId(UUID.randomUUID().toString())
                     .setFirstName("name")

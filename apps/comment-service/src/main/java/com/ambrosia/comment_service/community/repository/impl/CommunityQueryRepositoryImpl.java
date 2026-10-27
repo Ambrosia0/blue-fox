@@ -21,7 +21,7 @@ public class CommunityQueryRepositoryImpl implements CommunityQueryRepository{
     @Override
     public Optional<CommunityUserData> findCommunityUserDataByPostId(long postId, UUID userId) {
         var sql = """
-        SELECT 
+        SELECT
             cp.id,
             cp.is_private as is_community_private,
             EXISTS(

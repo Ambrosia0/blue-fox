@@ -13,11 +13,11 @@ import com.ambrosia.content_service.post.api.dto.response.PostViewResponse;
 import com.ambrosia.content_service.post.api.dto.response.UserResponse;
 import com.ambrosia.content_service.post.domain.entity.DeletionProjection;
 import com.ambrosia.content_service.post.domain.entity.Post;
+import com.github.f4b6a3.uuid.UuidCreator;
 
-import io.github.robsonkades.uuidv7.UUIDv7;
 
 public class PostEventFactory {
-    public static PostEvent createOperation(PostViewResponse post){
+    public static PostEvent createOperation(PostViewResponse post, Long version){
         var builder = PostCreated.newBuilder()
             .setTitle(post.title())
             .setAuthor(toUser(post.user()))
@@ -30,7 +30,8 @@ public class PostEventFactory {
             builder.setReplyTo(toReplyTo(post.response()));
         return PostEvent.newBuilder()
             .setPostId(post.id())
-            .setEventId(UUIDv7.randomUUIDString())
+            .setVersion(version)
+            .setEventId(UuidCreator.getTimeOrderedEpoch().toString())
             .setCreated(builder.build())
             .build();
     }
@@ -42,7 +43,8 @@ public class PostEventFactory {
             builder.setCommunityId(post.getCommunityId().getId());
         return PostEvent.newBuilder()
             .setPostId(post.getId())
-            .setEventId(UUIDv7.randomUUIDString())
+            .setVersion(post.getVersion())
+            .setEventId(UuidCreator.getTimeOrderedEpoch().toString())
             .setUpdated(builder.build())
             .build();
     }
@@ -53,7 +55,8 @@ public class PostEventFactory {
             builder.setCommunityId(deletionProjection.communityId());
         return PostEvent.newBuilder()
             .setPostId(deletionProjection.id())
-            .setEventId(UUIDv7.randomUUIDString())
+            .setEventId(UuidCreator.getTimeOrderedEpoch().toString())
+            .setVersion(deletionProjection.version())
             .setDeleted(builder.build())
             .build();
     }

@@ -1,6 +1,7 @@
 package com.ambrosia.comment_service.post.repository.custom;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,38 +17,72 @@ import lombok.extern.slf4j.Slf4j;
 @Repository
 public class CustomPostProjectionRepositoryImpl implements CustomPostProjectionRepository{
     private final JdbcTemplate jdbcTemplate;
+    
+    private final String UPSERT_SQL = """
+    WITH inserted AS (
+        INSERT INTO processed_events(id) VALUES(?)
+        ON CONFLICT (id) DO NOTHING
+        RETURNING id
+    )
+    INSERT INTO post_projection(post_id, community_id, is_published, version)
+    SELECT ?, ?, ?, ?
+    FROM inserted
+    ON CONFLICT(post_id) DO UPDATE
+        SET community_id = excluded.community_id,
+            is_published = excluded.is_published,
+            version = excluded.version
+    WHERE post_projection.deleted_at IS NULL
+        AND post_projection.version < excluded.version
+    RETURNING *
+    """;
+    
+    private final String DELETE_SQL = """
+    WITH inserted AS (
+        INSERT INTO processed_events(id) VALUES(?)
+        ON CONFLICT (id) DO NOTHING
+        RETURNING id
+    )
+    INSERT INTO post_projection AS pp (post_id, version, deleted_at)
+        SELECT ?, ?, CURRENT_TIMESTAMP
+        FROM inserted
+        ON CONFLICT (post_id) DO UPDATE
+            SET community_id = NULL,
+                is_published = NULL,
+                deleted_at = excluded.deleted_at,
+                version = excluded.version
+            WHERE pp.version = excluded.version
+                AND pp.deleted_at IS NULL
+    """;
 
     @Override
-    public void batchProcess(List<PostEvent> toInsert, List<PostEvent> toDelete) {
-        var insertSql = """
-        INSERT INTO post_projection(post_id, community_id, is_published) 
-        VALUES (?, ?, ?) 
-        ON CONFLICT(post_id)
-        DO UPDATE SET is_published = EXCLUDED.is_published
-        """;
-        var deleteSql = "DELETE FROM post_projection WHERE post_id = ?";
+    public void process(List<PostEvent> toInsert, List<PostEvent> toDelete) {
         try (var conn = jdbcTemplate.getDataSource().getConnection()) {
             conn.setAutoCommit(false);
-            var insertStmt = conn.prepareStatement(insertSql);
+            var insertStmt = conn.prepareStatement(UPSERT_SQL);
             for(PostEvent insert: toInsert){
-                insertStmt.setLong(1, insert.getPostId());
+                insertStmt.setObject(1, UUID.fromString(insert.getEventId()));
+                insertStmt.setLong(2, insert.getPostId());
                 switch (insert.getEventCase()) {
                     case CREATED ->{
-                        insertStmt.setLong(2, insert.getCreated().getCommunity().getId());
-                        insertStmt.setBoolean(3, true);
+                        insertStmt.setLong(3, insert.getCreated().getCommunity().getId());
+                        insertStmt.setBoolean(4, true);
+                        insertStmt.setLong(5, insert.getVersion());
                     }
                     case UPDATED ->{
-                        insertStmt.setLong(2, insert.getUpdated().getCommunityId());
-                        insertStmt.setBoolean(3, insert.getUpdated().getIsPublished());
+                        insertStmt.setLong(3, insert.getUpdated().getCommunityId());
+                        insertStmt.setBoolean(4, insert.getUpdated().getIsPublished());
+                        insertStmt.setLong(5, insert.getVersion());
                     }
                 }
                 insertStmt.addBatch();
             }
             insertStmt.executeBatch();
 
-            var deleteStmt = conn.prepareStatement(deleteSql);
+            var deleteStmt = conn.prepareStatement(DELETE_SQL);
             for(PostEvent delete: toDelete){
-                deleteStmt.setLong(1, delete.getPostId());
+                deleteStmt.setObject(1, UUID.fromString(delete.getEventId()));
+                deleteStmt.setLong(2, delete.getPostId());
+                deleteStmt.setLong(3, delete.getVersion());
                 deleteStmt.addBatch();
             }
             deleteStmt.executeBatch();

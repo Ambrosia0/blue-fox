@@ -17,8 +17,4 @@ public class CommunityProjection implements Persistable<Long> {
     private Long id;
 
     private boolean isNew = true;
-
-    public static CommunityProjection create(Long id){
-        return new CommunityProjection(id, true);
-    }
 }

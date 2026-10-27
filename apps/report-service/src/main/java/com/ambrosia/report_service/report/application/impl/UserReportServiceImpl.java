@@ -3,6 +3,9 @@ package com.ambrosia.report_service.report.application.impl;
 import java.util.List;
 import java.util.UUID;
 
+import com.ambrosia.library_policy.policy.Actor;
+import com.ambrosia.library_policy.policy.GenericPolicyContext;
+import com.ambrosia.report_service.report.domain.policy.ReportCreatePolicy;
 import org.springframework.stereotype.Service;
 
 import com.ambrosia.report_service.comment.service.CommentProjectionService;
@@ -27,33 +30,18 @@ public class UserReportServiceImpl implements UserReportService{
     private final ReportRepository reportRepository;
 
     private final ReportReasonRepository reportReasonRepository;
-    
-    private final CommentProjectionService commentProjectionService;
-    private final PostProjectionService postProjectionService;
-    private final CommunityProjectionService communityProjectionService;
-    private final UserProjectionService userProjectionService;
+
+    private final GenericPolicyContext policyContext;
 
     @Override
-    public void createReport(ReportRequest reportRequest, UUID requestingUser) {
-        boolean isKeyValid = reportRequest.targetType().isValid(reportRequest.reportContentKey());
-        if(!isKeyValid || requestingUser.toString().equals(reportRequest.reportContentKey()))
-            throw new InvalidReportTargetKeyException();
-        if(!reportReasonRepository.existsById(reportRequest.reportReasonId()))
-            throw new ReportReasonDoesntExistException();
-        var exist = switch (reportRequest.targetType()) {
-            case COMMENT -> commentProjectionService.exist(Long.parseLong(reportRequest.reportContentKey()));
-            case POST -> postProjectionService.exist(Long.parseLong(reportRequest.reportContentKey()));
-            case USER -> userProjectionService.exist(UUID.fromString(reportRequest.reportContentKey()));
-            case COMMUNITY -> communityProjectionService.exist(Long.parseLong(reportRequest.reportContentKey()));
-        };
-        if(!exist)
-            throw new ReportTargetDoesntExistException();
+    public void createReport(ReportRequest reportRequest, Actor actor) {
+        policyContext.evaluate(actor, ReportCreatePolicy.class, reportRequest);
         reportRepository.save(Report.builder()
             .reportContent(reportRequest.reportContent())
             .reportReasonId(reportRequest.reportReasonId())
             .targetType(reportRequest.targetType())
             .reportedContentKey(reportRequest.reportContentKey())
-            .userId(requestingUser)
+            .userId(actor.id())
             .build()
         );
     }

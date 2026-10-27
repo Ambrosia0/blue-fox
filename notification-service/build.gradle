@@ -9,25 +9,28 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.apache.camel.quarkus:camel-quarkus-protobuf'
-    implementation "io.grpc:grpc-protobuf:1.82.0"
-    implementation 'com.google.protobuf:protobuf-java-util:4.35.1'
-    implementation enforcedPlatform("${quarkusPlatformGroupId}:quarkus-camel-bom:${quarkusPlatformVersion}")
+    implementation project(":proto-gen")
     implementation 'io.quarkus:quarkus-container-image-jib'
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation 'io.quarkus:quarkus-rest'
+    implementation 'io.quarkus:quarkus-reactive-pg-client'
+    implementation 'io.quarkus:quarkus-jdbc-postgresql'
     implementation 'io.quarkus:quarkus-rest-jackson'
     implementation 'io.quarkus:quarkus-messaging-kafka'
+    implementation "com.github.f4b6a3:uuid-creator:${uuidCreator}"
     implementation 'io.quarkus:quarkus-scheduler'
     implementation 'io.quarkus:quarkus-oidc'
     implementation 'io.quarkus:quarkus-arc'
     implementation 'io.quarkus:quarkus-minikube'
+    implementation 'io.quarkus:quarkus-flyway'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+    compileOnly "org.projectlombok:lombok:${lombok}"
+    testImplementation 'io.quarkus:quarkus-test-kafka-companion'
     testImplementation 'io.quarkus:quarkus-test-security'
     testImplementation 'io.quarkus:quarkus-junit5-mockito'
     testImplementation 'io.quarkus:quarkus-junit'
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'io.quarkus:quarkus-test-security-oidc'
-    testImplementation 'io.smallrye.reactive:smallrye-reactive-messaging-in-memory'
 }
 
 group = 'org.ambrosia'
@@ -55,4 +58,15 @@ compileJava {
 
 compileTestJava {
     options.encoding = 'UTF-8'
+}
+
+allprojects {
+    configurations.configureEach {
+        resolutionStrategy {
+            force(
+                    'com.google.protobuf:protobuf-java:4.35.1',
+                    'com.google.protobuf:protobuf-java-util:4.35.1'
+            )
+        }
+    }
 }

@@ -42,36 +42,24 @@ A microservice for managing communities in the blog platform. Handles community 
 
 ## API Endpoints
 
-### Public (`/api/public/community`)
+### Public (`/api/v1/public/community`)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/{slug}` | Get community details by slug |
 | `GET` | (root) | Search communities |
 
-### User (`/api/user/community`)
+### User (`/api/v1/community`)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `POST` | (root) | Create a new community |
 | `PATCH` | `/{id}` | Edit community info |
+| `DELETE` | `/{id}` | Delete a community |
 | `PUT` | `/{id}/avatar` | Upload community avatar |
 | `POST` | `/{id}/avatar/{avatarId}` | Confirm avatar upload |
-| `PUT` | `/{id}/scopes` | Edit user scopes/roles in community |
-| `GET` | `/{id}/scopes` | Get all users' scopes for a community |
-| `GET` | `/{id}/me/scopes` | Get current user's scopes for a community |
-| `GET` | `/scopes` | List all available scopes |
 | `POST` | `/slugcheck` | Check if a slug is already taken |
 | `POST` | `/{id}/ban/{userId}` | Ban a user from community |
 | `DELETE` | `/{id}/ban/{userId}` | Unban a user from community |
 
-### Admin (`/api/admin/community`)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | (root) | List all communities (paginated) |
-| `PATCH` | `/{id}` | Edit community info |
-| `DELETE` | `/{id}` | Delete a community |
-| `PUT` | `/{id}/avatar` | Upload community avatar |
-| `POST` | `/{id}/avatar/{avatarId}` | Confirm avatar upload |
-| `PUT` | `/{id}/scopes` | Edit community scopes |
 
 ## Kafka Topics
 

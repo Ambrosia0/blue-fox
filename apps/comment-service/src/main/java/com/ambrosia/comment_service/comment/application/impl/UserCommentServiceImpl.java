@@ -1,5 +1,8 @@
 package com.ambrosia.comment_service.comment.application.impl;
 
+import com.ambrosia.comment_service.exceptions.api.CommentDoesntExistException;
+import com.ambrosia.outbox.entity.KafkaOutbox;
+import com.ambrosia.outbox.kafka.KafkaOutboxService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,8 @@ public class UserCommentServiceImpl implements UserCommentService {
     private final CommentQueryService commentQueryService;
 
     private final GenericPolicyContext genericPolicyContext;
+    
+    private final KafkaOutboxService kafkaOutbox;
 
     @Override
     public CreateCommentResponse createComment(Actor actor, CreateComment request) {
@@ -50,14 +55,14 @@ public class UserCommentServiceImpl implements UserCommentService {
         );
 
         var savedComment = commentRepository.insert(commentMapper.toEntity(actor.id(), request))
-            .orElseThrow(() -> new CommentOrPostDoesntExistException());
-
+            .orElseThrow(CommentOrPostDoesntExistException::new);
+        
         if(request.fileMetadata() == null){
-            applicationEventPublisher.publishEvent(
-                CommentMessageFactory.createOperation(
-                    commentQueryService.getComment(savedComment.getId(), actor)
-                )
+            var event = CommentMessageFactory.createOperation(
+                commentQueryService.getComment(savedComment.getId(), actor)
             );
+            applicationEventPublisher.publishEvent(event);
+            kafkaOutbox.put(event);
             return savedComment;
         }
 
@@ -74,21 +79,29 @@ public class UserCommentServiceImpl implements UserCommentService {
     @Override
     public CreateCommentResponse confirmAttachmentUpload(Actor actor, long commentId, String attachmentId) {
         var comment = commentRepository.findCreateProjection(commentId, actor.id())
-            .orElseThrow(() -> new CommentOrPostDoesntExistException());
+            .orElseThrow(CommentOrPostDoesntExistException::new);
         attachmentService.confirmAttachmentUpload(commentId, attachmentId);
         comment.setAttachmentId(attachmentId);
-        applicationEventPublisher.publishEvent(
-            CommentMessageFactory.createOperation(
-                commentQueryService.getComment(commentId, actor)
-            )
+        
+        var message = CommentMessageFactory.createOperation(
+            commentQueryService.getComment(commentId, actor)
         );
+        
+        kafkaOutbox.put(message);
+        applicationEventPublisher.publishEvent(message);
+        
         return comment;
     }
 
     @Override
     public void deleteComment(long commentId, Actor actor) {
         genericPolicyContext.evaluate(actor, CommentDeletePolicy.class, commentId);
-        commentRepository.hideCommentById(commentId);
+        var result = commentRepository.hideCommentById(commentId)
+            .orElseThrow(CommentDoesntExistException::new);
+        
+        var message = CommentMessageFactory.deleteOperation(result);
+        kafkaOutbox.put(message);
+        applicationEventPublisher.publishEvent(message);
     }
 
     @Override

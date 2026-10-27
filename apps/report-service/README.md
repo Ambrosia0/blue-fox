@@ -76,23 +76,23 @@ A microservice for managing content moderation reports, report reasons with i18n
 
 ## API Endpoints
 
-### User (Authenticated)
+### User (`/api/v1/report`)
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/user/report/reason` | Get report reasons filtered by language (default: `en`) |
-| `POST` | `/api/user/report` | Submit a new report against a target (post, comment, user, or community) |
+| `GET` | `/reason` | Get report reasons filtered by language (default: `en`) |
+| `POST` | (root) | Submit a new report against a target (post, comment, user, or community) |
 
-### Admin (Admin Role Required)
+### Admin (`/api/v1/report`)
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/admin/report` | List reports with filtering (status, target type) and pagination |
-| `GET` | `/api/admin/report/reason` | Get all report reasons with i18n data |
-| `POST` | `/api/admin/report/{id}/status` | Close a moderation report |
-| `POST` | `/api/admin/report/reason/{id}/translation` | Create or update a report reason translation (upsert) |
-| `GET` | `/api/admin/report/reason/{id}/translation` | Get all translations for a report reason |
-| `DELETE` | `/api/admin/report/reason/{id}/translation/{lang}` | Delete a report reason translation by language |
+| `GET` | (root) | List reports with filtering (status, target type) and pagination |
+| `GET` | `/reason` | Get all report reasons with i18n data |
+| `POST` | `/{id}/status` | Close a moderation report |
+| `POST` | `/reason/{id}/translation` | Create or update a report reason translation (upsert) |
+| `GET` | `/reason/{id}/translation` | Get all translations for a report reason |
+| `DELETE` | `/reason/{id}/translation/{lang}` | Delete a report reason translation by language |
 
 ## Kafka Topics
 

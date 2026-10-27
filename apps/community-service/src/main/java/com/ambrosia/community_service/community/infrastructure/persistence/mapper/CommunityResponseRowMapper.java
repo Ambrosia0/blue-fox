@@ -4,12 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import com.ambrosia.community_service.user.model.dto.UserResponse;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import com.ambrosia.community_service.community.application.query.model.CommunityResponse;
 import com.ambrosia.community_service.core.infrastructure.persistence.mapper.UserResponseRowMapper;
-import com.ambrosia.community_service.user.model.entity.UserResponse;
 
 import lombok.RequiredArgsConstructor;
 import tools.jackson.databind.ObjectMapper;

@@ -8,6 +8,7 @@ public class CommentFactory {
     public static CommentProjection create(){
         return new CommentProjection(
             ThreadLocalRandom.current().nextLong(1L, 999_999_999_999L),
+            0L,
             true
         );
     }

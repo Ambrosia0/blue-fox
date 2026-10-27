@@ -4,12 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import com.ambrosia.community_service.user.model.dto.UserResponse;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import com.ambrosia.community_service.user.model.entity.UserResponse;
-
-@Component 
+@Component
 public class UserResponseRowMapper implements RowMapper<UserResponse>{
     @Override
     public UserResponse mapRow(ResultSet rs, int rowNum) throws SQLException {

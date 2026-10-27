@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.ReadOnlyProperty;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -51,4 +52,9 @@ public class Comment implements Serializable{
     @Builder.Default
     @Column(value = "is_visible")
     private boolean isVisible = true;
+    
+    @Builder.Default
+    @Version
+    @Column(value = "version")
+    private Long version = 0L;
 }

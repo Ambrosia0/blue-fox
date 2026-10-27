@@ -17,6 +17,7 @@ import com.ambrosia.library_policy.policy.Actor;
 import com.ambrosia.library_policy.policy.GenericPolicyContext;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -27,6 +28,7 @@ public class CommunityModeratorServiceImpl implements CommunityModeratorService{
 
     private final GenericPolicyContext genericPolicyContext;
 
+    @Transactional
     @Override
     public void banUser(long communityId, Actor actor, UUID userToBan, Instant beforeDate) {
         genericPolicyContext.evaluate(
@@ -34,13 +36,14 @@ public class CommunityModeratorServiceImpl implements CommunityModeratorService{
             CommunityBanPolicy.class, 
             ModeratorPolicyArg.create(communityId, userToBan)
         );
-        communityBanRepository.save(CommunityBan.create(userToBan, communityId, beforeDate));
+        var ban = communityBanRepository.save(CommunityBan.create(userToBan, communityId, beforeDate));
         eventPublisher.publishEvent(
-            CommunityBanEventFactory.createBan(communityId, userToBan)
+            CommunityBanEventFactory.createBan(ban)
         );
 
     }
 
+    @Transactional
     @Override
     public void unbanUser(long communityId, Actor actor, UUID userToUnban) {
         genericPolicyContext.evaluate(

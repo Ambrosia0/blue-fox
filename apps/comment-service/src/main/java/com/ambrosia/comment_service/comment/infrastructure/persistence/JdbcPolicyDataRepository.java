@@ -33,6 +33,7 @@ public class JdbcPolicyDataRepository implements PolicyDataRepository{
                 SELECT 1 FROM community_ban_projection cbp
                 WHERE cbp.community_id = pp.community_id
                 AND cbp.user_id = :userId
+                AND cbp.before_date > CURRENT_TIMESTAMP
             ) as is_banned,
             EXISTS(
                 SELECT 1 FROM community_permission cpr
@@ -48,8 +49,9 @@ public class JdbcPolicyDataRepository implements PolicyDataRepository{
             COALESCE(cp.is_private, false)
         FROM comment c
         JOIN post_projection pp ON pp.post_id = c.post_id
-        LEFT JOIN community_projection cp ON cp.id = pp.community_id
+        LEFT JOIN community_projection cp ON cp.id = pp.community_id AND cp.deleted_at IS NULL
         WHERE pp.is_published = 'true'
+        AND pp.deleted_at IS NULL
         AND c.id = :commentId
         """;
         return jdbcClient
@@ -64,12 +66,13 @@ public class JdbcPolicyDataRepository implements PolicyDataRepository{
     @Override
     public Optional<CommentPolicyData> loadByPost(UUID userId, Long postId) {
         var sql = """
-        SELECT 
+        SELECT
             pp.community_id,
             EXISTS(
                 SELECT 1 FROM community_ban_projection cbp
                 WHERE cbp.community_id = pp.community_id
                 AND cbp.user_id = :userId
+                AND cbp.before_date > CURRENT_TIMESTAMP
             ) as is_banned,
             EXISTS(
                 SELECT 1 FROM community_permission cpr
@@ -84,9 +87,10 @@ public class JdbcPolicyDataRepository implements PolicyDataRepository{
             ) as is_followed,
             COALESCE(cp.is_private, false)
         FROM post_projection pp
-        LEFT JOIN community_projection cp ON cp.id = pp.community_id
+        LEFT JOIN community_projection cp ON cp.id = pp.community_id AND cp.deleted_at IS NULL
         WHERE pp.is_published = 'true'
         AND pp.post_id = :postId
+        AND pp.deleted_at IS NULL
         """;
         return jdbcClient
             .sql(sql)
@@ -110,9 +114,10 @@ public class JdbcPolicyDataRepository implements PolicyDataRepository{
             c.user_id
         FROM comment c
         JOIN post_projection pp ON pp.post_id = c.post_id
-        LEFT JOIN community_projection cp ON cp.id = pp.community_id
+        LEFT JOIN community_projection cp ON cp.id = pp.community_id AND cp.deleted_at IS NULL
         WHERE pp.is_published = 'true'
         AND c.is_visible = 'true'
+        AND pp.deleted_at IS NULL
         AND c.id = :commentId
         """;
         return jdbcClient

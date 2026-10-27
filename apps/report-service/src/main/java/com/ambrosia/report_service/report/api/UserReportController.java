@@ -1,5 +1,8 @@
 package com.ambrosia.report_service.report.api;
 
+import com.ambrosia.library_policy.policy.Actor;
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/report")
 @RestController
+@Validated
 public class UserReportController {
     private final UserReportService userReportService;
 
@@ -38,8 +42,9 @@ public class UserReportController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping
     public void createReport(
-        @RequestBody ReportRequest reportRequest,
-        @AuthenticationPrincipal Jwt jwt) {
-        userReportService.createReport(reportRequest, UUID.fromString(jwt.getSubject()));
+            @RequestBody @Valid ReportRequest reportRequest,
+            Actor actor
+    ) {
+        userReportService.createReport(reportRequest, actor);
     }
 }

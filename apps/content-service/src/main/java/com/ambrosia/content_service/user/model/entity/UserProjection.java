@@ -29,6 +29,9 @@ public class UserProjection implements Persistable<UUID> {
 
     @Column("avatar_id")
     private String avatarId;
+    
+    @Column("version")
+    private Long version;
 
     @Transient 
     @Builder.Default

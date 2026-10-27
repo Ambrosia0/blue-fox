@@ -11,8 +11,8 @@ import com.ambrosia.community_service.kafka_events.CommunityEvent;
 import com.ambrosia.community_service.kafka_events.CommunityUpdate;
 import com.ambrosia.community_service.kafka_events.ModeratorPermissions;
 import com.ambrosia.community_service.kafka_events.Permission;
+import com.github.f4b6a3.uuid.UuidCreator;
 
-import io.github.robsonkades.uuidv7.UUIDv7;
 
 public final class CommunityEventFactory {
     public static CommunityEvent createOpration(Community community){
@@ -34,7 +34,8 @@ public final class CommunityEventFactory {
             builder.setAvatarId(community.getAvatarId());
         return CommunityEvent.newBuilder()
             .setId(community.getId())
-            .setEventId(UUIDv7.randomUUIDString())
+            .setVersion(community.getVersion())
+            .setEventId(UuidCreator.getTimeOrderedEpoch().toString())
             .setCreate(builder.build())
             .build();
     }
@@ -58,16 +59,19 @@ public final class CommunityEventFactory {
             builder.setAvatarId(community.getAvatarId());
         return CommunityEvent.newBuilder()
             .setId(community.getId())
-            .setEventId(UUIDv7.randomUUIDString())
+            .setVersion(community.getVersion())
+            .setEventId(UuidCreator.getTimeOrderedEpoch().toString())
             .setUpdate(builder.build())
             .build();
     }
 
-    public static CommunityEvent deleteOperation(long id){
+    public static CommunityEvent deleteOperation(
+            com.ambrosia.community_service.community.domain.entity.CommunityDelete delete){
         var deleted = CommunityDelete.newBuilder().build();
         return CommunityEvent.newBuilder()
-            .setId(id)
-            .setEventId(UUIDv7.randomUUIDString())
+            .setId(delete.id())
+            .setVersion(delete.version())
+            .setEventId(UuidCreator.getTimeOrderedEpoch().toString())
             .setDelete(deleted)
             .build();
     }

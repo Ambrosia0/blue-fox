@@ -11,6 +11,7 @@ import com.ambrosia.outbox.kafka.KafkaOutboxConverter;
 /**
  * Converter for kafka outbox entity
  * @see KafkaOutbox
+ * @see CommunityEvent
  */
 @Component
 public class KafkaOutboxConverterImpl implements KafkaOutboxConverter<CommunityEvent>{

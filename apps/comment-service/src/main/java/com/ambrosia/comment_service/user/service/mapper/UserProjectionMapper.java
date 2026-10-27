@@ -1,14 +1,11 @@
 package com.ambrosia.comment_service.user.service.mapper;
 
-import java.util.UUID;
-
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.stereotype.Component;
-
-import com.ambrosia.comment_service.user.model.dto.UserResponse;
 import com.ambrosia.comment_service.user.model.entity.UserProjection;
 import com.ambrosia.profile_service.kafka_events.UserCreated;
 import com.ambrosia.profile_service.kafka_events.UserUpdated;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Component 
 public class UserProjectionMapper {
@@ -33,5 +30,4 @@ public class UserProjectionMapper {
             .avatarId(userUpdated.getAvatarId())
             .build();
     }
-
 }

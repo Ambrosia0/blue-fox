@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -261,6 +262,6 @@ public class PostEditorIntegrationTests extends BaseIntegrationTest{
     }
 
     private PostEditRequest createEditRequest(String content){
-        return new PostEditRequest("Test title", content, List.of("#testTag"), 0L);
+        return new PostEditRequest("Test title", content, Set.of("#testTag"), 0L);
     }
 }

@@ -1,15 +1,14 @@
 package com.ambrosia.community_service.user.model.entity;
 
-import java.util.UUID;
-
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import lombok.Builder;
-import lombok.Data;
+import java.util.UUID;
 
 @Data 
 @Builder 
@@ -29,6 +28,9 @@ public class UserProjection implements Persistable<UUID> {
 
     @Column("avatar_id")
     private String avatarId;
+    
+    @Column("version")
+    private Long version;
 
     @Transient 
     @Builder.Default

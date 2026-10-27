@@ -1,68 +1,166 @@
-# notification-service
+# Description
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+A real-time notification and event delivery microservice built with Quarkus. It aggregates events from various domain services via Apache Kafka, maintains synchronized database projections, and delivers real-time updates to clients through Server-Sent Events (SSE).
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## Kafka Consumers
 
-## Running the application in dev mode
+Consumers are split into 2 groups:
 
-You can run your application in dev mode that enables live coding using:
+### Persistence Consumers
+
+These consumers poll Kafka topics, deserialize events (Protobuf), and persist the resulting state changes to PostgreSQL. They maintain the service's read models (projections).
+
+| Consumer | Topics | Description |
+|----------|--------|-------------|
+| `NotificationConsumer` | `blog.notification` | Notification events → community, user, targeted notifications |
+| `CommunityConsumer` | `blog.community` | Community CRUD events → communities table |
+| `CommunityBanConsumer` | `blog.community.ban` | Community ban/unban events → bans table |
+| `CommunityFollowConsumer` | `blog.community.follow` | Community follow/unfollow events → community follows table |
+| `PostConsumer` | `blog.post` | Post CRUD events → posts table |
+| `UserConsumer` | `blog.user` | User CRUD events → users table |
+| `UserFollowConsumer` | `blog.user.follow` | User follow/unfollow events → user follows table |
+
+### SSE Delivery Consumers
+
+These consumers poll notification and activity events from Kafka and deliver them in real-time to connected SSE clients via the Vert.x EventBus. Topics include:
+
+| Channel | Topic | Auto Offset Reset |
+|---------|-------|--------------------|
+| `notification-event` | `blog.notification` | earliest |
+| `comment-channel` | `blog.comment` | latest |
+| `post-like-channel` | `blog.post.like` | latest |
+| `comment-like-channel` | `blog.comment.like` | latest |
+| `post-view-channel` | `blog.post.view.aggregation` | latest |
+
+## REST API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/v1/me/notification` | Get notifications for authenticated user |
+| `GET` | `/api/v1/me/notification/new` | Count new (unread) notifications |
+
+## SSE Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/v1/events` | Real-time events for authenticated user (requires OIDC auth) |
+| `GET` | `/api/v1/public/post/{postId}/events` | Real-time events for a specific post (public) |
+
+Both SSE endpoints include automatic heartbeat pings (default interval: 15s) to keep connections alive.
+
+## Technology Stack
+
+- **Java 25**
+- **Quarkus 3.32.3** — Supersonic Subatomic Java Framework
+- **PostgreSQL** — Reactive PostgreSQL client (Vert.x)
+- **Apache Kafka** — SmallRye Reactive Messaging
+- **Protobuf** — Cross-service event serialization (proto-gen module)
+- **Flyway** — Database migrations
+- **OIDC** — Authentication
+
+## Project Structure
+
+```
+src/main/java/org/ambrosia/notification_service/
+├── core/                      # Core utilities & configuration
+│   ├── ActorFactory.java
+│   ├── AppConfiguration.java
+│   └── policy/                # Policy pattern implementation
+├── event/                     # SSE event delivery
+│   ├── api/                   # EventController, PostEventController
+│   ├── application/           # UserEventRegistry, PostEventRegistry, etc.
+│   ├── domain/                # Domain interfaces (UserFollowRepository, etc.)
+│   └── infrastructure/        # Persistence entities & adapters
+├── kafka/                     # Kafka consumers & events
+│   ├── consumer/              # All Kafka consumer classes
+│   └── event/                 # Kafka event DTOs
+├── notification/              # Notification management
+│   ├── api/                   # NotificationController, DTOs
+│   ├── application/           # Query services
+│   └── infrastructure/        # Notification persistence
+└── projections/               # Database projections
+    └── infrastructure/        # Projections entities & repositories
+```
+
+## Proto-Generated Modules
+
+The `proto-gen` subproject generates Java classes from Protobuf definitions for inter-service communication:
+
+| Service | Package |
+|---------|---------|  
+| Comment Service | `com.ambrosia.comment_service.kafka_events` |
+| Community Service | `com.ambrosia.community_service.kafka_events` |
+| Content Service | `com.ambrosia.content_service.kafka_events` |
+| Profile Service | `com.ambrosia.profile_service.kafka_events` |
+| Notification Service | `org.ambrosia.notification_service.kafka_events` |
+
+## Running the Application
+
+### Prerequisites
+
+- Java 25
+- Docker (for Kafka, PostgreSQL dev services)
+
+### Dev Mode
 
 ```shell script
 ./gradlew quarkusDev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+The application starts at `http://localhost:8080`. The Quarkus Dev UI is available at `http://localhost:8080/q/dev/`.
 
-## Packaging and running the application
+### Packaging and Running
 
-The application can be packaged using:
+#### Build and run uber jar
+
+```shell script
+./gradlew build -Dquarkus.package.jar.type=uber-jar
+java -jar build/*-runner.jar
+```
+
+#### Build container
+
+Build uber jar:
+
+```shell script
+./gradlew build '-Dquarkus.package.jar.type=uber-jar' '-Dquarkus.container-image.build=false' -x test
+```
+
+Build the application container (requires docker):
 
 ```shell script
 ./gradlew build
 ```
 
-It produces the `quarkus-run.jar` file in the `build/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `build/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar build/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
+Build native executable container (requires docker):
 
 ```shell script
-./gradlew build -Dquarkus.package.jar.type=uber-jar
+./gradlew build '-Dquarkus.native.enabled=true' -x test
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar build/*-runner.jar`.
+> **Note:** Native builds use container runtime (Docker) by default as configured in `application.properties`.
 
-## Creating a native executable
+## Configuration
 
-You can create a native executable using:
+Key configuration properties are defined in `src/main/resources/application.properties`:
 
-```shell script
-./gradlew build -Dquarkus.native.enabled=true
-```
+| Property | Default | Description |
+|----------|---------|-------------|
+| `app.heartbitInterval` | `PT15S` | SSE heartbeat interval |
+| `app.leaseRefreshInterval` | `PT2M` | Lease refresh interval |
+| `quarkus.http.port` | `8080` | HTTP server port |
+| `quarkus.flyway.migrate-at-start` | `true` | Auto-run migrations on startup |
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+### Production Properties
 
-```shell script
-./gradlew build -Dquarkus.native.enabled=true -Dquarkus.native.container-build=true
-```
+| Property | Environment Variable | Description |
+|----------|---------------------|-------------|
+| `%prod.quarkus.oidc.auth-server-url` | `OIDC_ISSUER_URL` | OIDC issuer URL |
+| `%prod.mp.messaging.connector.smallrye-kafka.bootstrap.servers` | `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers |
 
-You can then execute your native executable with: `./build/notification-service-0.0.1-SNAPSHOT-runner`
+## Documentation
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/gradle-tooling>.
+Additional documentation is available in the `docs/` directory:
 
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-- Mailer ([guide](https://quarkus.io/guides/mailer)): Send emails
-- Apache Kafka Streams ([guide](https://quarkus.io/guides/kafka-streams)): Implement stream processing applications based on Apache Kafka
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+- [`event-processing.md`](docs/event-processing.md) — Kafka consumer processing workflow
+- [`event-serve.md`](docs/event-serve.md) — SSE event delivery flow

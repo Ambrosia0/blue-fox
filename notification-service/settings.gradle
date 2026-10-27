@@ -10,3 +10,7 @@ pluginManagement {
 }
 
 rootProject.name='notification-service'
+
+include (
+    "proto-gen"
+)

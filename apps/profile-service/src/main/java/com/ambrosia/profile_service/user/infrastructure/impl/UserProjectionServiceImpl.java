@@ -92,7 +92,7 @@ public class UserProjectionServiceImpl implements UserProjectionService{
 
             var deleted = deletedOpt.get();
 
-            var event = UserEventFactory.deletedEvent(deleted.id());
+            var event = UserEventFactory.deletedEvent(deleted);
             kafkaOutboxService.put(event);
             eventPublisher.publishEvent(event);
 

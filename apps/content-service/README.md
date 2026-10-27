@@ -75,35 +75,43 @@ A microservice for managing blog posts, likes, attachments, and user follow rela
 
 ## API Endpoints
 
-### Public (No Authentication)
+### Public (`/api/v1/public/post`)
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/public/post/{postId}` | Get a single post by ID (includes like status if authenticated) |
-| `GET` | `/api/public/post` | Search and list post previews with filtering, sorting, and scoring |
+| `GET` | `/{postId}` | Get a single post by ID (includes like status if authenticated) |
+| `GET` | (root) | Search and list post previews with filtering, sorting, and scoring |
 
-### User (Authenticated)
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `DELETE` | `/api/user/post/{id}` | Delete a post (user's own or community-moderated) |
-| `POST` | `/api/user/post/{id}/like` | Like a post |
-| `DELETE` | `/api/user/post/{id}/like` | Unlike a post |
-| `GET` | `/api/user/post/{id}/like` | Check if user has liked a post |
-| `POST` | `/api/me/follow/user/{userId}` | Follow a user |
-| `DELETE` | `/api/me/follow/user/{userId}` | Unfollow a user |
-| `GET` | `/api/me/follow/user` | Get the user's follow list (paginated) |
-| `POST` | `/api/me/post/{postId}/attachment` | Upload a file attachment for a post |
-| `POST` | `/api/me/post/{postId}/attachment/{attachmentId}` | Confirm/validate uploaded attachment |
-| `GET` | `/api/me/post/{postId}/attachment` | List attachments for a post |
-| `DELETE` | `/api/me/post/{postId}/attachment/{attachmentId}` | Delete an attachment from a post |
-
-### Admin
+### User (`/api/v1/me/post`)
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `DELETE` | `/api/admin/post/{id}` | Delete any post (admin-only) |
-| `GET` | `/api/admin/post/{id}` | Get any post by ID (admin-only, no access restrictions) |
+| `POST` | `/{postId}/attachment` | Upload a file attachment for a post |
+| `POST` | `/{postId}/attachment/{attachmentId}` | Confirm/validate uploaded attachment |
+| `GET` | `/{postId}/attachment` | List attachments for a post |
+| `DELETE` | `/{postId}/attachment/{attachmentId}` | Delete an attachment from a post |
+| `DELETE` | `/{postId}` | Delete draft |
+| `POST` | (root) | Create draft |
+| `GET` | (root) | Get drafts |
+| `PATCH` | `/post/{postId}` | Update draft |
+| `POST` | `/post/{postId}/publish` | Publish post |
+| `POST` | `/post/{postId}/unpublish` | Unpublish post |
+
+
+### User (`/api/v1/post`)
+| Method | Endpoint | Description |
+|---|---|---|
+| `DELETE` | `/{id}` | Delete a post |
+| `POST` | `/{id}/like` | Like a post |
+| `DELETE` | `/{id}/like` | Unlike a post |
+| `GET` | `/{id}/like` | Check if user has liked a post |
+
+### User (`/api/v1/me/follow`)
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/user/{userId}` | Follow a user |
+| `DELETE` | `/user/{userId}` | Unfollow a user |
+| `GET` | `/user` | Get the user's follow list (paginated) |
 
 ## Kafka Topics
 

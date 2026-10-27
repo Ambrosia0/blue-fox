@@ -45,6 +45,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                 SELECT 1 FROM community_ban_projection cb
                 WHERE cb.user_id = :userId
                 AND cb.community_id = cp.id
+                AND cb.before_date > CURRENT_TIMESTAMP
             ) as is_banned,
             EXISTS(
                 SELECT 1 FROM community_permission cpr
@@ -53,6 +54,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
             ) as is_moderator
         FROM community_projection cp
         WHERE cp.id = :communityId
+        AND cp.deleted_at IS NULL
         """;
         return jdbcClient
             .sql(sql)
@@ -79,9 +81,11 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                     SELECT 1 FROM community_ban_projection cb
                     WHERE cb.user_id = :userId
                     AND cb.community_id = cp.id
+                    AND cb.before_date > CURRENT_TIMESTAMP
                 ) as posted_is_banned
             FROM community_projection cp
             WHERE cp.id = :communityId
+            AND cp.deleted_at IS NULL
         ) posted
 
         FULL OUTER JOIN(
@@ -98,6 +102,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                     SELECT 1 FROM community_ban_projection cb
                     WHERE cb.user_id = :userId
                     AND cb.community_id = cp.id
+                    AND cb.before_date > CURRENT_TIMESTAMP
                 ) as replying_is_banned,
                 EXISTS(
                     SELECT 1 FROM community_permission cpr
@@ -105,7 +110,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                     AND cpr.community_id = cp.id
                 ) as replying_is_moderator
             FROM post p
-            LEFT JOIN community_projection cp ON cp.id = p.community_id
+            LEFT JOIN community_projection cp ON cp.id = p.community_id AND cp.deleted_at IS NULL
             WHERE p.id = :postId
         ) replying ON TRUE
         """;
@@ -135,6 +140,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                     SELECT 1 FROM community_ban_projection cb
                     WHERE cb.user_id = :userId
                     AND cb.community_id = cp.id
+                    AND cb.before_date > CURRENT_TIMESTAMP
                 ) as is_banned,
                 EXISTS(
                     SELECT 1 FROM community_permission cpr
@@ -142,7 +148,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                     AND cpr.community_id = cp.id
                 ) as is_moderator
             FROM post p
-            LEFT JOIN community_projection cp ON cp.id = p.community_id
+            LEFT JOIN community_projection cp ON cp.id = p.community_id AND cp.deleted_at IS NULL
             WHERE p.id = :postId
         ) posted
         LEFT JOIN LATERAL(
@@ -158,6 +164,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                     SELECT 1 FROM community_ban_projection cb
                     WHERE cb.user_id = :userId
                     AND cb.community_id = cp.id
+                    AND cb.before_date > CURRENT_TIMESTAMP
                 ) as replying_is_banned,
                 EXISTS(
                     SELECT 1 FROM community_permission cpr
@@ -165,7 +172,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                     AND cpr.community_id = cp.id
                 )
             FROM post p
-            LEFT JOIN community_projection cp ON cp.id = p.community_id
+            LEFT JOIN community_projection cp ON cp.id = p.community_id AND cp.deleted_at IS NULL
             WHERE p.id = posted.reply_id
         ) replying ON TRUE
         """;
@@ -216,6 +223,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                 SELECT 1 FROM community_ban_projection cb
                 WHERE cb.user_id = :userId
                 AND cb.community_id = cp.id
+                AND cb.before_date > CURRENT_TIMESTAMP
             ) as is_banned,
             EXISTS(
                 SELECT 1 FROM community_permission cpr
@@ -223,7 +231,7 @@ public class JdbcPostPolicyRepository implements PostPolicyRepository{
                 AND user_id = :userId
             ) as is_moderator
         FROM post p
-        LEFT JOIN community_projection cp ON cp.id = p.community_id
+        LEFT JOIN community_projection cp ON cp.id = p.community_id AND cp.deleted_at IS NULL
         WHERE p.id = :postId
         """;
         return jdbcClient

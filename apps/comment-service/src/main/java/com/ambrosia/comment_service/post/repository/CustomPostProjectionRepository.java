@@ -5,5 +5,5 @@ import java.util.List;
 import com.ambrosia.content_service.kafka_events.PostEvent;
 
 public interface CustomPostProjectionRepository {
-    void batchProcess(List<PostEvent> toInsert, List<PostEvent> toDelete);
+    void process(List<PostEvent> toInsert, List<PostEvent> toDelete);
 }

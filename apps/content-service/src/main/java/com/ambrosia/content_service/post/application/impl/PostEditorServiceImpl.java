@@ -112,7 +112,7 @@ public class PostEditorServiceImpl implements PostEditorService {
         if(!post.getCollaborationUsers().isEmpty())
             throw new CollaborationApiEditException();
 
-        if(post.getVersion() != editRequest.version())
+        if(!post.getVersion().equals(editRequest.version()))
             throw new InvalidPostVersionException();
 
         if(!postValidator.isValid(editRequest.post()))
@@ -121,6 +121,12 @@ public class PostEditorServiceImpl implements PostEditorService {
         post.edit(ConvertedDoc
             .from(editRequest.post(), previewConverter.convert(editRequest.post()))
         );
+        if(editRequest.title() != null)
+            post.editTitle(editRequest.title());
+        
+        if(editRequest.tags() != null)
+            post.editTags(editRequest.tags());
+        
         postRepository.save(post);
     }
 
@@ -152,7 +158,8 @@ public class PostEditorServiceImpl implements PostEditorService {
         var event = post.isRepublished()?
             PostEventFactory.updateOperation(post):
             PostEventFactory.createOperation(
-                postViewQueryService.getPostPreview(postId, null)
+                postViewQueryService.getPostPreview(postId, null),
+                post.getVersion()
             );
 
         kafkaOutboxService.put(event);

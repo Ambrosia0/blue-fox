@@ -1,9 +1,11 @@
 CREATE TABLE IF NOT EXISTS user_projection(
     id UUID PRIMARY KEY,
-    username TEXT NOT NULL,
+    username TEXT,
     first_name TEXT,
     last_name TEXT,
-    avatar_id TEXT
+    avatar_id TEXT,
+    version BIGINT NOT NULL,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS community(

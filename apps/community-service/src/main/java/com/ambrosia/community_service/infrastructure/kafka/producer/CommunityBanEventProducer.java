@@ -8,13 +8,15 @@ import com.ambrosia.community_service.kafka_events.CommunityBanEvent;
 import com.ambrosia.library_core.dto.Topics;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @RequiredArgsConstructor
 @Component
 public class CommunityBanEventProducer {
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void on(CommunityBanEvent event){
         var id = switch(event.getEventCase()){
             case BAN -> event.getBan().getCommunityId()+"_"+event.getBan().getUserId();

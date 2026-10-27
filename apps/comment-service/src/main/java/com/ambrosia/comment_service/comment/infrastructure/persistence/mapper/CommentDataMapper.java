@@ -34,7 +34,8 @@ public class CommentDataMapper implements RowMapper<CommentData>{
             rs.getTimestamp("created_at").toInstant(),
             rs.getInt("number_of_children"),
             rs.getObject("is_liked", Boolean.class),
-            rs.getString("attachment_id")
+            rs.getString("attachment_id"),
+            rs.getLong("version")
         );
     }
 }

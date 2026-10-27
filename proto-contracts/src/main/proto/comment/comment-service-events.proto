@@ -14,24 +14,28 @@ message User {
 }
 
 message CommentCreated {
-    int64 post_id = 1;
-    User user = 2;
-    string content = 3;
-    optional string attachment_url = 4;
-    optional int64 parent_coment = 5;
-    int64 created_at = 6;
+    User user = 1;
+    string content = 2;
+    optional string attachment_url = 3;
+    optional int64 parent_comment = 4;
+    int64 created_at = 5;
 }
 
-message CommentDeleted {
-    int64 post_id = 1;
+message CommentUpdated {
+    string content = 1;
 }
+
+message CommentDeleted {}
 
 message CommentEvent {
     string event_id = 1;
     int64 comment_id = 2;
+    int64 post_id = 3;
+    int64 version = 4;
     oneof event {
-        CommentCreated created = 3;
-        CommentDeleted deleted = 4;
+        CommentCreated created = 5;
+        CommentDeleted deleted = 6;
+        CommentUpdated update = 7;
     }
 }
 

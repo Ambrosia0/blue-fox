@@ -1,20 +1,26 @@
 CREATE TABLE IF NOT EXISTS community_projection(
     id bigint PRIMARY KEY,
-    is_private boolean NOT NULL
+    is_private boolean,
+    version BIGINT NOT NULL,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS post_projection(
     post_id bigint PRIMARY KEY,
-    community_id bigint REFERENCES community_projection(id) ON DELETE CASCADE,
-    is_published boolean NOT NULL
+    community_id bigint,
+    is_published boolean,
+    version BIGINT NOT NULL,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS user_projection(
     id UUID PRIMARY KEY,
-    username TEXT NOT NULL,
+    username TEXT,
     first_name TEXT,
     last_name TEXT,
-    avatar_id TEXT
+    avatar_id TEXT,
+    version BIGINT NOT NULL,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS comment(
@@ -27,6 +33,7 @@ CREATE TABLE IF NOT EXISTS comment(
     number_of_children integer DEFAULT 0,
     created_at timestamp DEFAULT CURRENT_TIMESTAMP,
     is_visible boolean default 'true',
+    version BIGINT NOT NULL,
     CONSTRAINT fk_comment_tree FOREIGN KEY (parent_comment_id) 
         REFERENCES comment(id)
 );
@@ -47,7 +54,8 @@ CREATE TABLE IF NOT EXISTS comment_like(
 CREATE TABLE IF NOT EXISTS community_ban_projection(
     community_id bigint NOT NULL,
     user_id UUID NOT NULL,
-    PRIMARY KEY(user_id, community_id)
+    before_date TIMESTAMP NOT NULL,
+    PRIMARY KEY(user_id, community_id, before_date)
 );
 
 CREATE TABLE IF NOT EXISTS community_follow_projection(

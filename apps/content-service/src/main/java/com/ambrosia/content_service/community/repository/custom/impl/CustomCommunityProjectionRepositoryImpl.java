@@ -1,7 +1,20 @@
 package com.ambrosia.content_service.community.repository.custom.impl;
 
+import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import com.ambrosia.community_service.kafka_events.CommunityEvent;
+import com.ambrosia.community_service.kafka_events.ModeratorPermissions;
+import com.ambrosia.community_service.kafka_events.Permission;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,112 +25,155 @@ import com.ambrosia.content_service.community.repository.custom.CustomCommunityP
 
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @RequiredArgsConstructor 
 @Repository 
 public class CustomCommunityProjectionRepositoryImpl implements CustomCommunityProjectionRepository{
-    private final JdbcClient jdbcClient;
-
-    @Override
-    public void insert(CommunityProjection communityProjection, UUID eventId) {
-        var sql = """
-        WITH inserted AS (
-            INSERT INTO processed_events(id) VALUES (:eventId)
-            ON CONFLICT(id) DO NOTHING
-            RETURNING id
-        ),
-        inserted_community AS (
-            INSERT INTO community_projection(id, name, avatar_id, slug, is_private)
-            SELECT :communityId, :name, :avatar_id, :slug, :isPrivate
-            FROM inserted
-            RETURNING *
-        )
-        INSERT INTO community_permission(community_id, user_id, permission)
-        SELECT ic.id, x.user_id, x.permission
-        FROM inserted_community ic
-        CROSS JOIN unnest(
-            :userIds::uuid[],
-            :permissions::text[]
-        ) AS x(user_id, permission)
-        """;
-
-        var size = communityProjection.getPermissions().size();
-        var userIds = new UUID[size];
-        var permissions = new String[size];
-        int i = 0;
-        for(CommunityPermission permission: communityProjection.getPermissions()){
-            userIds[i] = permission.getUserId();
-            permissions[i] = permission.getPermission();
-            i++;
-        }
-
-        jdbcClient
-            .sql(sql)
-            .param("eventId", eventId)
-            .param("communityId", communityProjection.getId())
-            .param("name", communityProjection.getName())
-            .param("avatar_id", communityProjection.getAvatarId())
-            .param("slug", communityProjection.getSlug())
-            .param("isPrivate", communityProjection.isPrivate())
-            .param("userIds", userIds)
-            .param("permissions", permissions)
-            .update();
-    }
-
-    @Transactional 
-    @Override
-    public void update(CommunityProjection communityProjection, UUID eventId) {
-        var deleteSql = """
+    private final JdbcTemplate jdbcTemplate;
+    
+    private final String UPSERT_SQL = """
+    WITH inserted AS (
+        INSERT INTO processed_events(id) VALUES (?)
+        ON CONFLICT(id) DO NOTHING
+        RETURNING id
+    ),
+    inserted_community AS (
+        INSERT INTO community_projection(id, name, avatar_id, slug, is_private, version)
+        SELECT ?, ?, ?, ?, ?, ?
+        FROM inserted
+        ON CONFLICT(id) DO UPDATE
+            SET name = excluded.name,
+                avatar_id = excluded.avatar_id,
+                slug = excluded.slug,
+                is_private = excluded.is_private,
+                version = excluded.version
+        WHERE community_projection.deleted_at IS NULL
+            AND community_projection.version < excluded.version
+        RETURNING *
+    ),
+    deleted_permissions AS (
         DELETE FROM community_permission cp
-        WHERE cp.community_id = :communityId
-        """;
+            USING inserted_community ic
+            WHERE cp.community_id = ic.id
+            RETURNING cp.community_id
+    )
+    INSERT INTO community_permission(community_id, user_id, permission)
+    SELECT ic.id, x.user_id, x.permission
+    FROM inserted_community ic
+    CROSS JOIN unnest(?::uuid[], ?::text[]) AS x(user_id, permission)
+    CROSS JOIN (
+        SELECT COUNT(*) as deleted_count
+        FROM deleted_permissions
+    ) dp
+    """;
+    
+    private String DELETE_SQL = """
+    WITH inserted AS (
+        INSERT INTO processed_events(id) VALUES (?)
+        ON CONFLICT(id) DO NOTHING
+        RETURNING id
+    ),
+    deleted_community AS (
+        INSERT INTO community_projection AS cp (id, version, deleted_at)
+        SELECT ?, ?, CURRENT_TIMESTAMP
+        FROM inserted
+        ON CONFLICT (id) DO UPDATE
+            SET is_private = NULL,
+                slug = NULL,
+                name = NULL,
+                deleted_at = excluded.deleted_at,
+                version = excluded.version
+        WHERE cp.deleted_at IS NULL
+            AND cp.version = excluded.version
+        RETURNING cp.id
+    ),
+    deleted_permissions AS (
+        DELETE FROM community_permission
+            WHERE community_id = ?
+    )
+    DELETE FROM community_follow_projection
+    WHERE community_id = ?
+    """;
 
-        var updateSql = """
-        WITH inserted AS (
-            INSERT INTO processed_events(id) VALUES (:eventId)
-            ON CONFLICT(id) DO NOTHING
-            RETURNING id
-        ),
-        updated_community AS (
-            UPDATE community_projection cp
-            SET is_private = :isPrivate
-            FROM inserted
-            WHERE cp.id = :communityId
-            RETURNING cp.*
-        )
-        INSERT INTO community_permission(community_id, user_id, permission)
-        SELECT uc.id, x.user_id, x.permission
-        FROM updated_community uc
-        CROSS JOIN unnest(
-            :userIds::uuid[],
-            :permissions::text[]
-        ) AS x(user_id, permission)
-        """;
+    @Override
+    public void process(List<CommunityEvent> toUpsert, List<CommunityEvent> toDelete) {
+        try(var conn = jdbcTemplate.getDataSource().getConnection()){
+            conn.setAutoCommit(false);
+            var stmt = conn.prepareStatement(UPSERT_SQL);
+            for(CommunityEvent upsert: toUpsert){
+                setUpsertParams(stmt, upsert);
+                stmt.addBatch();
+            }
+            
+            stmt.executeBatch();
+            
+            stmt = conn.prepareStatement(DELETE_SQL);
+            for(CommunityEvent delete: toDelete){
+                setDeleteParams(stmt, delete);
+                stmt.addBatch();
+            }
+            
+            stmt.executeBatch();
+            conn.commit();
+        } catch (SQLException ex){
+            log.error("Can't process community batch!", ex);
+            throw new RuntimeException(ex);
+        }
+    }
+    
+    private void setUpsertParams(PreparedStatement statement, CommunityEvent event) throws SQLException{
+        statement.setObject(1, UUID.fromString(event.getEventId()));
+        statement.setLong(2, event.getId());
+        statement.setLong(7, event.getVersion()); //version
+        
+        var permissionList = switch (event.getEventCase()){
+            case CREATE -> {
+                statement.setString(3, event.getCreate().getName());
+                statement.setString(4, event.getCreate().getAvatarId());
+                statement.setString(5, event.getCreate().getSlug());
+                statement.setBoolean(6, event.getCreate().getIsPrivate());
+                yield getPermissions(event.getCreate().getCommunityPermissionsMap());
+            }
+            case UPDATE -> {
+                statement.setString(3, event.getUpdate().getName());
+                statement.setString(4, event.getUpdate().getAvatarId());
+                statement.setString(5, event.getUpdate().getSlug());
+                statement.setBoolean(6, event.getUpdate().getIsPrivate());
+                yield getPermissions(event.getUpdate().getCommunityPermissionsMap());
+            }
+            default -> throw new IllegalArgumentException("Invalid message body!");
+        };
 
-        var size = communityProjection.getPermissions().size();
-        var userIds = new UUID[size];
-        var permissions = new String[size];
+        UUID[] userIds = new UUID[permissionList.size()];
+        String[] permissions = new String[permissionList.size()];
         int i = 0;
-        for(CommunityPermission permission: communityProjection.getPermissions()){
-            userIds[i] = permission.getUserId();
-            permissions[i] = permission.getPermission();
+        for(CommunityPermission p: permissionList){
+            userIds[i] = p.getUserId();
+            permissions[i] = p.getPermission();
             i++;
         }
-
-        jdbcClient
-            .sql(deleteSql)
-            .param("communityId", communityProjection.getId())
-            .update();
-
-        jdbcClient
-            .sql(updateSql)
-            .param("eventId", eventId)
-            .param("communityId", communityProjection.getId())
-            .param("name", communityProjection.getName())
-            .param("avatar_id", communityProjection.getAvatarId())
-            .param("slug", communityProjection.getSlug())
-            .param("isPrivate", communityProjection.isPrivate())
-            .param("userIds", userIds)
-            .param("permissions", permissions)
-            .update();
+        
+        statement.setArray(8, statement.getConnection().createArrayOf("uuid", userIds));
+        statement.setArray(9, statement.getConnection().createArrayOf("text", permissions));
+    }
+    
+    private void setDeleteParams(PreparedStatement statement, CommunityEvent event) throws SQLException{
+        statement.setObject(1, UUID.fromString(event.getEventId()));
+        statement.setLong(2, event.getId());
+        statement.setLong(3, event.getVersion());
+        statement.setLong(4, event.getId());
+        statement.setLong(5, event.getId());
+    }
+    
+    private List<CommunityPermission> getPermissions(Map<String, ModeratorPermissions> permissions){
+        return permissions.entrySet()
+            .stream()
+            .map(pair -> pair.getValue().getPermissionsList().stream()
+                .filter(p -> Permission.valueOf(p.name()) == Permission.POST_DELETE)
+                .findFirst()
+                .map(t -> new CommunityPermission(t.name(), UUID.fromString(pair.getKey())))
+                .orElse(new CommunityPermission("", UUID.fromString(pair.getKey())))
+            )
+            .toList();
     }
 }

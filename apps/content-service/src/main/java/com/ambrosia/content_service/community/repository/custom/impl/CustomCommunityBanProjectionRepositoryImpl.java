@@ -1,5 +1,7 @@
 package com.ambrosia.content_service.community.repository.custom.impl;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,14 +22,28 @@ public class CustomCommunityBanProjectionRepositoryImpl
     
     @Override
     public void batchModify(List<CommunityBanEvent> toInsert, List<CommunityBanEvent> toDelete) {
-        var insertSql = "INSERT INTO community_ban_projection(community_id, user_id) VALUES (?, ?)";
-        var deleteSql = "DELETE FROM community_ban_projection WHERE community_id = ? AND user_id = ?";
+        var insertSql = """
+        INSERT INTO community_ban_projection(community_id, user_id, before_date)
+        VALUES (?, ?, ?)
+        """;
+        var deleteSql = """
+        DELETE FROM community_ban_projection
+               WHERE community_id = ?
+                 AND user_id = ?
+                 AND before_date > CURRENT_TIMESTAMP
+        """;
         try (var conn = jdbcTemplate.getDataSource().getConnection()) {
             conn.setAutoCommit(false);
             var insertStmt = conn.prepareStatement(insertSql);
             for(CommunityBanEvent insert: toInsert){
                 insertStmt.setLong(1, insert.getBan().getCommunityId());
                 insertStmt.setObject(2, insert.getBan().getUserId());
+                insertStmt.setTimestamp(
+                    3,
+                    Timestamp.from(
+                        Instant.ofEpochMilli(insert.getBan().getBeforeDate())
+                    )
+                );
                 insertStmt.addBatch();
             }
             insertStmt.executeBatch();

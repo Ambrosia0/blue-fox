@@ -1,17 +1,21 @@
 CREATE TABLE IF NOT EXISTS community_projection(
     id bigint PRIMARY KEY,
-    name TEXT NOT NULL,
-    slug TEXT UNIQUE NOT NULL,
-    is_private BOOLEAN NOT NULL,
-    avatar_id TEXT
+    name TEXT,
+    slug TEXT UNIQUE,
+    is_private BOOLEAN,
+    avatar_id TEXT,
+    deleted_at TIMESTAMP,
+    version BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS user_projection(
     id UUID PRIMARY KEY,
-    username TEXT NOT NULL,
+    username TEXT,
     first_name TEXT,
     last_name TEXT,
-    avatar_id TEXT
+    avatar_id TEXT,
+    version BIGINT NOT NULL,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS post(
@@ -71,7 +75,8 @@ CREATE TABLE IF NOT EXISTS community_follow_projection(
 CREATE TABLE IF NOT EXISTS community_ban_projection(
     community_id bigint NOT NULL,
     user_id UUID NOT NULL,
-    PRIMARY KEY(user_id, community_id)
+    before_date TIMESTAMP NOT NULL,
+    PRIMARY KEY(user_id, community_id, before_date)
 );
 
 CREATE TABLE IF NOT EXISTS processed_events(
@@ -87,6 +92,6 @@ CREATE TABLE IF NOT EXISTS post_collaboration(
 CREATE TABLE IF NOT EXISTS community_permission(
     community_id BIGINT REFERENCES community_projection(id) ON DELETE CASCADE,
     permission TEXT,
-    user_id UUID REFERENCES user_projection(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL,
     PRIMARY KEY(community_id, user_id, permission)
 );

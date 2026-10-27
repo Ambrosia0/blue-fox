@@ -21,7 +21,7 @@ public class PolicyContext<T extends PolicyActor> {
     public PolicyData evaluate(T actor, Class<? extends Policy<?, ?>> policy, Object arg){
         var res = handlers.get(policy);
         if(res == null)
-            throw new IllegalArgumentException("No hanlder for policy: "+policy);
+            throw new IllegalArgumentException("No handler for policy: "+policy);
         return ((PolicyHandler<T, ?, Object>)res).evaluate(actor, arg);
     }
 }

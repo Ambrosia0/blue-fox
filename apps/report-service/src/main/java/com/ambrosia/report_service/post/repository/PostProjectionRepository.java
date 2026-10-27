@@ -1,35 +1,29 @@
 package com.ambrosia.report_service.post.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
+import com.ambrosia.report_service.post.repository.custom.CustomPostRepository;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import com.ambrosia.report_service.post.entity.PostProjection;
+import org.springframework.data.repository.Repository;
 
-public interface PostProjectionRepository extends CrudRepository<PostProjection, Long>{
+public interface PostProjectionRepository extends
+        Repository<PostProjection, Long>,
+        CustomPostRepository {
     @Query("""
-    WITH inserted AS (
-        INSERT INTO processed_events(id) VALUES (:eventId)
-        ON CONFLICT(id) DO NOTHING
-        RETURNING id
+    SELECT EXISTS(
+        SELECT 1 FROM post_projection
+            WHERE id = :id
+            AND is_published IS true
+            AND deleted_at IS NULL
     )
-    INSERT INTO post_projection(id)
-    SELECT :#{#postProjection.id}
-    FROM inserted
-    RETURNING id
     """)
-    PostProjection insert(PostProjection postProjection, UUID eventId);
-
-    @Query("""
-    WITH inserted AS (
-        INSERT INTO processed_events(id) VALUES (:eventId)
-        ON CONFLICT(id) DO NOTHING
-        RETURNING id
-    )
-    DELETE FROM post_projection pp
-    USING inserted i
-    WHERE pp.id = :postId
-    """)
-    void delete(Long postId, UUID eventId);
+    boolean existsById(Long id);
+    
+    @Query("SELECT * FROM post_projection WHERE id = :id AND deleted_at IS NULL")
+    Optional<PostProjection> findById(Long id);
+    
 }

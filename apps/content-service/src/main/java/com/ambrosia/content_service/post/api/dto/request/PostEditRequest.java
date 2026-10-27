@@ -1,6 +1,7 @@
 package com.ambrosia.content_service.post.api.dto.request;
 
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.validator.constraints.UniqueElements;
 
@@ -18,9 +19,8 @@ public record PostEditRequest(
     String post,
 
     @Size(max = 3)
-    @UniqueElements
     @JsonInclude(value = Include.NON_NULL)
-    List<@NotBlank @Pattern(regexp = "#[\\p{L}\\p{N}_]{1,16}") String> tags,
+    Set<@NotBlank @Pattern(regexp = "#[\\p{L}\\p{N}_]{1,16}") String> tags,
 
     Long version
 ) {}

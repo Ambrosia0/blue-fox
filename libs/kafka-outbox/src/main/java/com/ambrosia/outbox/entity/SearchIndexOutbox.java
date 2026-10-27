@@ -2,13 +2,13 @@ package com.ambrosia.outbox.entity;
 
 import java.util.UUID;
 
+import com.github.f4b6a3.uuid.UuidCreator;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import io.github.robsonkades.uuidv7.UUIDv7;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,7 +35,7 @@ public class SearchIndexOutbox implements Persistable<UUID> {
 
     public static SearchIndexOutbox from(String resourceId, String entityType, String payload){
         return new SearchIndexOutbox(
-            UUIDv7.randomUUID(),
+            UuidCreator.getTimeOrderedEpoch(),
             resourceId,
             entityType,
             payload,

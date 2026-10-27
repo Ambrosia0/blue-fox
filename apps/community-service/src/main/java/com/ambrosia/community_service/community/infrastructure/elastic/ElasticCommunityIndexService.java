@@ -3,6 +3,7 @@ package com.ambrosia.community_service.community.infrastructure.elastic;
 
 import java.util.List;
 
+import com.ambrosia.community_service.community.domain.entity.CommunityDelete;
 import org.jspecify.annotations.NonNull;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
@@ -44,10 +45,10 @@ public class ElasticCommunityIndexService implements CommunityIndexService, Comm
     }
 
     @Override
-    public void removeFromIndex(@NonNull Long id, Long version) {
+    public void removeFromIndex(CommunityDelete delete) {
         searchIndexOutboxService.put(ElasticCommunity.builder()
-            .id(id.toString())
-            .version(version)
+            .id(delete.id().toString())
+            .version(delete.version())
             .build()
         );
     }

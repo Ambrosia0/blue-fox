@@ -3,7 +3,7 @@ package com.ambrosia.community_service.community.application.query.model;
 import java.io.Serializable;
 import java.time.Instant;
 
-import com.ambrosia.community_service.user.model.entity.UserResponse;
+import com.ambrosia.community_service.user.model.dto.UserResponse;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
